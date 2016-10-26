@@ -67,6 +67,7 @@
 		/// <param name="key">The key of the element to add or get.</param>
 		/// <param name="valueFactory">Function that will provide lazy-value, if the key does not already exist.</param>
 		/// <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
+		[Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
 		public static TValue GetOrAdd<TKey, TValue>(
 			this Dictionary<TKey, Lazy<TValue>> self,
 			TKey key,
@@ -160,6 +161,7 @@
 		/// <param name="addValueFactory">Function that will provide value to be added, if the key does not already exist.</param>
 		/// <param name="updateValueFactory">Function that will provide value for an existing key based on the key's existing value</param>
 		/// <returns>The value for the key. This will be either the updated value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
+		[Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
 		public static TValue AddOrUpdate<TKey, TValue>(
 			this Dictionary<TKey, Lazy<TValue>> self,
 			TKey key,

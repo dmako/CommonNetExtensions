@@ -21,23 +21,9 @@
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Argument(string arg, string argName)
-		{
-			if (String.IsNullOrWhiteSpace(arg))
-				throw new ArgumentNullException(argName);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ArgumentWithMsg(object arg, string argName, string msg)
 		{
 			if (arg == null)
-				throw new ArgumentNullException($"{argName}: {msg}");
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentWithMsg(string arg, string argName, string msg)
-		{
-			if (String.IsNullOrWhiteSpace(arg))
 				throw new ArgumentNullException($"{argName}: {msg}");
 		}
 
