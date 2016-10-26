@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-
-namespace CommonNet.Extensions
+﻿namespace CommonNet.Extensions
 {
-	public static class Check
+	using System;
+	using System.IO;
+	using System.Runtime.CompilerServices;
+
+	internal static class Check
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Self(object selfArg)

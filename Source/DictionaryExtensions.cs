@@ -1,15 +1,6 @@
-﻿using CommonNet.Extensions;
-
-namespace System.Collections.Generic
+﻿namespace System.Collections.Generic
 {
-	public class test
-	{
-		void main()
-		{
-			var c = new System.Collections.Concurrent.ConcurrentDictionary<int, string>();
-			c.AddOrUpdate
-		}
-	}
+	using CommonNet.Extensions;
 
 	/// <summary>
 	///  <see cref="Concurrent.ConcurrentDictionary{TKey, TValue}"/> does have nice API that shortens the dictionary usage.
@@ -123,6 +114,15 @@ namespace System.Collections.Generic
 			return newValue;
 		}
 
+		/// <summary>
+		///   Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
+		///   or updates a key/value pair by using the specified function if the key already exists.
+		/// </summary>
+		/// <param name="self">Dictionary where to add or update key/value.</param>
+		/// <param name="key">The key of the element to add or update.</param>
+		/// <param name="addValueFactory">Function that will provide value to be added, if the key does not already exist.</param>
+		/// <param name="updateValueFactory">Function that will provide value for an existing key based on the key's existing value</param>
+		/// <returns>The value for the key. This will be either the updated value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
 		public static TValue AddOrUpdate<TKey, TValue>(
 			this Dictionary<TKey, TValue> self,
 			TKey key,
@@ -150,6 +150,16 @@ namespace System.Collections.Generic
 			return newValue;
 		}
 
+		/// <summary>
+		///   Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
+		///   or updates a key/lazy-value pair by using the specified function if the key already exists.
+		///   Note that value is always initialized by this method.
+		/// </summary>
+		/// <param name="self">Dictionary where to add or update key/value.</param>
+		/// <param name="key">The key of the element to add or update.</param>
+		/// <param name="addValueFactory">Function that will provide value to be added, if the key does not already exist.</param>
+		/// <param name="updateValueFactory">Function that will provide value for an existing key based on the key's existing value</param>
+		/// <returns>The value for the key. This will be either the updated value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
 		public static TValue AddOrUpdate<TKey, TValue>(
 			this Dictionary<TKey, Lazy<TValue>> self,
 			TKey key,
@@ -163,6 +173,5 @@ namespace System.Collections.Generic
 
 			return AddOrUpdate(self, key, new Lazy<TValue>(() => addValueFactory(key), true), (k, v) => new Lazy<TValue>(() => updateValueFactory(k, v.Value), true)).Value;
 		}
-
 	}
 }
