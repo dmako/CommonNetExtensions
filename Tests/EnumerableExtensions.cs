@@ -14,6 +14,7 @@
 		{
 
 			var data = new object[] {};
+			Assert.Catch<ArgumentNullException>(() => ((object[])null).ForEach(o => { }));
 			Assert.Catch<ArgumentNullException>(() => data.ForEach(null));
 		}
 
