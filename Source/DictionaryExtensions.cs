@@ -1,11 +1,13 @@
 ﻿namespace System.Collections.Generic
 {
 	using CommonNet.Extensions;
+	using ComponentModel;
 
 	/// <summary>
 	///  <see cref="Concurrent.ConcurrentDictionary{TKey, TValue}"/> does have nice API that shortens the dictionary usage.
 	///  DictionaryExtensions defines the same API for <see cref="Generic.Dictionary{TKey, TValue}"/>.
 	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class DictionaryExtensions
 	{
 		/// <summary>

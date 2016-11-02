@@ -1,8 +1,10 @@
 ﻿namespace System.Collections.Generic
 {
 	using CommonNet.Extensions;
+	using ComponentModel;
 	using System;
 
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class EnumerableExtensions
 	{
 		/// <summary>

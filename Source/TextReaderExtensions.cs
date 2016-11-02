@@ -2,7 +2,9 @@
 {
 	using Collections.Generic;
 	using CommonNet.Extensions;
+	using ComponentModel;
 
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class TextReaderExtensions
 	{
 		/// <summary>
