@@ -5,13 +5,13 @@ platform: Any CPU
 
 assembly_info:
   patch: true
-  file: AssemblyInfo.*
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "{version}"
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
 
 before_build:
- - nuget restore
+- cmd: nuget restore
 
 build:
   project: CommonNetExtensions.sln
