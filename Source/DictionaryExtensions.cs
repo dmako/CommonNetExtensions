@@ -8,7 +8,7 @@
 	///  DictionaryExtensions defines the same API for <see cref="Generic.Dictionary{TKey, TValue}"/>.
 	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class DictionaryExtensions
+	public static class CommonNetDictionaryExtensions
 	{
 		/// <summary>
 		///   Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist.

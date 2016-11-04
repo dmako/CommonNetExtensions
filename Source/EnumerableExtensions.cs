@@ -5,7 +5,7 @@
 	using System;
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class EnumerableExtensions
+	public static class CommonNetEnumerableExtensions
 	{
 		/// <summary>
 		///   Performs action on each element of the <see cref="IEnumerable{TValue}"/>.
