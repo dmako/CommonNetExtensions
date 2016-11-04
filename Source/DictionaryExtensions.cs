@@ -4,14 +4,14 @@
 	using ComponentModel;
 
 	/// <summary>
-	///  <see cref="Concurrent.ConcurrentDictionary{TKey, TValue}"/> does have nice API that shortens the dictionary usage.
-	///  DictionaryExtensions defines the same API for <see cref="Generic.Dictionary{TKey, TValue}"/>.
+	/// <see cref="Concurrent.ConcurrentDictionary{TKey, TValue}"/> does have nice API that shortens the dictionary usage.
+	/// DictionaryExtensions defines the same API for <see cref="Generic.Dictionary{TKey, TValue}"/>.
 	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class CommonNetDictionaryExtensions
 	{
 		/// <summary>
-		///   Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist.
+		/// Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or get value.</param>
 		/// <param name="key">The key of the element to add or get.</param>
@@ -37,7 +37,7 @@
 		}
 
 		/// <summary>
-		///   Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist.
+		/// Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or get value.</param>
 		/// <param name="key">The key of the element to add or get.</param>
@@ -62,8 +62,8 @@
 		}
 
 		/// <summary>
-		///   Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, Lazy{TValue}}"/> if the key does not already exist.
-		///   Note that value is always initialized by this method.
+		/// Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, Lazy{TValue}}"/> if the key does not already exist.
+		/// Note that value is always initialized by this method.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or get value.</param>
 		/// <param name="key">The key of the element to add or get.</param>
@@ -83,8 +83,8 @@
 		}
 
 		/// <summary>
-		///   Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
-		///   or updates a key/value pair by using the specified function if the key already exists.
+		/// Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
+		/// or updates a key/value pair by using the specified function if the key already exists.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or update key/value.</param>
 		/// <param name="key">The key of the element to add or update.</param>
@@ -118,8 +118,8 @@
 		}
 
 		/// <summary>
-		///   Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
-		///   or updates a key/value pair by using the specified function if the key already exists.
+		/// Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
+		/// or updates a key/value pair by using the specified function if the key already exists.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or update key/value.</param>
 		/// <param name="key">The key of the element to add or update.</param>
@@ -154,9 +154,9 @@
 		}
 
 		/// <summary>
-		///   Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
-		///   or updates a key/lazy-value pair by using the specified function if the key already exists.
-		///   Note that value is always initialized by this method.
+		/// Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist,
+		/// or updates a key/lazy-value pair by using the specified function if the key already exists.
+		/// Note that value is always initialized by this method.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or update key/value.</param>
 		/// <param name="key">The key of the element to add or update.</param>
