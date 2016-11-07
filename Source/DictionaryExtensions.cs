@@ -62,7 +62,7 @@
 		}
 
 		/// <summary>
-		/// Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, Lazy{TValue}}"/> if the key does not already exist.
+		/// Adds a key/lazy-value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> where value is <see cref="Lazy{TValue}"/> if the key does not already exist.
 		/// Note that value is always initialized by this method.
 		/// </summary>
 		/// <param name="self">Dictionary where to add or get value.</param>

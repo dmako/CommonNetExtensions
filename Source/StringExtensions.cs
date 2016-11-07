@@ -5,6 +5,9 @@
 	using ComponentModel;
 	using Globalization;
 
+	/// <summary>
+	/// Commonly used extension methods on <see cref="string"/>.
+	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class CommonNetStringExtensions
 	{
@@ -13,24 +16,14 @@
 		/// </summary>
 		/// <param name="self">The string to test.</param>
 		/// <returns>false if the string is null or an empty string, true otherwise.</returns>
-		public static bool IsNotNullOrEmpty(
-			this string self
-		)
-		{
-			return !String.IsNullOrEmpty(self);
-		}
+		public static bool IsNotNullOrEmpty(this string self) => !String.IsNullOrEmpty(self);
 
 		/// <summary>
 		/// Indicates whether a specified string is not null, empty, or consists only of white-space characters.
 		/// </summary>
 		/// <param name="self">The string to test.</param>
 		/// <returns>false if the string is null or empty string, or if consists only of white-space characters, true otherwise.</returns>
-		public static bool IsNotNullOrWhiteSpace(
-			this string self
-		)
-		{
-			return !String.IsNullOrWhiteSpace(self);
-		}
+		public static bool IsNotNullOrWhiteSpace(this string self) => !String.IsNullOrWhiteSpace(self);
 
 		// helper data to substitute TypeDescriptor.GetConverter() functionality that is not available on PCL
 		private static readonly Dictionary<Type, Func<string, object>> parsers =
@@ -54,10 +47,10 @@
 		};
 
 		/// <summary>
-		///
+		/// Parse string into desired type.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="self"></param>
+		/// <typeparam name="T">Deduced parameter by return type or explicitly typed one.</typeparam>
+		/// <param name="self">The string to parse.</param>
 		/// <returns></returns>
 		public static T Parse<T>(
 			this string self
@@ -79,12 +72,12 @@
 		}
 
 		/// <summary>
-		///
+		/// Try parse string into desired type.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="self"></param>
-		/// <param name="value"></param>
+		/// <param name="self">The string to parse.</param>
+		/// <param name="value">Value where to store result of parse.</param>
 		/// <returns></returns>
+		[Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 		public static bool TryParse<T>(
 			this string self,
 			out T value

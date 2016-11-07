@@ -4,6 +4,9 @@
 	using ComponentModel;
 	using System;
 
+	/// <summary>
+	/// Commonly used extension methods on <see cref="IEnumerable{T}"/>.
+	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class CommonNetEnumerableExtensions
 	{

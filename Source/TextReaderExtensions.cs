@@ -4,6 +4,9 @@
 	using CommonNet.Extensions;
 	using ComponentModel;
 
+	/// <summary>
+	/// Commonly used extension methods on <see cref="TextReader"/>.
+	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class CommonNetTextReaderExtensions
 	{
