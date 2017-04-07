@@ -4,6 +4,7 @@
 	using CommonNet.Extensions;
 	using ComponentModel;
 	using Globalization;
+	using Reflection;
 
 	/// <summary>
 	/// Commonly used extension methods on <see cref="string"/>.
@@ -16,14 +17,14 @@
 		/// </summary>
 		/// <param name="self">The string to test.</param>
 		/// <returns>false if the string is null or an empty string, true otherwise.</returns>
-		public static bool IsNotNullOrEmpty(this string self) => !String.IsNullOrEmpty(self);
+		public static bool IsNotNullOrEmpty(this string self) => !string.IsNullOrEmpty(self);
 
 		/// <summary>
 		/// Indicates whether a specified string is not null, empty, or consists only of white-space characters.
 		/// </summary>
 		/// <param name="self">The string to test.</param>
 		/// <returns>false if the string is null or empty string, or if consists only of white-space characters, true otherwise.</returns>
-		public static bool IsNotNullOrWhiteSpace(this string self) => !String.IsNullOrWhiteSpace(self);
+		public static bool IsNotNullOrWhiteSpace(this string self) => !string.IsNullOrWhiteSpace(self);
 
 		// helper data to substitute TypeDescriptor.GetConverter() functionality that is not available on PCL
 		private static readonly Dictionary<Type, Func<string, object>> parsers =
@@ -87,12 +88,34 @@
 			{
 				value = self.Parse<T>();
 			}
-			catch
+			catch (Exception e)
 			{
-				value = default(T);
-				return false;
+				if (e is OverflowException || e is NotSupportedException)
+				{
+					value = default(T);
+					return false;
+				}
+				throw;
 			}
 			return true;
+		}
+
+		/// <summary>
+		/// Parse a string to a enum value if string matches enum definition name otherwise default value is returned.
+		/// For extensive usage consider https://github.com/TylerBrinkley/Enums.NET
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="self"></param>
+		/// <param name="ignoreCase"></param>
+		/// <returns></returns>
+		public static TEnum ParseToEnum<TEnum>(this string self, bool ignoreCase = true)
+			where TEnum : struct
+		{
+			Check.Verify(typeof(TEnum).GetTypeInfo().IsEnum, $"{typeof(TEnum).Name} must be Enum.");
+			TEnum eval;
+			if (Enum.TryParse<TEnum>(self, ignoreCase, out eval))
+				return eval;
+			return default(TEnum);
 		}
 
 	}

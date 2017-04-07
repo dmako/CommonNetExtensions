@@ -37,5 +37,21 @@
 			Assert.AreEqual("1234".TryParse(out val), false);
 			Assert.AreEqual(val, 0);
 		}
+
+		enum TestEnum
+		{
+			Default,
+			One
+		}
+
+		[Test]
+		public void String_ParseEnum()
+		{
+			Assert.AreEqual("twelve".ParseToEnum<TestEnum>(), TestEnum.Default);
+			Assert.AreEqual("one".ParseToEnum<TestEnum>(), TestEnum.One);
+			Assert.AreEqual("one".ParseToEnum<TestEnum>(false), TestEnum.Default);
+			Assert.AreEqual("One".ParseToEnum<TestEnum>(false), TestEnum.One);
+
+		}
 	}
 }
