@@ -1,5 +1,7 @@
 ﻿namespace System
 {
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using Collections.Generic;
     using CommonNet.Extensions;
     using ComponentModel;
@@ -113,10 +115,109 @@
         {
             Check.Verify(typeof(TEnum).GetTypeInfo().IsEnum, $"{typeof(TEnum).Name} must be Enum.");
             TEnum eval;
-            if (Enum.TryParse<TEnum>(self, ignoreCase, out eval))
+            if (Enum.TryParse(self, ignoreCase, out eval))
                 return eval;
             return default(TEnum);
         }
 
+        /// <summary>
+        /// Generates a sequence that contains a repeated string value optionally concatened with separator.
+        /// </summary>
+        /// <param name="self">The string to repeat.</param>
+        /// <param name="count">Number of repetions.</param>
+        /// <param name="separator">Optional separator of repeated string value.</param>
+        /// <returns></returns>
+        public static string Repeat(this string self, int count, string separator = "")
+        {
+            Check.Self(self);
+
+            if (count < 0)
+                throw new ArgumentException("Must be a positive number.", nameof(count));
+
+            if (self.Length > 0 && count > 0)
+                return string.Join(separator, Enumerable.Repeat(self, count).ToArray());
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Replaces all tabulator occurences in string with given number of spaces.
+        /// </summary>
+        /// <param name="self">The string on which to perform replacement.</param>
+        /// <param name="tabSize">Number of spaces to use for replacing tabulator.</param>
+        /// <returns></returns>
+        public static string TabsToSpaces(this string self, int tabSize = 4)
+        {
+            Check.Self(self);
+
+            if (tabSize < 0)
+                throw new ArgumentException(nameof(tabSize));
+
+            return self.Replace("\t", " ".Repeat(tabSize));
+        }
+
+        /// <summary>
+        /// Gets the string before the given string parameter.
+        /// </summary>
+        /// <param name="self">The string on which to perform.</param>
+        /// <param name="right">The string to lookup.</param>
+        /// <returns>
+        /// Returns string befor occurence of parameter <paramref name="right"/>
+        /// or empty string in case the parameter <paramref name="right"/> is not in <paramref name="self"/> string.
+        /// </returns>
+        public static string GetBeforeOrEmpty(this string self, string right)
+        {
+            Check.Self(self);
+            Check.Verify(right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
+
+            var rightPos = self.IndexOf(right, StringComparison.Ordinal);
+            return rightPos == -1 ? string.Empty : self.Substring(0, rightPos);
+        }
+
+        /// <summary>
+        /// Gets the string after the given string parameter.
+        /// </summary>
+        /// <param name="self">The string on which to perform.</param>
+        /// <param name="left">The string to lookup.</param>
+        /// <returns>
+        /// Returns string after occurence of parameter <paramref name="left"/>
+        /// or empty string in case the parameter <paramref name="left"/> is not in <paramref name="self"/> string.
+        /// </returns>
+        public static string GetAfterOrEmpty(this string self, string left)
+        {
+            Check.Self(self);
+            Check.Verify(left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
+
+            var leftPos = self.LastIndexOf(left, StringComparison.Ordinal);
+            return leftPos == -1 || leftPos + left.Length >= self.Length ?
+                string.Empty :
+                self.Substring(leftPos + left.Length);
+        }
+
+        /// <summary>
+        /// Gets the string between the given string parameters.
+        /// </summary>
+        /// <param name="self">he string on which to perform.</param>
+        /// <param name="left">The string to lookup at the beginning.</param>
+        /// <param name="right">The string to lookup from the end.</param>
+        /// <returns>
+        /// Returns string after occurence of parameter <paramref name="left"/> and before parameter <paramref name="right"/>
+        /// or empty string in case the parameter <paramref name="left"/> of parameter <paramref name="right"/> is not in <paramref name="self"/> string.
+        /// </returns>
+        public static string GetBetweenOrEmpty(this string self, string left, string right)
+        {
+            Check.Self(self);
+            Check.Verify(left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
+            Check.Verify(right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
+
+            var leftPos = self.IndexOf(left, StringComparison.Ordinal);
+            var rightPos = self.LastIndexOf(right, StringComparison.Ordinal);
+
+            if (leftPos == -1 || leftPos == -1)
+                return string.Empty;
+
+            var startIndex = leftPos + left.Length;
+            return startIndex >= rightPos ? string.Empty : self.Substring(startIndex, rightPos - startIndex);
+        }
     }
 }
