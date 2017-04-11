@@ -19,8 +19,7 @@
         {
             Assert.Catch<NotSupportedException>(() => "test".Parse<object>());
             Assert.Catch<NotSupportedException>(() => "test".Parse<Enum>());
-            object o;
-            Assert.AreEqual("test".TryParse<object>(out o), false);
+            Assert.AreEqual("test".TryParse(out object o), false);
         }
 
         [Test]
@@ -30,8 +29,7 @@
             Assert.AreEqual("123".Parse<byte>(), 123);
             Assert.Catch<OverflowException>(() => "1234".Parse<byte>());
             Assert.AreEqual("\t\t 123    \v   ".Parse<byte>(), 123);
-            byte val;
-            Assert.AreEqual("123".TryParse(out val), true);
+            Assert.AreEqual("123".TryParse(out byte val), true);
             Assert.AreEqual(val, 123);
             Assert.AreEqual("1234".TryParse(out val), false);
             Assert.AreEqual(val, 0);

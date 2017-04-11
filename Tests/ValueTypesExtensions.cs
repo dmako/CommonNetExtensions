@@ -23,7 +23,7 @@
             Assert.AreEqual(true.IsEmpty(), false);
             Assert.AreEqual(false.IsEmpty(), true);
             Assert.AreEqual(new TS().IsEmpty(), true);
-            Assert.AreEqual(new TS { B = 1 }.IsEmpty(), false);
+            Assert.AreEqual(new TS { A = "test" }.IsEmpty(), false);
             Assert.AreEqual(new Guid().IsEmpty(), true);
             Assert.AreEqual(Guid.NewGuid().IsEmpty(), false);
             Assert.AreEqual(new DateTime().IsEmpty(), true);
@@ -57,7 +57,7 @@
             Assert.AreEqual(true.ToNullable(), (bool?)true);
             Assert.AreEqual(false.ToNullable(), null);
             Assert.AreEqual(new TS().ToNullable(), null);
-            var ts = new TS { B = 1 };
+            var ts = new TS { A = "test", B = 1 };
             Assert.AreEqual(ts.ToNullable(), (TS?)ts);
             Assert.AreEqual(new Guid().ToNullable(), null);
             var guid = Guid.NewGuid();
