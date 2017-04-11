@@ -1,6 +1,5 @@
 ﻿namespace Tests
 {
-    using FsCheck;
     using NUnit.Framework;
     using System;
     using System.IO;

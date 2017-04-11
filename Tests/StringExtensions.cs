@@ -2,8 +2,6 @@
 {
     using NUnit.Framework;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.IO;
 
     [TestFixture]
@@ -12,8 +10,8 @@
         [FsCheck.NUnit.Property(MaxTest = 100, Description = nameof(String_IsNotNullOrXTest), QuietOnSuccess = true)]
         public void String_IsNotNullOrXTest(string data)
         {
-            Assert.AreEqual(data.IsNotNullOrEmpty(), !String.IsNullOrEmpty(data));
-            Assert.AreEqual(data.IsNotNullOrWhiteSpace(), !String.IsNullOrWhiteSpace(data));
+            Assert.AreEqual(data.IsNotNullOrEmpty(), !string.IsNullOrEmpty(data));
+            Assert.AreEqual(data.IsNotNullOrWhiteSpace(), !string.IsNullOrWhiteSpace(data));
         }
 
         [Test]
