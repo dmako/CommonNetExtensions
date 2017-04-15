@@ -2,7 +2,6 @@
 {
     using NUnit.Framework;
     using System;
-    using System.IO;
 
     [TestFixture]
     public class ValueTypesExtensions
