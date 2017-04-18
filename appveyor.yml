@@ -16,3 +16,7 @@ build:
   project: CommonNetExtensions.sln
   parallel: true
   verbosity: minimal
+
+test:
+  assemblies:
+    - '**\*.tests.dll'
