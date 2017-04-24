@@ -3,6 +3,7 @@
     using NUnit.Framework;
     using System;
     using System.IO;
+    using System.Linq;
 
     [TestFixture]
     public class StringExtensions
@@ -119,6 +120,24 @@
             Assert.AreEqual("me.test.me".GetBetweenOrEmpty(",", ","), string.Empty);
             Assert.AreEqual("me.test.me".GetBetweenOrEmpty(".test", "."), string.Empty);
             Assert.AreEqual("me.test.me".GetBetweenOrEmpty(".tes", "."), "t");
+        }
+
+        [Test]
+        public void String_AllIndexesOf()
+        {
+            string nullStr = null;
+            Assert.Catch<ArgumentException>(() => nullStr.AllIndexesOf(" ").ToArray());
+            Assert.Catch<ArgumentException>(() => "test".AllIndexesOf(null).ToArray());
+            Assert.Catch<InvalidDataException>(() => "test".AllIndexesOf("").ToArray());
+            Assert.AreEqual("".AllIndexesOf(" ").ToArray(), new int[] { });
+            Assert.AreEqual("test".AllIndexesOf("tset").ToArray(), new int[] { });
+            Assert.AreEqual("test".AllIndexesOf("t").ToArray(), new int[] { 0, 3 });
+            Assert.AreEqual("test".AllIndexesOf("T", true).ToArray(), new int[] { 0, 3 });
+            Assert.AreEqual("test".AllIndexesOf("st").ToArray(), new int[] { 2 });
+            Assert.AreEqual("test".AllIndexesOf("St", true).ToArray(), new int[] { 2 });
+            Assert.AreEqual("tttt".AllIndexesOf("tt").ToArray(), new int[] { 0, 1, 2 });
+            Assert.AreEqual("tttt".AllIndexesOf("tT", true).ToArray(), new int[] { 0, 1, 2 });
+            Assert.AreEqual("test\r\nnew\r\nlines\r\n".AllIndexesOf("\r\n").ToArray(), new int[] { 4, 9, 16 });
         }
     }
 }

@@ -160,7 +160,7 @@
         /// Gets the string before the given string parameter.
         /// </summary>
         /// <param name="self">The string on which to perform.</param>
-        /// <param name="right">The string to lookup.</param>
+        /// <param name="right">The string to seek.</param>
         /// <returns>
         /// Returns string befor occurence of parameter <paramref name="right"/>
         /// or empty string in case the parameter <paramref name="right"/> is not in <paramref name="self"/> string.
@@ -178,11 +178,12 @@
         /// Gets the string after the given string parameter.
         /// </summary>
         /// <param name="self">The string on which to perform.</param>
-        /// <param name="left">The string to lookup.</param>
+        /// <param name="left">The string to seek.</param>
         /// <returns>
         /// Returns string after occurence of parameter <paramref name="left"/>
         /// or empty string in case the parameter <paramref name="left"/> is not in <paramref name="self"/> string.
         /// </returns>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
         public static string GetAfterOrEmpty(this string self, string left)
         {
             Check.Self(self);
@@ -198,8 +199,8 @@
         /// Gets the string between the given string parameters.
         /// </summary>
         /// <param name="self">he string on which to perform.</param>
-        /// <param name="left">The string to lookup at the beginning.</param>
-        /// <param name="right">The string to lookup from the end.</param>
+        /// <param name="left">The string to seek at the beginning.</param>
+        /// <param name="right">The string to seek from the end.</param>
         /// <returns>
         /// Returns string after occurence of parameter <paramref name="left"/> and before parameter <paramref name="right"/>
         /// or empty string in case the parameter <paramref name="left"/> of parameter <paramref name="right"/> is not in <paramref name="self"/> string.
@@ -218,6 +219,30 @@
 
             var startIndex = leftPos + left.Length;
             return startIndex >= rightPos ? string.Empty : self.Substring(startIndex, rightPos - startIndex);
+        }
+
+        /// <summary>
+        /// Returns all zero-based indexes of the occurrences of the specified string
+        /// in the string object.
+        /// </summary>
+        /// <param name="self">The object where to perform search.</param>
+        /// <param name="value">The string to seek.</param>
+        /// <param name="ignoreCase">Indicates wherher the comparision should be performed with case ignoring.</param>
+        /// <returns>Enumeration of zero-based indexes.</returns>
+        public static IEnumerable<int> AllIndexesOf(this string self, string value, bool ignoreCase = false)
+        {
+            Check.Self(self);
+            Check.Self(value);
+            Check.Verify(value.Length > 0, $"Argument {nameof(value)} is empty.");
+
+            var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            for (var index = 0; ; ++index)
+            {
+                index = self.IndexOf(value, index, comparison);
+                if (index == -1)
+                    break;
+                yield return index;
+            }
         }
     }
 }
