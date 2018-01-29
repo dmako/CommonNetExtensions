@@ -13,4 +13,12 @@
                 );
         }
     }
+
+    public static class NonEmptyArrayArbitrary
+    {
+        public static Arbitrary<T[]> Array<T>()
+        {
+            return Arb.Default.Array<T>().Filter(x => x != null && x.Length > 0);
+        }
+    }
 }
