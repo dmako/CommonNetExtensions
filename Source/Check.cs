@@ -1,4 +1,4 @@
-﻿namespace CommonNet.Extensions
+namespace CommonNet.Extensions
 {
     using System;
     using System.IO;

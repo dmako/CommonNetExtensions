@@ -1,7 +1,6 @@
-﻿namespace System
+namespace System
 {
     using System.Linq;
-    using System.Text.RegularExpressions;
     using Collections.Generic;
     using CommonNet.Extensions;
     using ComponentModel;
@@ -121,10 +120,10 @@
         }
 
         /// <summary>
-        /// Generates a sequence that contains a repeated string value optionally concatened with separator.
+        /// Generates a sequence that contains a repeated string value optionally concatenated with separator.
         /// </summary>
         /// <param name="self">The string to repeat.</param>
-        /// <param name="count">Number of repetions.</param>
+        /// <param name="count">Number of repetitions.</param>
         /// <param name="separator">Optional separator of repeated string value.</param>
         /// <returns></returns>
         public static string Repeat(this string self, int count, string separator = "")
@@ -141,7 +140,7 @@
         }
 
         /// <summary>
-        /// Replaces all tabulator occurences in string with given number of spaces.
+        /// Replaces all tabulator occurrences in string with given number of spaces.
         /// </summary>
         /// <param name="self">The string on which to perform replacement.</param>
         /// <param name="tabSize">Number of spaces to use for replacing tabulator.</param>
@@ -151,7 +150,7 @@
             Check.Self(self);
 
             if (tabSize < 0)
-                throw new ArgumentException(nameof(tabSize));
+                throw new ArgumentException($"Parameter {nameof(tabSize)} cannot be negative");
 
             return self.Replace("\t", " ".Repeat(tabSize));
         }
@@ -162,7 +161,7 @@
         /// <param name="self">The string on which to perform.</param>
         /// <param name="right">The string to seek.</param>
         /// <returns>
-        /// Returns string befor occurence of parameter <paramref name="right"/>
+        /// Returns string before occurrence of parameter <paramref name="right"/>
         /// or empty string in case the parameter <paramref name="right"/> is not in <paramref name="self"/> string.
         /// </returns>
         public static string GetBeforeOrEmpty(this string self, string right)
@@ -180,7 +179,7 @@
         /// <param name="self">The string on which to perform.</param>
         /// <param name="left">The string to seek.</param>
         /// <returns>
-        /// Returns string after occurence of parameter <paramref name="left"/>
+        /// Returns string after occurrence of parameter <paramref name="left"/>
         /// or empty string in case the parameter <paramref name="left"/> is not in <paramref name="self"/> string.
         /// </returns>
         [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
@@ -202,9 +201,10 @@
         /// <param name="left">The string to seek at the beginning.</param>
         /// <param name="right">The string to seek from the end.</param>
         /// <returns>
-        /// Returns string after occurence of parameter <paramref name="left"/> and before parameter <paramref name="right"/>
+        /// Returns string after occurrence of parameter <paramref name="left"/> and before parameter <paramref name="right"/>
         /// or empty string in case the parameter <paramref name="left"/> of parameter <paramref name="right"/> is not in <paramref name="self"/> string.
         /// </returns>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
         public static string GetBetweenOrEmpty(this string self, string left, string right)
         {
             Check.Self(self);
@@ -227,7 +227,7 @@
         /// </summary>
         /// <param name="self">The object where to perform search.</param>
         /// <param name="value">The string to seek.</param>
-        /// <param name="ignoreCase">Indicates wherher the comparision should be performed with case ignoring.</param>
+        /// <param name="ignoreCase">Indicates whether the comparison should be performed with case ignoring.</param>
         /// <returns>Enumeration of zero-based indexes.</returns>
         public static IEnumerable<int> AllIndexesOf(this string self, string value, bool ignoreCase = false)
         {

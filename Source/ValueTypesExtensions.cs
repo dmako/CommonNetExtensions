@@ -1,9 +1,5 @@
-﻿namespace System
+namespace System
 {
-    using CommonNet.Extensions;
-    using ComponentModel;
-    using System;
-
     /// <summary>
     /// Extension methods for value types.
     /// </summary>

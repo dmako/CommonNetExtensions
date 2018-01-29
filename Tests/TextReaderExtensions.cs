@@ -27,7 +27,7 @@
         {
             var i = 0;
             var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
-            using (var sr = new StringReader(String.Join("\n", data)))
+            using (var sr = new StringReader(string.Join("\n", data)))
             {
                 foreach (var line in sr.EnumLines())
                 {
@@ -44,7 +44,7 @@
         {
             var i = 0;
             var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
-            using (var sr = new StringReader(String.Join("\n", data)))
+            using (var sr = new StringReader(string.Join("\n", data)))
             {
                 sr.ForEachLine(line =>
                 {

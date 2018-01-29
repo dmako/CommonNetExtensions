@@ -1,4 +1,4 @@
-﻿namespace System.IO
+namespace System.IO
 {
     using Collections.Generic;
     using CommonNet.Extensions;
@@ -41,6 +41,5 @@
 
             self.EnumLines().ForEach(line => action(line));
         }
-
     }
 }
