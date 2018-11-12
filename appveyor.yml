@@ -54,10 +54,9 @@ for:
 
   deploy:
     provider: NuGet
-    server: https://...
     api_key:
-      secure: abc
-    skip_symbols: true
+      secure: YGj7yA5GXDyQeEY8SspSVT7RSM1NcOFSUdSsDIYCGvxaFl4h1gOz73vKtfZxsB3d
+    skip_symbols: false
     artifact: /.*\.nupkg/
 
     # TODO: tag repo
