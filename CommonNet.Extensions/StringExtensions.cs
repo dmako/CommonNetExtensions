@@ -214,7 +214,7 @@ namespace System
             var leftPos = self.IndexOf(left, StringComparison.Ordinal);
             var rightPos = self.LastIndexOf(right, StringComparison.Ordinal);
 
-            if (leftPos == -1 || leftPos == -1)
+            if (leftPos == -1 || rightPos == -1)
                 return string.Empty;
 
             var startIndex = leftPos + left.Length;
