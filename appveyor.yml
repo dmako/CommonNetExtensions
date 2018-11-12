@@ -75,4 +75,4 @@ for:
     - cmd: dotnet test -c %CONFIGURATION% /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=.\ccresult.xml %TESTPROJ%
 
   after_test:
-    - cmd: IF "%CONFIGURATION%"=="Release" dotnet sonarscanner end /d:sonar.login="%SONAR_TOKEN%"
+    - cmd: dotnet sonarscanner end /d:sonar.login="%SONAR_TOKEN%"
