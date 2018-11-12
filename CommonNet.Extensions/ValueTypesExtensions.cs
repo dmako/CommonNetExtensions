@@ -26,7 +26,7 @@ namespace System
         public static bool IsNotEmpty<T>(this T self)
             where T : struct
         {
-            return (self.IsEmpty() == false);
+            return !self.IsEmpty();
         }
 
         /// <summary>
