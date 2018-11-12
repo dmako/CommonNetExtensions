@@ -1,22 +1,78 @@
-version: 0.1.{build}
+version: 0.2.{build}
 image: Visual Studio 2017
 configuration: Release
+skip_tags: true
 
-assembly_info:
+environment:
+  SLN: CommonNetExtensions.sln
+  EXTPROJ: CommonNet.Extensions\CommonNet.Extensions.csproj
+  TESTPROJ: CommonNet.Extensions.Tests\CommonNet.Extensions.Tests.csproj
+  SONAR_TOKEN:
+    secure: mtpuOJZhMwm+4b/rsectEQlB1cyzb6FnHf9K+tot930k8Cy0LsvUfGvkzpQ/6t/J
+
+init:
+  - cmd: dotnet tool install --global dotnet-sonarscanner
+  - ps: $Env:LABEL = "release/v" + $Env:APPVEYOR_BUILD_VERSION
+
+dotnet_csproj:
   patch: true
-  file: '**\AssemblyInfo.*'
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
   assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 
-before_build:
-- cmd: nuget restore
+for:
+# Master branch only
+-
+  branches:
+    only:
+      - master
 
-build:
-  project: CommonNetExtensions.sln
-  parallel: true
-  verbosity: minimal
+  configuration:
+    - Release
 
-test:
-  assemblies:
-    - '**\*.tests.dll'
+  before_build:
+    - cmd: dotnet restore %SLN%
+
+  build_script:
+    - cmd: dotnet build %SLN% -c %CONFIGURATION%
+
+  after_build:
+    - cmd: dotnet pack %EXTPROJ% -c %CONFIGURATION% --include-symbols
+
+  test_script:
+    - cmd: dotnet test %TESTPROJ% -c %CONFIGURATION%
+
+  artifacts:
+    - path: 'CommonNet.Extensions\**\*.nupkg'
+      name: CommonNet.Extensions
+
+  nuget:
+    disable_publish_on_pr: true
+
+  deploy:
+    provider: NuGet
+    server: https://...
+    api_key:
+      secure: abc
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+
+    # TODO: tag repo
+
+# All other branches
+-
+  before_build:
+    - cmd: dotnet restore %SLN%
+    - cmd: dotnet sonarscanner begin /k:"dmako_CommonNetExtensions" /d:sonar.organization="dmako-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="%SONAR_TOKEN%" /version:"%VERSION%" /d:sonar.cs.opencover.reportsPaths="CommonNet.Extensions.Tests\ccresult.xml"
+
+  build_script:
+    - cmd: dotnet build %SLN% -c %CONFIGURATION%
+
+  test_script:
+    - cmd: dotnet test -c %CONFIGURATION% /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=.\ccresult.xml %TESTPROJ%
+
+  after_test:
+    - cmd: IF "%CONFIGURATION%"=="Release" dotnet sonarscanner end /d:sonar.login="%SONAR_TOKEN%"
