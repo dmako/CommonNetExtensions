@@ -1,17 +1,16 @@
-﻿namespace Tests
+namespace Tests
 {
-    using NUnit.Framework;
-    using System.Text;
     using System;
+    using System.Text;
+    using Xunit;
 
-    [TestFixture]
     public class StringBuilderExtensions
     {
-        [Test]
+        [Fact]
         public void StringBuilde_AppendIf()
         {
-            StringBuilder nullSb = null;
-            Assert.Catch<ArgumentException>(() => nullSb.AppendIf(1 > 0, "null"));
+            const StringBuilder nullSb = null;
+            Assert.Throws<ArgumentNullException>(() => nullSb.AppendIf(1 > 0, "null"));
 
             var sb = new StringBuilder();
             var type = typeof(StringBuilderExtensions);
@@ -24,8 +23,7 @@
                 .Append(' ')
                 .Append(type.Name);
 
-            Assert.AreEqual(sb.ToString(), $"public class {nameof(StringBuilderExtensions)}");
+            Assert.Equal($"public class {nameof(StringBuilderExtensions)}", sb.ToString());
         }
-
     }
 }
