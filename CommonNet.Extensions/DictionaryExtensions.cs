@@ -1,4 +1,4 @@
-﻿namespace System.Collections.Generic
+namespace System.Collections.Generic
 {
     using CommonNet.Extensions;
     using ComponentModel;
@@ -27,8 +27,7 @@
             Check.Argument(key, nameof(key));
             Check.Argument(valueFactory, nameof(valueFactory));
 
-            TValue value;
-            if (!self.TryGetValue(key, out value))
+            if (!self.TryGetValue(key, out var value))
             {
                 value = valueFactory(key);
                 self.Add(key, value);
@@ -52,8 +51,7 @@
             Check.Self(self);
             Check.Argument(key, nameof(key));
 
-            TValue value;
-            if (!self.TryGetValue(key, out value))
+            if (!self.TryGetValue(key, out var value))
             {
                 value = newValue;
                 self.Add(key, value);
@@ -103,8 +101,7 @@
             Check.Argument(updateValueFactory, nameof(updateValueFactory));
 
             TValue newValue;
-            TValue oldValue;
-            if (self.TryGetValue(key, out oldValue))
+            if (self.TryGetValue(key, out var oldValue))
             {
                 newValue = updateValueFactory(key, oldValue);
                 self[key] = newValue;
@@ -139,8 +136,7 @@
             Check.Argument(updateValueFactory, nameof(updateValueFactory));
 
             TValue newValue;
-            TValue oldValue;
-            if (self.TryGetValue(key, out oldValue))
+            if (self.TryGetValue(key, out var oldValue))
             {
                 newValue = updateValueFactory(key, oldValue);
                 self[key] = newValue;
