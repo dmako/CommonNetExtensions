@@ -8,7 +8,7 @@ environment:
   EXTPROJ: CommonNet.Extensions\CommonNet.Extensions.csproj
   TESTPROJ: CommonNet.Extensions.Tests\CommonNet.Extensions.Tests.csproj
   SONAR_TOKEN:
-    secure: mtpuOJZhMwm+4b/rsectEQlB1cyzb6FnHf9K+tot930k8Cy0LsvUfGvkzpQ/6t/J
+    secure: z4HgF9R+nzhk2AZ7wkgyEdJg+VLdrqOlGp6R2xEiBU5HKXDhcxjemIkXboKkYqn0
 
 init:
   - cmd: dotnet tool install --global dotnet-sonarscanner
