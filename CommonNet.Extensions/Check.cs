@@ -30,7 +30,7 @@ namespace CommonNet.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ArgumentIsRootedPath(string arg, string argName)
         {
-            Check.Argument(arg, argName);
+            Argument(arg, argName);
 
             if (!Path.IsPathRooted(arg))
                 throw new ArgumentException($"{argName} is not rooted path.");
