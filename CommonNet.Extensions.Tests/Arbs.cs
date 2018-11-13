@@ -1,4 +1,4 @@
-﻿namespace Tests
+namespace CommonNet.Extensions.Tests
 {
     using FsCheck;
 

@@ -5,18 +5,25 @@
     <Copyright>Copyright © David Makovský 2016-2018</Copyright>
     <Company>David Makovský</Company>
     <Authors>David Makovský</Authors>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <PackageLicenseUrl>https://github.com/dmako/CommonNetExtensions/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/dmako/CommonNetExtensions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dmako/CommonNetExtensions</RepositoryUrl>
+    <LangVersion>7.3</LangVersion>
+    <PackageTags>C# .net Extensions Utilities</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants />
+    <DocumentationFile>bin\Release\CommonNet.Extensions.xml</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
 
 </Project>

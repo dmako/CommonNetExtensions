@@ -1,4 +1,4 @@
-namespace Tests
+namespace CommonNet.Extensions.Tests
 {
     using System;
     using Xunit;
