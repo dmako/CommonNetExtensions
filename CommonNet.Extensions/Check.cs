@@ -37,10 +37,10 @@ namespace CommonNet.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Verify(bool result, string message)
+        public static void VerifyArgument(string arg, bool result, string message)
         {
             if (!result)
-                throw new InvalidDataException(message);
+                throw new ArgumentException(message, arg);
         }
     }
 }

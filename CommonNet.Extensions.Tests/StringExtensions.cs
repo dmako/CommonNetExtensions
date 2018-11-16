@@ -1,7 +1,6 @@
 namespace CommonNet.Extensions.Tests
 {
     using System;
-    using System.IO;
     using System.Linq;
     using Xunit;
 
@@ -82,8 +81,8 @@ namespace CommonNet.Extensions.Tests
         {
             const string nullStr = null;
             Assert.Throws<ArgumentNullException>(() => nullStr.GetBeforeOrEmpty("."));
-            Assert.Throws<InvalidDataException>(() => "test.me".GetBeforeOrEmpty(null));
-            Assert.Throws<InvalidDataException>(() => "test.me".GetBeforeOrEmpty(string.Empty));
+            Assert.Throws<ArgumentException>(() => "test.me".GetBeforeOrEmpty(null));
+            Assert.Throws<ArgumentException>(() => "test.me".GetBeforeOrEmpty(string.Empty));
             Assert.Equal("test", "test.me".GetBeforeOrEmpty("."));
             Assert.Equal("test", "test.me".GetBeforeOrEmpty(".m"));
             Assert.Equal(string.Empty, "test.me".GetBeforeOrEmpty(","));
@@ -95,8 +94,8 @@ namespace CommonNet.Extensions.Tests
         {
             const string nullStr = null;
             Assert.Throws<ArgumentNullException>(() => nullStr.GetAfterOrEmpty("."));
-            Assert.Throws<InvalidDataException>(() => "test.me".GetAfterOrEmpty(null));
-            Assert.Throws<InvalidDataException>(() => "test.me".GetAfterOrEmpty(string.Empty));
+            Assert.Throws<ArgumentException>(() => "test.me".GetAfterOrEmpty(null));
+            Assert.Throws<ArgumentException>(() => "test.me".GetAfterOrEmpty(string.Empty));
             Assert.Equal("me", "test.me".GetAfterOrEmpty("."));
             Assert.Equal("e", "test.me".GetAfterOrEmpty(".m"));
             Assert.Equal(string.Empty, "test.me".GetAfterOrEmpty(","));
@@ -108,10 +107,10 @@ namespace CommonNet.Extensions.Tests
         {
             const string nullStr = null;
             Assert.Throws<ArgumentNullException>(() => nullStr.GetBetweenOrEmpty(".", "."));
-            Assert.Throws<InvalidDataException>(() => "me.test.me".GetBetweenOrEmpty(null, "."));
-            Assert.Throws<InvalidDataException>(() => "me.test.me".GetBetweenOrEmpty(string.Empty, "."));
-            Assert.Throws<InvalidDataException>(() => "me.test.me".GetBetweenOrEmpty(".", null));
-            Assert.Throws<InvalidDataException>(() => "me.test.me".GetBetweenOrEmpty(".", string.Empty));
+            Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(null, "."));
+            Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(string.Empty, "."));
+            Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(".", null));
+            Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(".", string.Empty));
             Assert.Equal("test", "me.test.me".GetBetweenOrEmpty(".", "."));
             Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(".", ","));
             Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(",", "."));
@@ -126,7 +125,7 @@ namespace CommonNet.Extensions.Tests
             const string nullStr = null;
             Assert.Throws<ArgumentNullException>(() => nullStr.AllIndexesOf(" ").ToArray());
             Assert.Throws<ArgumentNullException>(() => "test".AllIndexesOf(null).ToArray());
-            Assert.Throws<InvalidDataException>(() => "test".AllIndexesOf("").ToArray());
+            Assert.Throws<ArgumentException>(() => "test".AllIndexesOf("").ToArray());
             Assert.Equal("".AllIndexesOf(" ").ToArray(), new int[] { });
             Assert.Equal("test".AllIndexesOf("tset").ToArray(), new int[] { });
             Assert.Equal("test".AllIndexesOf("t").ToArray(), new int[] { 0, 3 });

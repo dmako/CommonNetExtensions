@@ -63,8 +63,7 @@ namespace System
             var result = default(T);
             if (self.IsNotNullOrEmpty())
             {
-                Func<string, object> convertFnc;
-                if (!parsers.TryGetValue(typeof(T), out convertFnc))
+                if (!parsers.TryGetValue(typeof(T), out var convertFnc))
                 {
                     throw new NotSupportedException();
                 }
@@ -93,7 +92,7 @@ namespace System
             {
                 if (e is OverflowException || e is NotSupportedException)
                 {
-                    value = default(T);
+                    value = default;
                     return false;
                 }
                 throw;
@@ -110,13 +109,11 @@ namespace System
         /// <param name="ignoreCase"></param>
         /// <returns></returns>
         public static TEnum ParseToEnum<TEnum>(this string self, bool ignoreCase = true)
-            where TEnum : struct
+            where TEnum : Enum
         {
-            Check.Verify(typeof(TEnum).GetTypeInfo().IsEnum, $"{typeof(TEnum).Name} must be Enum.");
-            TEnum eval;
-            if (Enum.TryParse(self, ignoreCase, out eval))
-                return eval;
-            return default(TEnum);
+            if (Enum.TryParse(typeof(TEnum), self, ignoreCase, out var eval))
+                return (TEnum)eval;
+            return default;
         }
 
         /// <summary>
@@ -167,7 +164,7 @@ namespace System
         public static string GetBeforeOrEmpty(this string self, string right)
         {
             Check.Self(self);
-            Check.Verify(right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
+            Check.VerifyArgument(nameof(right), right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
 
             var rightPos = self.IndexOf(right, StringComparison.Ordinal);
             return rightPos == -1 ? string.Empty : self.Substring(0, rightPos);
@@ -186,7 +183,7 @@ namespace System
         public static string GetAfterOrEmpty(this string self, string left)
         {
             Check.Self(self);
-            Check.Verify(left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
+            Check.VerifyArgument(nameof(left), left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
 
             var leftPos = self.LastIndexOf(left, StringComparison.Ordinal);
             return leftPos == -1 || leftPos + left.Length >= self.Length ?
@@ -208,8 +205,8 @@ namespace System
         public static string GetBetweenOrEmpty(this string self, string left, string right)
         {
             Check.Self(self);
-            Check.Verify(left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
-            Check.Verify(right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
+            Check.VerifyArgument(nameof(left), left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
+            Check.VerifyArgument(nameof(right), right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
 
             var leftPos = self.IndexOf(left, StringComparison.Ordinal);
             var rightPos = self.LastIndexOf(right, StringComparison.Ordinal);
@@ -233,7 +230,7 @@ namespace System
         {
             Check.Self(self);
             Check.Self(value);
-            Check.Verify(value.Length > 0, $"Argument {nameof(value)} is empty.");
+            Check.VerifyArgument(nameof(value), value.Length > 0, $"Argument {nameof(value)} is empty.");
 
             var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             for (var index = 0; ; ++index)

@@ -5,7 +5,7 @@ namespace CommonNet.Extensions.Tests
     using System.Linq;
     using Xunit;
 
-    public class ByteArrayExtensions
+    public class SpanExtensions
     {
         [Fact]
         public void ByteArray_XorBasicTest()
@@ -14,10 +14,10 @@ namespace CommonNet.Extensions.Tests
             var arr = new byte[] { 0x00 };
             var arr2 = new byte[] { 0x01, 0x02 };
             Assert.Throws<ArgumentNullException>(() => nullArr.Xor(0, 1, arr));
-            Assert.Throws<ArgumentNullException>(() => arr.Xor(0, 1, null));
-            Assert.Throws<InvalidDataException>(() => arr.Xor(0, 1, new byte[] { }));
-            Assert.Throws<InvalidDataException>(() => arr.Xor(1, 1, arr));
-            Assert.Throws<InvalidDataException>(() => arr2.Xor(1, 2, arr));
+            Assert.Throws<ArgumentException>(() => arr.Xor(0, 1, null));
+            Assert.Throws<ArgumentException>(() => arr.Xor(0, 1, new byte[] { }));
+            Assert.Throws<ArgumentException>(() => arr.Xor(1, 1, arr));
+            Assert.Throws<ArgumentException>(() => arr2.Xor(1, 2, arr));
         }
 
         [FsCheck.Xunit.Property(MaxTest = 100, Arbitrary = new[] { typeof(NonEmptyArrayArbitrary) }, DisplayName = nameof(ByteArray_PropertyXorTest), QuietOnSuccess = true)]
