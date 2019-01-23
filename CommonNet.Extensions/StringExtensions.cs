@@ -109,10 +109,10 @@ namespace System
         /// <param name="ignoreCase"></param>
         /// <returns></returns>
         public static TEnum ParseToEnum<TEnum>(this string self, bool ignoreCase = true)
-            where TEnum : Enum
+            where TEnum : struct
         {
-            if (Enum.TryParse(typeof(TEnum), self, ignoreCase, out var eval))
-                return (TEnum)eval;
+            if (Enum.TryParse<TEnum>(self, ignoreCase, out var eval))
+                return eval;
             return default;
         }
 

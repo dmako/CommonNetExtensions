@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Copyright>Copyright © David Makovský 2016-2018</Copyright>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Copyright>Copyright © David Makovský 2016-2019</Copyright>
     <Company>David Makovský</Company>
     <Authors>David Makovský</Authors>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <PackageLicenseUrl>https://github.com/dmako/CommonNetExtensions/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/dmako/CommonNetExtensions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dmako/CommonNetExtensions</RepositoryUrl>
@@ -25,5 +25,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.2" />
+  </ItemGroup>
 
 </Project>

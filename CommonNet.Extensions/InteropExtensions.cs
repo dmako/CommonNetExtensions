@@ -4,6 +4,9 @@ namespace System.Runtime.InteropServices
     using System.ComponentModel;
     using CommonNet.Extensions;
 
+    /// <summary>
+    /// Extensions for easier working with native data.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class InteropExtensions
     {
