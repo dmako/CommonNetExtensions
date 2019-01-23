@@ -11,6 +11,18 @@ namespace System
     public static class SpanExtensions
     {
         /// <summary>
+        /// Returns ReadOnlySpan containing array.
+        /// </summary>
+        /// <param name="self">Array for embedding.</param>
+        /// <returns>Returns ReadOnlySpan.</returns>
+        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this T[] self)
+        {
+            Check.Self(self);
+
+            return new ReadOnlySpan<T>(self);
+        }
+
+        /// <summary>
 		/// Returns all occurrences of <paramref name="pattern"/>.
 		/// </summary>
         /// <param name="self">Span where perform the search.</param>

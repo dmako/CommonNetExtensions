@@ -8,6 +8,15 @@ namespace CommonNet.Extensions.Tests
     public class SpanExtensions
     {
         [Fact]
+        public void ByteArray_AsReadOnlySpan()
+        {
+            const byte[] nullArr = null;
+            Assert.Throws<ArgumentNullException>(() => nullArr.AsReadOnlySpan());
+            var arr = new byte[] { 0x00 };
+            Assert.Equal(1, arr.AsReadOnlySpan().Length);
+        }
+
+        [Fact]
         public void ByteArray_XorBasicTest()
         {
             const byte[] nullArr = null;
