@@ -2,7 +2,6 @@ name: .NET Multi-platform Verification
 
 on:
   push:
-    branches: [ master ]
     paths-ignore:
       - 'LICENSE.md'
       - 'README.md'
@@ -11,7 +10,9 @@ on:
       - 'server/copyright.md'
       - '.github/workflows/publish.yml'
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - devel
 
 jobs:
   linux-build:
