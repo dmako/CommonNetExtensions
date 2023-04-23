@@ -14,6 +14,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Extensions", "Com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Extensions.Tests", "CommonNet.Extensions.Tests\CommonNet.Extensions.Tests.csproj", "{68641E84-4F48-41F5-BE6E-96629441C66C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A3A6B888-07D1-48CC-8EAC-303CF5BD98F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{F636705A-52B1-4A73-B334-CA59552A1FC6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\verify.yml = .github\workflows\verify.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F636705A-52B1-4A73-B334-CA59552A1FC6} = {A3A6B888-07D1-48CC-8EAC-303CF5BD98F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93E9F7AC-C266-4B5E-A59B-2E053E454815}
