@@ -1,32 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Copyright>Copyright © David Makovský 2016-2019</Copyright>
-    <Company>David Makovský</Company>
-    <Authors>David Makovský</Authors>
-    <Version>0.4.0</Version>
-    <PackageLicenseUrl>https://github.com/dmako/CommonNetExtensions/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/dmako/CommonNetExtensions</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dmako/CommonNetExtensions</RepositoryUrl>
-    <LangVersion>7.3</LangVersion>
-    <PackageTags>C# .net Extensions Utilities</PackageTags>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>bin\Debug</OutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageTags>C# .Net Extensions Utilities</PackageTags>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants />
-    <DocumentationFile>bin\Release\CommonNet.Extensions.xml</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
-
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Memory" Version="4.5.2" />
   </ItemGroup>
 

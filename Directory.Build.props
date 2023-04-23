@@ -1,0 +1,45 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Configurations>Debug;Release</Configurations>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>65534.65534.65534.65534</Version>
+    <Version Condition=" '$(BUILD_VERSION)' != '' ">$(BUILD_VERSION)</Version>
+    <Copyright>Copyright © David Makovský 2016-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    <Company>David Makovský</Company>
+    <Authors>David Makovský</Authors>
+  </PropertyGroup>
+
+  <!-- Code quality -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <Deterministic>false</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+
+  <!-- Add SourceLink info when running on CI pipeline -->
+  <PropertyGroup Condition=" '$(CI)' != '' ">
+    <!-- Enables deterministic build -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Embed symbols containing Source Link in the main file (exe/dll) -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(CI)' != '' ">
+    <!-- PackageReference specific to GitHub repositories when running on GitHub pipeline -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+  </ItemGroup>
+</Project>

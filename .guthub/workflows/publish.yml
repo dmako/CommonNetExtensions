@@ -1,0 +1,49 @@
+name: Nuget package publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_version_base:
+        description: 'Build version base number X.Y.Z'
+        required: false
+        default: 0.5.0
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    env:
+      BUILD_VERSION: ${{ github.event.inputs.build_version_base }}.${{ github.run_number }}
+      BUILD_VERSION_TAG: release/v${{ github.event.inputs.build_version_base }}.${{ github.run_number }}
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    #- name: Publish Nuget package
+    #  uses: marvinpinto/action-automatic-releases@latest
+    #  with:
+    #    repo_token: ${{ github.token }}
+
+    #- name: Create Nuget package release
+    #  uses: marvinpinto/action-automatic-releases@latest
+    #  with:
+    #    repo_token: ${{ github.token }}
+    #    title: Release ${{ env.BUILD_VERSION }}
+    #    automatic_release_tag: ${{ env.BUILD_VERSION_TAG }}
+    #    prerelease: false
+    #    draft: false
+
