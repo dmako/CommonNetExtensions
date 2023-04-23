@@ -2,6 +2,10 @@ name: .NET Multi-platform Verification
 
 on:
   push:
+    branches:
+      - master
+      - devel
+      - 'feat/**'
     paths-ignore:
       - 'LICENSE.md'
       - 'README.md'
