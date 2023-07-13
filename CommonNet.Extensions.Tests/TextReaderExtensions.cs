@@ -1,4 +1,6 @@
-﻿using FsCheck.Xunit;
+﻿using System;
+using FluentAssertions;
+using FsCheck.Xunit;
 using Xunit;
 
 namespace CommonNet.Extensions.Tests;
@@ -9,12 +11,12 @@ public class TextReaderExtensions
     public void TextReader_BasicTests()
     {
         const StreamReader? nullReader = null;
-        // Why the call is optimized out even in debug?
-        // Assert.Throws<ArgumentNullException>(() => ((TextReader)null).EnumLines());
-        Assert.Throws<ArgumentNullException>(() => nullReader!.ForEachLine(l => { }));
+        Action action = () => nullReader!.ForEachLine(l => { });
+        action.Should().ThrowExactly<ArgumentNullException>();
 
         using var reader = new StreamReader(new MemoryStream());
-        Assert.Throws<ArgumentNullException>(() => reader.ForEachLine(null!));
+        action = () => reader.ForEachLine(null!);
+        action.Should().ThrowExactly<ArgumentNullException>();
     }
 
     [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(TextReader_PropertyEnumLines), QuietOnSuccess = true)]
@@ -22,15 +24,13 @@ public class TextReaderExtensions
     {
         var i = 0;
         var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
-        using (var sr = new StringReader(string.Join("\n", data)))
+        using var sr = new StringReader(string.Join("\n", data));
+        foreach (var line in sr.EnumLines())
         {
-            foreach (var line in sr.EnumLines())
-            {
-                Assert.Equal(line, data[i]);
-                i++;
-            }
-            Assert.Equal(i, len);
+            line.Should().Be(data[i]);
+            i++;
         }
+        i.Should().Be(len);
     }
 
     [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(TextReader_ForEachLine), QuietOnSuccess = true)]
@@ -42,10 +42,10 @@ public class TextReaderExtensions
         using var sr = new StringReader(string.Join("\n", data));
         sr.ForEachLine(line =>
         {
-            Assert.Equal(line, data[i]);
+            line.Should().Be(data[i]);
             i++;
         });
-        Assert.Equal(i, len);
+        i.Should().Be(len);
     }
 }
 

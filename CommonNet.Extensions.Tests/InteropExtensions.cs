@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using FluentAssertions;
 using Xunit;
 
 namespace CommonNet.Extensions.Tests;
@@ -17,14 +18,16 @@ public class InteropExtensions
     public void Marshal_BasicTests()
     {
         const byte[]? nullArray = null;
-        Assert.Throws<ArgumentNullException>(() => nullArray!.BufferToStructure<T1>());
-        Assert.Throws<ArgumentOutOfRangeException>(() => new byte[] { 1, 2, 3 }.BufferToStructure<T1>());
+        Action action = () => nullArray!.BufferToStructure<T1>();
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => new byte[] { 1, 2, 3 }.BufferToStructure<T1>();
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
 
         var val1 = new T1 { V1 = 1, V2 = 2, V3 = 3, V4 = 4 };
         var data = val1.StructureToBuffer();
-        Assert.Equal(new byte[] { 1, 2, 3, 4 }, data);
+        data.Should().BeEquivalentTo(new byte[] { 1, 2, 3, 4 });
         var val2 = data.BufferToStructure<T1>();
-        Assert.Equal(val1, val2);
+        val1.Should().BeEquivalentTo(val2);
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -43,12 +46,12 @@ public class InteropExtensions
         var data = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         var t2 = data.BufferToStructure<T2>();
 
-        Assert.Equal(1, t2.Nested.V1);
-        Assert.Equal(2, t2.Nested.V2);
-        Assert.Equal(3, t2.Nested.V3);
-        Assert.Equal(4, t2.Nested.V4);
-        Assert.Equal(new byte[] { 1, 2, 3, 4 }, t2.Nested.StructureToBuffer());
+        t2.Nested.V1.Should().Be(1);
+        t2.Nested.V2.Should().Be(2);
+        t2.Nested.V3.Should().Be(3);
+        t2.Nested.V4.Should().Be(4);
 
-        Assert.Equal(0, new ReadOnlySpan<byte>(t2.Data, 4).SequenceCompareTo(new byte[] { 5, 6, 7, 8 }));
+        t2.Nested.StructureToBuffer().Should().BeEquivalentTo(new byte[] { 1, 2, 3, 4 });
+        0.Should().Be(new ReadOnlySpan<byte>(t2.Data, 4).SequenceCompareTo(new byte[] { 5, 6, 7, 8 }));
     }
 }

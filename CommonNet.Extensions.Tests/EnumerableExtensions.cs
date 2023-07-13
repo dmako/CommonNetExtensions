@@ -1,4 +1,5 @@
-﻿using FsCheck.Xunit;
+﻿using FluentAssertions;
+using FsCheck.Xunit;
 using Xunit;
 
 namespace CommonNet.Extensions.Tests;
@@ -9,8 +10,11 @@ public class EnumerableExtensions
     public void Enumerable_ForEachBasicTest()
     {
         var data = Array.Empty<object>();
-        Assert.Throws<ArgumentNullException>(() => ((object[])null!).ForEach(o => { }));
-        Assert.Throws<ArgumentNullException>(() => data.ForEach(null!));
+
+        Action action = () => ((object[])null!).ForEach(o => { });
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => data.ForEach(null!);
+        action.Should().ThrowExactly<ArgumentNullException>();
     }
 
     [Property(MaxTest = 100, DisplayName = nameof(Enumerable_PropertyForEachTest), QuietOnSuccess = true)]
@@ -18,6 +22,6 @@ public class EnumerableExtensions
     {
         var sum = 0;
         data.ForEach(v => sum += v);
-        Assert.Equal(sum, data.Sum());
+        sum.Should().Be(data.Sum());
     }
 }

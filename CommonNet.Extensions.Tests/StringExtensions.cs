@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using FsCheck.Xunit;
 using Xunit;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CommonNet.Extensions.Tests;
 
@@ -9,17 +11,17 @@ public class StringExtensions
     [Property(MaxTest = 100, DisplayName = nameof(String_IsNotNullOrXTest), QuietOnSuccess = true)]
     public void String_IsNotNullOrXTest(string data)
     {
-        Assert.Equal(data.IsNotNullOrEmpty(), !string.IsNullOrEmpty(data));
-        Assert.Equal(data.IsNotNullOrWhiteSpace(), !string.IsNullOrWhiteSpace(data));
+        data.IsNotNullOrEmpty().Should().Be(!string.IsNullOrEmpty(data));
+        data.IsNotNullOrWhiteSpace().Should().Be(!string.IsNullOrWhiteSpace(data));
     }
 
     [Fact]
     public void String_ParseException()
     {
-        var parseJob = "test".Parse<object>;
-        parseJob.Should().ThrowExactly<NotSupportedException>();
-        parseJob = "test".Parse<Enum>;
-        parseJob.Should().ThrowExactly<NotSupportedException>();
+        Action action = () => "test".Parse<object>();
+        action.Should().ThrowExactly<NotSupportedException>();
+        action = () => "test".Parse<Enum>();
+        action.Should().ThrowExactly<NotSupportedException>();
 
         "test".TryParse(out byte _).Should().BeFalse();
     }
@@ -27,9 +29,11 @@ public class StringExtensions
     [Fact]
     public void String_ParseByte()
     {
-        Assert.Throws<FormatException>(() => "aaa".Parse<byte>());
+        Action action = () => "aaa".Parse<byte>();
+        action.Should().ThrowExactly<FormatException>();
         "123".Parse<byte>().Should().Be(123);
-        Assert.Throws<OverflowException>(() => "1234".Parse<byte>());
+        action = () => "1234".Parse<byte>();
+        action.Should().ThrowExactly<OverflowException>();
         "\t\t 123    \v   ".Parse<byte>().Should().Be(123);
         "123".TryParse(out byte val).Should().BeTrue();
         val.Should().Be(123);
@@ -46,99 +50,120 @@ public class StringExtensions
     [Fact]
     public void String_ParseEnum()
     {
-        Assert.Equal(TestEnum.Default, "twelve".ParseToEnum<TestEnum>());
-        Assert.Equal(TestEnum.One, "one".ParseToEnum<TestEnum>());
-        Assert.Equal(TestEnum.Default, "one".ParseToEnum<TestEnum>(false));
-        Assert.Equal(TestEnum.One, "One".ParseToEnum<TestEnum>(false));
+        TestEnum.Default.Should().Be("twelve".ParseToEnum<TestEnum>());
+        TestEnum.One.Should().Be("one".ParseToEnum<TestEnum>());
+        TestEnum.Default.Should().Be("one".ParseToEnum<TestEnum>(false));
+        TestEnum.One.Should().Be("One".ParseToEnum<TestEnum>(false));
     }
 
     [Fact]
     public void String_Repeat()
     {
         const string? nullStr = null;
-        Assert.Throws<ArgumentNullException>(() => nullStr!.Repeat(5));
-        Assert.Throws<ArgumentOutOfRangeException>(() => " ".Repeat(-5));
-        Assert.Throws<ArgumentOutOfRangeException>(() => " ".Repeat(0));
-        Assert.Equal("0123456789", "0123456789".Repeat(1));
-        Assert.Equal("----------", "-".Repeat(10));
-        Assert.Equal("00:00:00:00:00:00", "00".Repeat(6, ":"));
-        Assert.Equal("+-+-+-+-+-+-+", "+".Repeat(7, "-"));
-        Assert.Equal("XX, XX-XX, XX:XX, XX-XX, XX", "X".Repeat(2).Repeat(2, ", ").Repeat(2, "-").Repeat(2, ":"));
-        Assert.Equal(string.Empty, string.Empty.Repeat(10));
+        Action action = () => nullStr!.Repeat(5);
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => " ".Repeat(-5);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+        action = () => " ".Repeat(0);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+
+        "0123456789".Should().Be("0123456789".Repeat(1));
+        "----------".Should().Be("-".Repeat(10));
+        "00:00:00:00:00:00".Should().Be("00".Repeat(6, ":"));
+        "+-+-+-+-+-+-+".Should().Be("+".Repeat(7, "-"));
+        "XX, XX-XX, XX:XX, XX-XX, XX".Should().Be("X".Repeat(2).Repeat(2, ", ").Repeat(2, "-").Repeat(2, ":"));
+        string.Empty.Should().Be(string.Empty.Repeat(10));
     }
 
     [Fact]
     public void String_TabsToSpaces()
     {
         const string? nullStr = null;
-        Assert.Throws<ArgumentNullException>(() => nullStr!.TabsToSpaces(2));
-        Assert.Throws<ArgumentOutOfRangeException>(() => "\t".TabsToSpaces(-1));
-        Assert.Throws<ArgumentOutOfRangeException>(() => "\t".TabsToSpaces(0));
-        Assert.Equal("text", "text".TabsToSpaces(2));
-        Assert.Equal("    ", "\t\t".TabsToSpaces(2));
-        Assert.Equal("    text", "\ttext".TabsToSpaces(4));
-        Assert.Equal(" text", "\ttext".TabsToSpaces(1));
-        Assert.Equal("    start of text  end of text", "\t\tstart of text\tend of text".TabsToSpaces(2));
+        Action action = () => nullStr!.TabsToSpaces(2);
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "\t".TabsToSpaces(-1);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+        action = () => "\t".TabsToSpaces(0);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+        "text".Should().Be("text".TabsToSpaces(2));
+        "    ".Should().Be("\t\t".TabsToSpaces(2));
+        "    text".Should().Be("\ttext".TabsToSpaces(4));
+        " text".Should().Be("\ttext".TabsToSpaces(1));
+        "    start of text  end of text".Should().Be("\t\tstart of text\tend of text".TabsToSpaces(2));
     }
 
     [Fact]
     public void String_GetBeforeOrEmpty()
     {
         const string? nullStr = null;
-        Assert.Throws<ArgumentNullException>(() => nullStr!.GetBeforeOrEmpty("."));
-        Assert.Throws<ArgumentNullException>(() => "test.me".GetBeforeOrEmpty(null!));
-        Assert.Throws<ArgumentException>(() => "test.me".GetBeforeOrEmpty(string.Empty));
-        Assert.Equal("test", "test.me".GetBeforeOrEmpty("."));
-        Assert.Equal("test", "test.me".GetBeforeOrEmpty(".m"));
-        Assert.Equal(string.Empty, "test.me".GetBeforeOrEmpty(","));
-        Assert.Equal(string.Empty, "test.me".GetBeforeOrEmpty("t"));
+        Action action = () => nullStr!.GetBeforeOrEmpty(".");
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "test.me".GetBeforeOrEmpty(null!);
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "test.me".GetBeforeOrEmpty(string.Empty);
+        action.Should().ThrowExactly<ArgumentException>();
+        "test".Should().Be("test.me".GetBeforeOrEmpty("."));
+        "test".Should().Be("test.me".GetBeforeOrEmpty(".m"));
+        string.Empty.Should().Be("test.me".GetBeforeOrEmpty(","));
+        string.Empty.Should().Be("test.me".GetBeforeOrEmpty("t"));
     }
 
     [Fact]
     public void String_GetAfterOrEmpty()
     {
         const string? nullStr = null;
-        Assert.Throws<ArgumentNullException>(() => nullStr!.GetAfterOrEmpty("."));
-        Assert.Throws<ArgumentNullException>(() => "test.me".GetAfterOrEmpty(null!));
-        Assert.Throws<ArgumentException>(() => "test.me".GetAfterOrEmpty(string.Empty));
-        Assert.Equal("me", "test.me".GetAfterOrEmpty("."));
-        Assert.Equal("e", "test.me".GetAfterOrEmpty(".m"));
-        Assert.Equal(string.Empty, "test.me".GetAfterOrEmpty(","));
-        Assert.Equal(string.Empty, "test.me".GetAfterOrEmpty("e"));
+        Action action = () => nullStr!.GetAfterOrEmpty(".");
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "test.me".GetAfterOrEmpty(null!);
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "test.me".GetAfterOrEmpty(string.Empty);
+        action.Should().ThrowExactly<ArgumentException>();
+        "me".Should().Be("test.me".GetAfterOrEmpty("."));
+        "e".Should().Be("test.me".GetAfterOrEmpty(".m"));
+        string.Empty.Should().Be("test.me".GetAfterOrEmpty(","));
+        string.Empty.Should().Be("test.me".GetAfterOrEmpty("e"));
     }
 
     [Fact]
     public void String_GetBetweenOrEmpty()
     {
         const string? nullStr = null;
-        Assert.Throws<ArgumentNullException>(() => nullStr!.GetBetweenOrEmpty(".", "."));
-        Assert.Throws<ArgumentNullException>(() => "me.test.me".GetBetweenOrEmpty(null!, "."));
-        Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(string.Empty, "."));
-        Assert.Throws<ArgumentNullException>(() => "me.test.me".GetBetweenOrEmpty(".", null!));
-        Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(".", string.Empty));
-        Assert.Equal("test", "me.test.me".GetBetweenOrEmpty(".", "."));
-        Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(".", ","));
-        Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(",", "."));
-        Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(",", ","));
-        Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(".test", "."));
-        Assert.Equal("t", "me.test.me".GetBetweenOrEmpty(".tes", "."));
+        Action action = () => nullStr!.GetBetweenOrEmpty(".", ".");
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "me.test.me".GetBetweenOrEmpty(null!, ".");
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "me.test.me".GetBetweenOrEmpty(string.Empty, ".");
+        action.Should().ThrowExactly<ArgumentException>();
+        action = () => "me.test.me".GetBetweenOrEmpty(".", null!);
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "me.test.me".GetBetweenOrEmpty(".", string.Empty);
+        action.Should().ThrowExactly<ArgumentException>();
+        "test".Should().Be("me.test.me".GetBetweenOrEmpty(".", "."));
+        string.Empty.Should().Be("me.test.me".GetBetweenOrEmpty(".", ","));
+        string.Empty.Should().Be("me.test.me".GetBetweenOrEmpty(",", "."));
+        string.Empty.Should().Be("me.test.me".GetBetweenOrEmpty(",", ","));
+        string.Empty.Should().Be("me.test.me".GetBetweenOrEmpty(".test", "."));
+        "t".Should().Be("me.test.me".GetBetweenOrEmpty(".tes", "."));
     }
 
     [Fact]
     public void String_AllIndexesOf()
     {
         const string? nullStr = null;
-        Assert.Throws<ArgumentNullException>(() => nullStr!.AllIndexesOf(" ").ToArray());
-        Assert.Throws<ArgumentNullException>(() => "test".AllIndexesOf(null!).ToArray());
-        Assert.Throws<ArgumentException>(() => "test".AllIndexesOf("").ToArray());
-        Assert.Equal("".AllIndexesOf(" ").ToArray(), Array.Empty<int>());
-        Assert.Equal("test".AllIndexesOf("tset").ToArray(), Array.Empty<int>());
-        Assert.Equal("test".AllIndexesOf("t").ToArray(), new int[] { 0, 3 });
-        Assert.Equal("test".AllIndexesOf("T", true).ToArray(), new int[] { 0, 3 });
-        Assert.Equal("test".AllIndexesOf("st").ToArray(), new int[] { 2 });
-        Assert.Equal("test".AllIndexesOf("St", true).ToArray(), new int[] { 2 });
-        Assert.Equal("tttt".AllIndexesOf("tt").ToArray(), new int[] { 0, 1, 2 });
-        Assert.Equal("tttt".AllIndexesOf("tT", true).ToArray(), new int[] { 0, 1, 2 });
-        Assert.Equal("test\r\nnew\r\nlines\r\n".AllIndexesOf("\r\n").ToArray(), new int[] { 4, 9, 16 });
+        Action action = () => nullStr!.AllIndexesOf(" ").ToArray();
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "test".AllIndexesOf(null!).ToArray();
+        action.Should().ThrowExactly<ArgumentNullException>();
+        action = () => "test".AllIndexesOf("").ToArray();
+        action.Should().ThrowExactly<ArgumentException>();
+        "".AllIndexesOf(" ").ToArray().Should().BeEquivalentTo(Array.Empty<int>());
+        "test".AllIndexesOf("tset").ToArray().Should().BeEquivalentTo(Array.Empty<int>());
+        "test".AllIndexesOf("t").ToArray().Should().BeEquivalentTo(new int[] { 0, 3 });
+        "test".AllIndexesOf("T", true).ToArray().Should().BeEquivalentTo(new int[] { 0, 3 });
+        "test".AllIndexesOf("st").ToArray().Should().BeEquivalentTo(new int[] { 2 });
+        "test".AllIndexesOf("St", true).ToArray().Should().BeEquivalentTo(new int[] { 2 });
+        "tttt".AllIndexesOf("tt").ToArray().Should().BeEquivalentTo(new int[] { 0, 1, 2 });
+        "tttt".AllIndexesOf("tT", true).ToArray().Should().BeEquivalentTo(new int[] { 0, 1, 2 });
+        "test\r\nnew\r\nlines\r\n".AllIndexesOf("\r\n").ToArray().Should().BeEquivalentTo(new int[] { 4, 9, 16 });
     }
 }

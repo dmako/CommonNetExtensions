@@ -48,19 +48,19 @@ public class ValueTypesExtensions
     [Fact]
     public void ValueTypesExtensions_ToNullable()
     {
-        Assert.Equal((int?)1, 1.ToNullable());
-        Assert.Equal((int?)int.MinValue, int.MinValue.ToNullable());
-        Assert.Equal((int?)int.MaxValue, int.MaxValue.ToNullable());
-        Assert.Null(0.ToNullable());
-        Assert.Equal((bool?)true, true.ToNullable());
-        Assert.Null(false.ToNullable());
-        Assert.Null(new TS().ToNullable());
+        ((int?)1).Should().Be(1.ToNullable());
+        ((int?)int.MinValue).Should().Be(int.MinValue.ToNullable());
+        ((int?)int.MaxValue).Should().Be(int.MaxValue.ToNullable());
+        0.ToNullable().Should().BeNull();
+        ((bool?)true).Should().Be(true.ToNullable());
+        false.ToNullable().Should().BeNull();
+        new TS().ToNullable().Should().BeNull();
         var ts = new TS { A = "test", B = 1 };
-        Assert.Equal((TS?)ts, ts.ToNullable());
-        Assert.Null(new Guid().ToNullable());
+        ((TS?)ts).Should().Be(ts.ToNullable());
+        new Guid().ToNullable().Should().BeNull();
         var guid = Guid.NewGuid();
-        Assert.Equal((Guid?)guid, guid.ToNullable());
-        Assert.Null(new DateTime().ToNullable());
-        Assert.Equal((DateTime?)DateTime.MaxValue, DateTime.MaxValue.ToNullable());
+        ((Guid?)guid).Should().Be(guid.ToNullable());
+        new DateTime().ToNullable().Should().BeNull();
+        ((DateTime?)DateTime.MaxValue).Should().Be(DateTime.MaxValue.ToNullable());
     }
 }
