@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
-using CommonNet.Extensions;
+using CommunityToolkit.Diagnostics;
 
 namespace System;
 
@@ -8,7 +9,7 @@ namespace System;
 /// Commonly used extension methods on <see cref="string"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class CommonNetStringExtensions
+public static class StringExtensions
 {
     /// <summary>
     /// Indicates whether the specified string is not null and differs from <see cref="string.Empty"/> string.
@@ -24,7 +25,7 @@ public static class CommonNetStringExtensions
     /// <returns>false if the string is null or empty string, or if consists only of white-space characters, true otherwise.</returns>
     public static bool IsNotNullOrWhiteSpace(this string self) => !string.IsNullOrWhiteSpace(self);
 
-    // helper data to substitute TypeDescriptor.GetConverter() functionality that is not available on PCL
+    // helper data to substitute TypeDescriptor.GetConverter() functionality that is not available on BCL
     private static readonly Dictionary<Type, Func<string, object>> parsers =
         new()
         {
@@ -55,7 +56,7 @@ public static class CommonNetStringExtensions
         this string self
     )
     {
-        Check.Self(self);
+        Guard.IsNotNull(self);
 
         var result = default(T);
         if (self.IsNotNullOrEmpty())
@@ -121,13 +122,13 @@ public static class CommonNetStringExtensions
     /// <returns></returns>
     public static string Repeat(this string self, int count, string separator = "")
     {
-        Check.Self(self);
-
-        if (count < 0)
-            throw new ArgumentException("Must be a positive number.", nameof(count));
+        Guard.IsNotNull(self);
+        Guard.IsGreaterThan(count, 0);
 
         if (self.Length > 0 && count > 0)
+        {
             return string.Join(separator, Enumerable.Repeat(self, count).ToArray());
+        }
 
         return string.Empty;
     }
@@ -140,7 +141,8 @@ public static class CommonNetStringExtensions
     /// <returns></returns>
     public static string TabsToSpaces(this string self, int tabSize = 4)
     {
-        Check.Self(self);
+        Guard.IsNotNull(self);
+        Guard.IsGreaterThan(tabSize, 0);
 
         if (tabSize < 0)
             throw new ArgumentException($"Parameter {nameof(tabSize)} cannot be negative");
@@ -159,8 +161,8 @@ public static class CommonNetStringExtensions
     /// </returns>
     public static string GetBeforeOrEmpty(this string self, string right)
     {
-        Check.Self(self);
-        Check.VerifyArgument(nameof(right), right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
+        Guard.IsNotNull(self);
+        Guard.IsNotNullOrEmpty(right);
 
         var rightPos = self.IndexOf(right, StringComparison.Ordinal);
         return rightPos == -1 ? string.Empty : self.Substring(0, rightPos);
@@ -177,8 +179,8 @@ public static class CommonNetStringExtensions
     /// </returns>
     public static string GetAfterOrEmpty(this string self, string left)
     {
-        Check.Self(self);
-        Check.VerifyArgument(nameof(left), left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
+        Guard.IsNotNull(self);
+        Guard.IsNotNullOrEmpty(left);
 
         var leftPos = self.LastIndexOf(left, StringComparison.Ordinal);
         return leftPos == -1 || leftPos + left.Length >= self.Length ?
@@ -198,9 +200,9 @@ public static class CommonNetStringExtensions
     /// </returns>
     public static string GetBetweenOrEmpty(this string self, string left, string right)
     {
-        Check.Self(self);
-        Check.VerifyArgument(nameof(left), left.IsNotNullOrEmpty(), $"Argument {nameof(left)} cannot be null or empty.");
-        Check.VerifyArgument(nameof(right), right.IsNotNullOrEmpty(), $"Argument {nameof(right)} cannot be null or empty.");
+        Guard.IsNotNull(self);
+        Guard.IsNotNullOrEmpty(left);
+        Guard.IsNotNullOrEmpty(right);
 
         var leftPos = self.IndexOf(left, StringComparison.Ordinal);
         var rightPos = self.LastIndexOf(right, StringComparison.Ordinal);
@@ -222,9 +224,8 @@ public static class CommonNetStringExtensions
     /// <returns>Enumeration of zero-based indexes.</returns>
     public static IEnumerable<int> AllIndexesOf(this string self, string value, bool ignoreCase = false)
     {
-        Check.Self(self);
-        Check.Self(value);
-        Check.VerifyArgument(nameof(value), value.Length > 0, $"Argument {nameof(value)} is empty.");
+        Guard.IsNotNull(self);
+        Guard.IsNotNullOrEmpty(value);
 
         var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         for (var index = 0; ; ++index)

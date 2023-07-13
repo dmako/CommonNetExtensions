@@ -1,5 +1,5 @@
-﻿using CommonNet.Extensions;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using CommunityToolkit.Diagnostics;
 
 namespace System;
 
@@ -7,7 +7,7 @@ namespace System;
 /// Commonly used extension methods on spans.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class SpanExtensions
+public static class ArrayAndSpanExtensions
 {
     /// <summary>
     /// Returns ReadOnlySpan containing array.
@@ -16,7 +16,7 @@ public static class SpanExtensions
     /// <returns>Returns ReadOnlySpan.</returns>
     public static ReadOnlySpan<T> AsReadOnlySpan<T>(this T[] self)
     {
-        Check.Self(self);
+        Guard.IsNotNull(self);
 
         return new ReadOnlySpan<T>(self);
     }
@@ -30,7 +30,7 @@ public static class SpanExtensions
     public static IEnumerable<int> AllIndexesOf<T>(this ReadOnlySpan<T> self, ReadOnlySpan<T> pattern)
     where T : IEquatable<T>
     {
-        Check.VerifyArgument(nameof(pattern), pattern.Length > 0, $"Argument {nameof(pattern)} is empty.");
+        Guard.IsNotEmpty(pattern);
 
         var results = new List<int>();
 
@@ -54,7 +54,7 @@ public static class SpanExtensions
     public static int IndexOf<T>(this ReadOnlySpan<T> self, ReadOnlySpan<T> pattern)
         where T : IEquatable<T>
     {
-        Check.VerifyArgument(nameof(pattern), pattern.Length > 0, $"Argument {nameof(pattern)} is empty.");
+        Guard.IsNotEmpty(pattern);
 
         for (var i = 0; i < self.Length; i++)
         {
@@ -76,9 +76,9 @@ public static class SpanExtensions
     /// <param name="key">Key for XOR operation.</param>
     public static void Xor(this Span<byte> self, int index, int length, ReadOnlySpan<byte> key)
     {
-        Check.VerifyArgument(nameof(key), key.Length > 0, $"Argument {nameof(key)} is empty.");
-        Check.VerifyArgument(nameof(index), index >= 0 && index < self.Length, $"Argument {nameof(index)} is out of array bounds.");
-        Check.VerifyArgument(nameof(length), index + length <= self.Length, $"Argument {nameof(length)} exceeds array bounds.");
+        Guard.IsNotEmpty(key);
+        Guard.IsBetweenOrEqualTo(index, 0, self.Length);
+        Guard.IsLessThanOrEqualTo(index + length, self.Length, nameof(length));
 
         for (int i = index, j = 0; i < index + length; i++, j++)
         {
@@ -97,7 +97,7 @@ public static class SpanExtensions
 
     public static void Xor(this byte[] self, int index, int length, ReadOnlySpan<byte> key)
     {
-        Check.Self(self);
+        Guard.IsNotNull(self);
         Xor(new Span<byte>(self), index, length, key);
     }
 }

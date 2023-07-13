@@ -6,7 +6,7 @@ namespace System;
 /// Commonly used extension methods on <see cref="DateTime"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class CommonNetDateTimeExtensions
+public static class DateTimeExtensions
 {
     /// <summary>
     /// Tests whether the date year is leap.
@@ -15,7 +15,7 @@ public static class CommonNetDateTimeExtensions
     /// <returns>Returns true in case the year is leap.</returns>
     public static bool IsLeapYear(this DateTime self)
     {
-        return (DateTime.DaysInMonth(self.Year, 2) == 29);
+        return DateTime.DaysInMonth(self.Year, 2) == 29;
     }
 
     /// <summary>

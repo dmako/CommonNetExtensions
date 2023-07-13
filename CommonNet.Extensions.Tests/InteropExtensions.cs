@@ -18,7 +18,7 @@ public class InteropExtensions
     {
         const byte[]? nullArray = null;
         Assert.Throws<ArgumentNullException>(() => nullArray!.BufferToStructure<T1>());
-        Assert.Throws<ArgumentException>(() => new byte[] { 1, 2, 3 }.BufferToStructure<T1>());
+        Assert.Throws<ArgumentOutOfRangeException>(() => new byte[] { 1, 2, 3 }.BufferToStructure<T1>());
 
         var val1 = new T1 { V1 = 1, V2 = 2, V3 = 3, V4 = 4 };
         var data = val1.StructureToBuffer();

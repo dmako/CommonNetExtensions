@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using CommonNet.Extensions;
+using CommunityToolkit.Diagnostics;
 
 namespace System.Runtime.InteropServices;
 
@@ -19,6 +19,8 @@ public static class InteropExtensions
     public static unsafe byte[] StructureToBuffer<T>(this T self)
         where T : unmanaged
     {
+        Guard.IsNotNull(self);
+
         var buffer = new byte[sizeof(T)];
         fixed (byte* bufferPtr = buffer)
         {
@@ -38,9 +40,8 @@ public static class InteropExtensions
     public static unsafe T BufferToStructure<T>(this byte[] self)
         where T : unmanaged
     {
-        Check.Self(self);
-        if (self.Length < sizeof(T))
-            throw new ArgumentException($"Length of array not equal or greater than size of {typeof(T)}.", nameof(self));
+        Guard.IsNotNull(self);
+        Guard.IsGreaterThanOrEqualTo(self.Length, sizeof(T), nameof(self));
 
         var result = new T();
         fixed (byte* bufferPtr = self)

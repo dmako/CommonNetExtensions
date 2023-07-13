@@ -23,8 +23,8 @@ public class SpanExtensions
         Assert.Throws<ArgumentNullException>(() => nullArr!.Xor(0, 1, arr));
         Assert.Throws<ArgumentException>(() => arr.Xor(0, 1, null));
         Assert.Throws<ArgumentException>(() => arr.Xor(0, 1, Array.Empty<byte>()));
-        Assert.Throws<ArgumentException>(() => arr.Xor(1, 1, arr));
-        Assert.Throws<ArgumentException>(() => arr2.Xor(1, 2, arr));
+        Assert.Throws<ArgumentOutOfRangeException>(() => arr.Xor(1, 1, arr));
+        Assert.Throws<ArgumentOutOfRangeException>(() => arr2.Xor(1, 2, arr));
     }
 
     [FsCheck.Xunit.Property(MaxTest = 100, Arbitrary = new[] { typeof(NonEmptyArrayArbitrary) }, DisplayName = nameof(ByteArray_PropertyXorTest), QuietOnSuccess = true)]

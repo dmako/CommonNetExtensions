@@ -57,8 +57,9 @@ public class StringExtensions
     {
         const string? nullStr = null;
         Assert.Throws<ArgumentNullException>(() => nullStr!.Repeat(5));
-        Assert.Throws<ArgumentException>(() => " ".Repeat(-5));
-        Assert.Equal(string.Empty, "0123456789".Repeat(0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => " ".Repeat(-5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => " ".Repeat(0));
+        Assert.Equal("0123456789", "0123456789".Repeat(1));
         Assert.Equal("----------", "-".Repeat(10));
         Assert.Equal("00:00:00:00:00:00", "00".Repeat(6, ":"));
         Assert.Equal("+-+-+-+-+-+-+", "+".Repeat(7, "-"));
@@ -71,11 +72,12 @@ public class StringExtensions
     {
         const string? nullStr = null;
         Assert.Throws<ArgumentNullException>(() => nullStr!.TabsToSpaces(2));
-        Assert.Throws<ArgumentException>(() => "\t".TabsToSpaces(-1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => "\t".TabsToSpaces(-1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => "\t".TabsToSpaces(0));
         Assert.Equal("text", "text".TabsToSpaces(2));
         Assert.Equal("    ", "\t\t".TabsToSpaces(2));
         Assert.Equal("    text", "\ttext".TabsToSpaces(4));
-        Assert.Equal("text", "\ttext".TabsToSpaces(0));
+        Assert.Equal(" text", "\ttext".TabsToSpaces(1));
         Assert.Equal("    start of text  end of text", "\t\tstart of text\tend of text".TabsToSpaces(2));
     }
 
@@ -84,7 +86,7 @@ public class StringExtensions
     {
         const string? nullStr = null;
         Assert.Throws<ArgumentNullException>(() => nullStr!.GetBeforeOrEmpty("."));
-        Assert.Throws<ArgumentException>(() => "test.me".GetBeforeOrEmpty(null!));
+        Assert.Throws<ArgumentNullException>(() => "test.me".GetBeforeOrEmpty(null!));
         Assert.Throws<ArgumentException>(() => "test.me".GetBeforeOrEmpty(string.Empty));
         Assert.Equal("test", "test.me".GetBeforeOrEmpty("."));
         Assert.Equal("test", "test.me".GetBeforeOrEmpty(".m"));
@@ -97,7 +99,7 @@ public class StringExtensions
     {
         const string? nullStr = null;
         Assert.Throws<ArgumentNullException>(() => nullStr!.GetAfterOrEmpty("."));
-        Assert.Throws<ArgumentException>(() => "test.me".GetAfterOrEmpty(null!));
+        Assert.Throws<ArgumentNullException>(() => "test.me".GetAfterOrEmpty(null!));
         Assert.Throws<ArgumentException>(() => "test.me".GetAfterOrEmpty(string.Empty));
         Assert.Equal("me", "test.me".GetAfterOrEmpty("."));
         Assert.Equal("e", "test.me".GetAfterOrEmpty(".m"));
@@ -110,9 +112,9 @@ public class StringExtensions
     {
         const string? nullStr = null;
         Assert.Throws<ArgumentNullException>(() => nullStr!.GetBetweenOrEmpty(".", "."));
-        Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(null!, "."));
+        Assert.Throws<ArgumentNullException>(() => "me.test.me".GetBetweenOrEmpty(null!, "."));
         Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(string.Empty, "."));
-        Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(".", null!));
+        Assert.Throws<ArgumentNullException>(() => "me.test.me".GetBetweenOrEmpty(".", null!));
         Assert.Throws<ArgumentException>(() => "me.test.me".GetBetweenOrEmpty(".", string.Empty));
         Assert.Equal("test", "me.test.me".GetBetweenOrEmpty(".", "."));
         Assert.Equal(string.Empty, "me.test.me".GetBetweenOrEmpty(".", ","));

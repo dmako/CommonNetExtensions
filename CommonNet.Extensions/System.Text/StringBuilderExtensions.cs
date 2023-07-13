@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using CommonNet.Extensions;
+using CommunityToolkit.Diagnostics;
 
 namespace System.Text;
 
@@ -7,7 +7,7 @@ namespace System.Text;
 /// Commonly used extension methods on <see cref="StringBuilder"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class CommonNetStringBuilderExtensions
+public static class StringBuilderExtensions
 {
     /// <summary>
     /// Conditionally append string value to a <see cref="StringBuilder"/>.
@@ -18,9 +18,12 @@ public static class CommonNetStringBuilderExtensions
     /// <returns>Returns the <paramref name="self"/> reference.</returns>
     public static StringBuilder AppendIf(this StringBuilder self, bool condition, string value)
     {
-        Check.Self(self);
+        Guard.IsNotNull(self);
 
-        if (condition) self.Append(value);
+        if (condition)
+        {
+            self.Append(value);
+        }
         return self;
     }
 }

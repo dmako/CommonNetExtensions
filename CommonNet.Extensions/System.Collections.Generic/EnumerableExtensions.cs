@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using CommonNet.Extensions;
+using CommunityToolkit.Diagnostics;
 
 namespace System.Collections.Generic;
 
@@ -7,7 +7,7 @@ namespace System.Collections.Generic;
 /// Commonly used extension methods on <see cref="IEnumerable{T}"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class CommonNetEnumerableExtensions
+public static class EnumerableExtensions
 {
     /// <summary>
     /// Performs action on each element of the <see cref="IEnumerable{TValue}"/>.
@@ -20,8 +20,8 @@ public static class CommonNetEnumerableExtensions
         Action<TValue> action
     )
     {
-        Check.Self(self);
-        Check.Argument(action, nameof(action));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(action);
 
         foreach (var item in self)
             action(item);

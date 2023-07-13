@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using CommonNet.Extensions;
+using CommunityToolkit.Diagnostics;
 
 namespace System.IO;
 
@@ -7,7 +7,7 @@ namespace System.IO;
 /// Commonly used extension methods on <see cref="TextReader"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class CommonNetTextReaderExtensions
+public static class sTextReaderExtensions
 {
     /// <summary>
     /// Iterates over lines by using <see cref="TextReader"/> instance without writing while cycle code.
@@ -18,7 +18,7 @@ public static class CommonNetTextReaderExtensions
         this TextReader self
     )
     {
-        Check.Self(self);
+        Guard.IsNotNull(self);
 
         string? line;
         while ((line = self.ReadLine()) != null)
@@ -35,8 +35,8 @@ public static class CommonNetTextReaderExtensions
         Action<string> action
     )
     {
-        Check.Self(self);
-        Check.Argument(action, nameof(action));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(action);
 
         self.EnumLines().ForEach(line => action(line));
     }

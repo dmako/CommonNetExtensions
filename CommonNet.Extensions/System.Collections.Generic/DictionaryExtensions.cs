@@ -1,4 +1,4 @@
-﻿using CommonNet.Extensions;
+﻿using CommunityToolkit.Diagnostics;
 using System.ComponentModel;
 
 namespace System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace System.Collections.Generic;
 /// DictionaryExtensions defines the same API for <see cref="Generic.Dictionary{TKey, TValue}"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class CommonNetDictionaryExtensions
+public static class DictionaryExtensions
 {
     /// <summary>
     /// Adds a key/value pair to the <see cref="Generic.Dictionary{TKey, TValue}"/> if the key does not already exist.
@@ -22,10 +22,11 @@ public static class CommonNetDictionaryExtensions
         TKey key,
         Func<TKey, TValue> valueFactory
     )
+        where TKey : notnull
     {
-        Check.Self(self);
-        Check.Argument(key, nameof(key));
-        Check.Argument(valueFactory, nameof(valueFactory));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(key);
+        Guard.IsNotNull(valueFactory);
 
         if (!self.TryGetValue(key, out var value))
         {
@@ -47,9 +48,10 @@ public static class CommonNetDictionaryExtensions
         TKey key,
         TValue newValue
     )
+        where TKey : notnull
     {
-        Check.Self(self);
-        Check.Argument(key, nameof(key));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(key);
 
         if (!self.TryGetValue(key, out var value))
         {
@@ -72,9 +74,10 @@ public static class CommonNetDictionaryExtensions
         TKey key,
         Func<TKey, TValue> valueFactory
     )
+        where TKey : notnull
     {
-        Check.Self(self);
-        Check.Argument(valueFactory, nameof(valueFactory));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(valueFactory);
 
         return GetOrAdd<TKey, Lazy<TValue>>(self, key, new Lazy<TValue>(() => valueFactory(key), true)).Value;
     }
@@ -94,10 +97,11 @@ public static class CommonNetDictionaryExtensions
         TValue addValue,
         Func<TKey, TValue, TValue> updateValueFactory
     )
+        where TKey : notnull
     {
-        Check.Self(self);
-        Check.Argument(key, nameof(key));
-        Check.Argument(updateValueFactory, nameof(updateValueFactory));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(key);
+        Guard.IsNotNull(updateValueFactory);
 
         TValue newValue;
         if (self.TryGetValue(key, out var oldValue))
@@ -128,11 +132,12 @@ public static class CommonNetDictionaryExtensions
         Func<TKey, TValue> addValueFactory,
         Func<TKey, TValue, TValue> updateValueFactory
     )
+        where TKey : notnull
     {
-        Check.Self(self);
-        Check.Argument(key, nameof(key));
-        Check.Argument(addValueFactory, nameof(addValueFactory));
-        Check.Argument(updateValueFactory, nameof(updateValueFactory));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(key);
+        Guard.IsNotNull(addValueFactory);
+        Guard.IsNotNull(updateValueFactory);
 
         TValue newValue;
         if (self.TryGetValue(key, out var oldValue))
@@ -164,10 +169,11 @@ public static class CommonNetDictionaryExtensions
         Func<TKey, TValue> addValueFactory,
         Func<TKey, TValue, TValue> updateValueFactory
     )
+        where TKey : notnull
     {
-        Check.Self(self);
-        Check.Argument(addValueFactory, nameof(addValueFactory));
-        Check.Argument(updateValueFactory, nameof(updateValueFactory));
+        Guard.IsNotNull(self);
+        Guard.IsNotNull(addValueFactory);
+        Guard.IsNotNull(updateValueFactory);
 
         return AddOrUpdate(self, key, new Lazy<TValue>(() => addValueFactory(key), true), (k, v) => new Lazy<TValue>(() => updateValueFactory(k, v.Value), true)).Value;
     }
