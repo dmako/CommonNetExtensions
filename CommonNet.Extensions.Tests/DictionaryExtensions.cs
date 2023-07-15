@@ -1,63 +1,60 @@
-namespace CommonNet.Extensions.Tests
+﻿using FluentAssertions;
+using Xunit;
+
+namespace CommonNet.Extensions.Tests;
+public class DictionaryExtensions
 {
-    using System;
-    using System.Collections.Generic;
-    using Xunit;
+    readonly Func<int, int> factoryFnc = (key) => key;
+    readonly Func<int, int> factoryFncPlusOne = (key) => key + 1;
+    readonly Func<int, int, int> updateFnc = (key, old) => old + key;
 
-    public class DictionaryExtensions
+    [Fact]
+    public void Dictionary_AddOrGetValueBasicTest()
     {
-        readonly Func<int, int> factoryFnc = (key) => key;
-        readonly Func<int, int> factoryFncPlusOne = (key) => key + 1;
-        readonly Func<int, int, int> updateFnc = (key, old) => old + key;
+        var dict = new Dictionary<int, int>();
+        var val = dict.GetOrAdd(1, 1);
+        val.Should().Be(1);
+        val = dict.GetOrAdd(1, 2);
+        val.Should().Be(1);
 
-        [Fact]
-        public void Dictionary_AddOrGetValueBasicTest()
-        {
-            var dict = new Dictionary<int, int>();
-            var val = dict.GetOrAdd(1, 1);
-            Assert.Equal(1, val);
-            val = dict.GetOrAdd(1, 2);
-            Assert.Equal(1, val);
+        val = dict.GetOrAdd(2, factoryFnc);
+        val.Should().Be(factoryFnc(2));
+        val = dict.GetOrAdd(2, factoryFncPlusOne);
+        val.Should().Be(factoryFnc(2));
+    }
 
-            val = dict.GetOrAdd(2, factoryFnc);
-            Assert.Equal(factoryFnc(2), val);
-            val = dict.GetOrAdd(2, factoryFncPlusOne);
-            Assert.Equal(factoryFnc(2), val);
-        }
+    [Fact]
+    public void Dictionary_AddOrGetLazyValueBasicTest()
+    {
+        var dict = new Dictionary<int, Lazy<int>>();
+        var val = dict.GetOrAdd(3, factoryFnc);
+        val.Should().Be(factoryFnc(3));
+        val = dict.GetOrAdd(3, factoryFncPlusOne);
+        val.Should().Be(factoryFnc(3));
+    }
 
-        [Fact]
-        public void Dictionary_AddOrGetLazyValueBasicTest()
-        {
-            var dict = new Dictionary<int, Lazy<int>>();
-            var val = dict.GetOrAdd(3, factoryFnc);
-            Assert.Equal(factoryFnc(3), val);
-            val = dict.GetOrAdd(3, factoryFncPlusOne);
-            Assert.Equal(factoryFnc(3), val);
-        }
+    [Fact]
+    public void Dictionary_AddOrUpdateValueBasicTest()
+    {
+        var dict = new Dictionary<int, int>();
+        var val = dict.AddOrUpdate(1, 1, updateFnc);
+        val.Should().Be(1);
+        val = dict.AddOrUpdate(1, 1, updateFnc);
+        val.Should().Be(updateFnc(1, 1));
 
-        [Fact]
-        public void Dictionary_AddOrUpdateValueBasicTest()
-        {
-            var dict = new Dictionary<int, int>();
-            var val = dict.AddOrUpdate(1, 1, updateFnc);
-            Assert.Equal(1, val);
-            val = val = dict.AddOrUpdate(1, 1, updateFnc);
-            Assert.Equal(updateFnc(1, 1), val);
+        val = dict.AddOrUpdate(2, factoryFnc, updateFnc);
+        val.Should().Be(factoryFnc(2));
+        val = dict.AddOrUpdate(2, factoryFnc, updateFnc);
+        val.Should().Be(updateFnc(2, 2));
+    }
 
-            val = dict.AddOrUpdate(2, factoryFnc, updateFnc);
-            Assert.Equal(factoryFnc(2), val);
-            val = val = dict.AddOrUpdate(2, factoryFnc, updateFnc);
-            Assert.Equal(updateFnc(2, 2), val);
-        }
-
-        [Fact]
-        public void Dictionary_AddOrUpdateLazyValueBasicTest()
-        {
-            var dict = new Dictionary<int, Lazy<int>>();
-            var val = dict.AddOrUpdate(3, factoryFnc, updateFnc);
-            Assert.Equal(factoryFnc(3), val);
-            val = val = dict.AddOrUpdate(3, factoryFnc, updateFnc);
-            Assert.Equal(updateFnc(3, 3), val);
-        }
+    [Fact]
+    public void Dictionary_AddOrUpdateLazyValueBasicTest()
+    {
+        var dict = new Dictionary<int, Lazy<int>>();
+        var val = dict.AddOrUpdate(3, factoryFnc, updateFnc);
+        val.Should().Be(factoryFnc(3));
+        val = dict.AddOrUpdate(3, factoryFnc, updateFnc);
+        val.Should().Be(updateFnc(3, 3));
     }
 }

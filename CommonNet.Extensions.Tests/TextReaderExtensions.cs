@@ -1,56 +1,51 @@
-namespace CommonNet.Extensions.Tests
+﻿using System;
+using FluentAssertions;
+using FsCheck.Xunit;
+using Xunit;
+
+namespace CommonNet.Extensions.Tests;
+
+public class TextReaderExtensions
 {
-    using System;
-    using System.IO;
-    using Xunit;
-
-    public class TextReaderExtensions
+    [Fact]
+    public void TextReader_BasicTests()
     {
-        [Fact]
-        public void TextReader_BasicTests()
-        {
-            const StreamReader nullReader = null;
-            // Why the call is optimized out even in debug?
-            // Assert.Throws<ArgumentNullException>(() => ((TextReader)null).EnumLines());
-            Assert.Throws<ArgumentNullException>(() => nullReader.ForEachLine(l => { }));
+        const StreamReader? nullReader = null;
+        Action action = () => nullReader!.ForEachLine(l => { });
+        action.Should().ThrowExactly<ArgumentNullException>();
 
-            using (var reader = new StreamReader(new MemoryStream()))
-            {
-                Assert.Throws<ArgumentNullException>(() => reader.ForEachLine(null));
-            }
-        }
+        using var reader = new StreamReader(new MemoryStream());
+        action = () => reader.ForEachLine(null!);
+        action.Should().ThrowExactly<ArgumentNullException>();
+    }
 
-        [FsCheck.Xunit.Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrlLfStringArbitrary) }, DisplayName = nameof(TextReader_PropertyEnumLines), QuietOnSuccess = true)]
-        public void TextReader_PropertyEnumLines(string[] data)
+    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(TextReader_PropertyEnumLines), QuietOnSuccess = true)]
+    public void TextReader_PropertyEnumLines(string[] data)
+    {
+        var i = 0;
+        var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
+        using var sr = new StringReader(string.Join("\n", data));
+        foreach (var line in sr.EnumLines())
         {
-            var i = 0;
-            var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
-            using (var sr = new StringReader(string.Join("\n", data)))
-            {
-                foreach (var line in sr.EnumLines())
-                {
-                    Assert.Equal(line, data[i]);
-                    i++;
-                }
-                Assert.Equal(i, len);
-            }
+            line.Should().Be(data[i]);
+            i++;
         }
+        i.Should().Be(len);
+    }
 
-        [FsCheck.Xunit.Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrlLfStringArbitrary) }, DisplayName = nameof(TextReader_ForEachLine), QuietOnSuccess = true)]
-        public void TextReader_ForEachLine(string[] data)
+    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(TextReader_ForEachLine), QuietOnSuccess = true)]
+    public void TextReader_ForEachLine(string[] data)
+    {
+        var i = 0;
+        var idx = data.Length - 1;
+        var len = data.Length > 0 && data[idx].Length == 0 ? data.Length - 1 : data.Length;
+        using var sr = new StringReader(string.Join("\n", data));
+        sr.ForEachLine(line =>
         {
-            var i = 0;
-            var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
-            using (var sr = new StringReader(string.Join("\n", data)))
-            {
-                sr.ForEachLine(line =>
-                {
-                    Assert.Equal(line, data[i]);
-                    i++;
-                });
-                Assert.Equal(i, len);
-            }
-        }
+            line.Should().Be(data[i]);
+            i++;
+        });
+        i.Should().Be(len);
     }
 }
 

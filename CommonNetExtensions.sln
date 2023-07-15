@@ -1,16 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6D4CF9E-7AFA-47E9-B795-D4CFA7535897}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonNet.Extensions", "CommonNet.Extensions\CommonNet.Extensions.csproj", "{17403D94-1A05-4742-A544-C1F7C8DBD1BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Extensions", "CommonNet.Extensions\CommonNet.Extensions.csproj", "{17403D94-1A05-4742-A544-C1F7C8DBD1BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonNet.Extensions.Tests", "CommonNet.Extensions.Tests\CommonNet.Extensions.Tests.csproj", "{68641E84-4F48-41F5-BE6E-96629441C66C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Extensions.Tests", "CommonNet.Extensions.Tests\CommonNet.Extensions.Tests.csproj", "{68641E84-4F48-41F5-BE6E-96629441C66C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A3A6B888-07D1-48CC-8EAC-303CF5BD98F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{F636705A-52B1-4A73-B334-CA59552A1FC6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\verify.yml = .github\workflows\verify.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Logging", "CommonNet.Logging\CommonNet.Logging.csproj", "{835017B0-C7E3-4F8D-AE55-6ACCF0BD3640}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +38,16 @@ Global
 		{68641E84-4F48-41F5-BE6E-96629441C66C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68641E84-4F48-41F5-BE6E-96629441C66C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68641E84-4F48-41F5-BE6E-96629441C66C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{835017B0-C7E3-4F8D-AE55-6ACCF0BD3640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{835017B0-C7E3-4F8D-AE55-6ACCF0BD3640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{835017B0-C7E3-4F8D-AE55-6ACCF0BD3640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{835017B0-C7E3-4F8D-AE55-6ACCF0BD3640}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F636705A-52B1-4A73-B334-CA59552A1FC6} = {A3A6B888-07D1-48CC-8EAC-303CF5BD98F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93E9F7AC-C266-4B5E-A59B-2E053E454815}

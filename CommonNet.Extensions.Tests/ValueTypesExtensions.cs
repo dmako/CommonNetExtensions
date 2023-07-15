@@ -1,67 +1,66 @@
-namespace CommonNet.Extensions.Tests
+﻿using FluentAssertions;
+using Xunit;
+
+namespace CommonNet.Extensions.Tests;
+
+public class ValueTypesExtensions
 {
-    using Xunit;
-    using System;
-
-    public class ValueTypesExtensions
+    struct TS
     {
-        struct TS
-        {
-            public string A;
-            public int B;
-        }
+        public string A;
+        public int B;
+    }
 
-        [Fact]
-        public void ValueTypesExtensions_IsEmptyTests()
-        {
-            Assert.False(1.IsEmpty());
-            Assert.False(int.MinValue.IsEmpty());
-            Assert.False(int.MaxValue.IsEmpty());
-            Assert.True(0.IsEmpty());
-            Assert.False(true.IsEmpty());
-            Assert.True(false.IsEmpty());
-            Assert.True(new TS().IsEmpty());
-            Assert.False(new TS { A = "test" }.IsEmpty());
-            Assert.True(new Guid().IsEmpty());
-            Assert.False(Guid.NewGuid().IsEmpty());
-            Assert.True(new DateTime().IsEmpty());
-            Assert.False(DateTime.MaxValue.IsEmpty());
-        }
+    [Fact]
+    public void ValueTypesExtensions_IsEmptyTests()
+    {
+        1.IsEmpty().Should().BeFalse();
+        int.MinValue.IsEmpty().Should().BeFalse();
+        int.MaxValue.IsEmpty().Should().BeFalse();
+        0.IsEmpty().Should().BeTrue();
+        true.IsEmpty().Should().BeFalse();
+        false.IsEmpty().Should().BeTrue();
+        new TS().IsEmpty().Should().BeTrue();
+        new TS { A = "test" }.IsEmpty().Should().BeFalse();
+        new Guid().IsEmpty().Should().BeTrue();
+        Guid.NewGuid().IsEmpty().Should().BeFalse();
+        new DateTime().IsEmpty().Should().BeTrue();
+        DateTime.MaxValue.IsEmpty().Should().BeFalse();
+    }
 
-        [Fact]
-        public void ValueTypesExtensions_IsNotEmptyTests()
-        {
-            Assert.True(1.IsNotEmpty());
-            Assert.True(int.MinValue.IsNotEmpty());
-            Assert.True(int.MaxValue.IsNotEmpty());
-            Assert.False(0.IsNotEmpty());
-            Assert.True(true.IsNotEmpty());
-            Assert.False(false.IsNotEmpty());
-            Assert.False(new TS().IsNotEmpty());
-            Assert.True(new TS { B = 1 }.IsNotEmpty());
-            Assert.False(new Guid().IsNotEmpty());
-            Assert.True(Guid.NewGuid().IsNotEmpty());
-            Assert.False(new DateTime().IsNotEmpty());
-            Assert.True(DateTime.MaxValue.IsNotEmpty());
-        }
+    [Fact]
+    public void ValueTypesExtensions_IsNotEmptyTests()
+    {
+        1.IsNotEmpty().Should().BeTrue();
+        int.MinValue.IsNotEmpty().Should().BeTrue();
+        int.MaxValue.IsNotEmpty().Should().BeTrue();
+        0.IsNotEmpty().Should().BeFalse();
+        true.IsNotEmpty().Should().BeTrue();
+        false.IsNotEmpty().Should().BeFalse();
+        new TS().IsNotEmpty().Should().BeFalse();
+        new TS { B = 1 }.IsNotEmpty().Should().BeTrue();
+        new Guid().IsNotEmpty().Should().BeFalse();
+        Guid.NewGuid().IsNotEmpty().Should().BeTrue();
+        new DateTime().IsNotEmpty().Should().BeFalse();
+        DateTime.MaxValue.IsNotEmpty().Should().BeTrue();
+    }
 
-        [Fact]
-        public void ValueTypesExtensions_ToNullable()
-        {
-            Assert.Equal((int?)1, 1.ToNullable());
-            Assert.Equal((int?)int.MinValue, int.MinValue.ToNullable());
-            Assert.Equal((int?)int.MaxValue, int.MaxValue.ToNullable());
-            Assert.Null(0.ToNullable());
-            Assert.Equal((bool?)true, true.ToNullable());
-            Assert.Null(false.ToNullable());
-            Assert.Null(new TS().ToNullable());
-            var ts = new TS { A = "test", B = 1 };
-            Assert.Equal((TS?)ts, ts.ToNullable());
-            Assert.Null(new Guid().ToNullable());
-            var guid = Guid.NewGuid();
-            Assert.Equal((Guid?)guid, guid.ToNullable());
-            Assert.Null(new DateTime().ToNullable());
-            Assert.Equal((DateTime?)DateTime.MaxValue, DateTime.MaxValue.ToNullable());
-        }
+    [Fact]
+    public void ValueTypesExtensions_ToNullable()
+    {
+        ((int?)1).Should().Be(1.ToNullable());
+        ((int?)int.MinValue).Should().Be(int.MinValue.ToNullable());
+        ((int?)int.MaxValue).Should().Be(int.MaxValue.ToNullable());
+        0.ToNullable().Should().BeNull();
+        ((bool?)true).Should().Be(true.ToNullable());
+        false.ToNullable().Should().BeNull();
+        new TS().ToNullable().Should().BeNull();
+        var ts = new TS { A = "test", B = 1 };
+        ((TS?)ts).Should().Be(ts.ToNullable());
+        new Guid().ToNullable().Should().BeNull();
+        var guid = Guid.NewGuid();
+        ((Guid?)guid).Should().Be(guid.ToNullable());
+        new DateTime().ToNullable().Should().BeNull();
+        ((DateTime?)DateTime.MaxValue).Should().Be(DateTime.MaxValue.ToNullable());
     }
 }

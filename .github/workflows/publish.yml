@@ -1,0 +1,56 @@
+name: Nuget package publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_version_base:
+        description: 'Build version base number X.Y.Z'
+        required: false
+        default: 0.5.0
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_NOLOGO: true
+      NuGetDirectory: ${{ github.workspace  }}/nuget
+      BUILD_VERSION: ${{ github.event.inputs.build_version_base }}.${{ github.run_number }}
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    # Create the NuGet packages in the folder from the environment variable NuGetDirectory
+    - name: Build NuGet packages
+      run: |
+        dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Extensions/CommonNet.Extensions.csproj
+        dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Logging/CommonNet.Logging.csproj
+
+    # Publish all NuGet packages to NuGet.org
+    # Use --skip-duplicate to prevent errors if a package with the same version already exists.
+    # If you retry a failed workflow, already published packages will be skipped without error.
+    - name: Publish NuGet packages
+      run: |
+        foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
+            dotnet nuget push $file --api-key "${{ secrets.NUGET_ORG_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        }
+

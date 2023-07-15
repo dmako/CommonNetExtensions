@@ -1,0 +1,43 @@
+name: .NET Multi-platform Verification
+
+on:
+  push:
+    paths-ignore:
+      - 'LICENSE.md'
+      - 'README.md'
+      - '.editorconfig'
+      - '.github/workflows/publish.yml'
+  pull_request:
+    branches:
+      - master
+      - devel
+
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+    - name: Install dependencies
+      run: dotnet restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+    - name: Build Tests
+      run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+    - name: Tests
+      run: dotnet test --no-restore --verbosity normal CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+  windows-build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+    - name: Install dependencies
+      run: dotnet restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+    - name: Build Tests
+      run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+    - name: Tests
+      run: dotnet test --no-restore --verbosity normal CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
