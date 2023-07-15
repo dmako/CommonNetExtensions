@@ -15,8 +15,14 @@ jobs:
     runs-on: windows-latest
 
     env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_NOLOGO: true
+      NuGetDirectory: ${{ github.workspace  }}/nuget
       BUILD_VERSION: ${{ github.event.inputs.build_version_base }}.${{ github.run_number }}
-      BUILD_VERSION_TAG: release/v${{ github.event.inputs.build_version_base }}.${{ github.run_number }}
+
+    defaults:
+      run:
+        shell: pwsh
 
     steps:
 
@@ -33,17 +39,18 @@ jobs:
       with:
         dotnet-version: 7.0.x
 
-    #- name: Publish Nuget package
-    #  uses: marvinpinto/action-automatic-releases@latest
-    #  with:
-    #    repo_token: ${{ github.token }}
+    # Create the NuGet packages in the folder from the environment variable NuGetDirectory
+    - name: Build NuGet packages
+      run: |
+        dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Extensions/CommonNet.Extensions.csproj
+        dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Logging/CommonNet.Logging.csproj
 
-    #- name: Create Nuget package release
-    #  uses: marvinpinto/action-automatic-releases@latest
-    #  with:
-    #    repo_token: ${{ github.token }}
-    #    title: Release ${{ env.BUILD_VERSION }}
-    #    automatic_release_tag: ${{ env.BUILD_VERSION_TAG }}
-    #    prerelease: false
-    #    draft: false
+    # Publish all NuGet packages to NuGet.org
+    # Use --skip-duplicate to prevent errors if a package with the same version already exists.
+    # If you retry a failed workflow, already published packages will be skipped without error.
+    - name: Publish NuGet packages
+      run: |
+        foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
+            dotnet nuget push $file --api-key "${{ secrets.NUGET_ORG_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        }
 

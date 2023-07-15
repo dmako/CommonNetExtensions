@@ -6,8 +6,6 @@ on:
       - 'LICENSE.md'
       - 'README.md'
       - '.editorconfig'
-      - 'build.ps1'
-      - 'server/copyright.md'
       - '.github/workflows/publish.yml'
   pull_request:
     branches:
