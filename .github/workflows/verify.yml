@@ -27,18 +27,14 @@ jobs:
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
       run: dotnet test --no-restore --configuration Release --no-build --verbosity normal -p:CollectCoverage=true --collect:"XPlat Code Coverage;Format=cobertura" --results-directory ./coverage CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
-    - name: Code Coverage Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
       with:
-        filename: coverage/**/coverage.cobertura.xml
-        badge: true
-        fail_below_min: true
-        format: markdown
-        hide_branch_rate: false
-        hide_complexity: false
-        indicators: true
-        output: both
-        thresholds: '60 80'
+        token: ${{ secrets.CODECOV_TOKEN }}
+        working-directory: coverage
+        flags: unittests # optional
+        verbose: true # optional (default = false)
+        os: linux
   windows-build:
     runs-on: windows-latest
     steps:
@@ -53,15 +49,11 @@ jobs:
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
       run: dotnet test --no-restore --configuration Release --no-build --verbosity normal -p:CollectCoverage=true --collect:"XPlat Code Coverage;Format=cobertura" --results-directory ./coverage CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
-    - name: Code Coverage Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
       with:
-        filename: coverage/**/coverage.cobertura.xml
-        badge: true
-        fail_below_min: true
-        format: markdown
-        hide_branch_rate: false
-        hide_complexity: false
-        indicators: true
-        output: both
-        thresholds: '60 80'
+        token: ${{ secrets.CODECOV_TOKEN }}
+        working-directory: coverage
+        flags: unittests # optional
+        verbose: true # optional (default = false)
+        os: windows
