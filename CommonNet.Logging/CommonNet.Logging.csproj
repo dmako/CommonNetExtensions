@@ -3,6 +3,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageDescription>Various Serilog enrichers. MS ILogger Swallow extensions to safely execute actions and tasks.</PackageDescription>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
