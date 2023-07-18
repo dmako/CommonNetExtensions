@@ -41,7 +41,7 @@ jobs:
         restore-keys: ${{ runner.os }}-sonar-scanner
     - name: Install SonarCloud scanner
       if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-      shell: powershell
+      shell: pwsh
       run: |
         New-Item -Path .\.sonar\scanner -ItemType Directory
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
@@ -51,7 +51,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      shell: powershell
+      shell: pwsh
       run: .\.sonar\scanner\dotnet-sonarscanner begin /k:"dmako_CommonNetExtensions" /o:"dmako-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
     - name: Build Tests
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
@@ -61,7 +61,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      shell: powershell
+      shell: pwsh
       run: .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="coverage\**\coverage.opencover.xml"
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
