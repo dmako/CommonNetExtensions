@@ -4,6 +4,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageDescription>C# .Net Extensions and Utilities. The .NET Standard 2.0 version also provides the IAsyncEnumerable&lt;T&gt; and IAsyncDisposable interfaces, stream extensions, helper compiler types and attributes for  to allow using latest C# features.</PackageDescription>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
 </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
