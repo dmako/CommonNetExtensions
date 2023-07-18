@@ -253,3 +253,8 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# CI files
+coverage/
+.sonar/
+coverage*json
