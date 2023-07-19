@@ -45,7 +45,10 @@ public static class TextReaderExtensions
             yield return line!;
 #else
         while ((line = await reader.ReadLineAsync()) is not null)
+        {
             yield return line!;
+            cancellationToken.ThrowIfCancellationRequested();
+        }
 #endif
     }
 
