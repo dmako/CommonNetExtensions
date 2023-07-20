@@ -10,9 +10,9 @@ public class AsyncEnumerableExtensionsTests
 #if !NET7_0_OR_GREATER
 
     // Helper class for creating a mock
-    private class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+    private sealed class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
-        private IEnumerator<T> _enumerator;
+        private readonly IEnumerator<T> _enumerator;
 
         public TestAsyncEnumerator(IEnumerator<T> enumerator)
         {
