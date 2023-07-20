@@ -18,32 +18,17 @@ public class TextReaderExtensionsTests
         action.Should().ThrowExactly<ArgumentNullException>();
     }
 
-    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(TextReader_PropertyEnumLines), QuietOnSuccess = true)]
-    public void TextReader_PropertyEnumLines(string[] data)
+    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(EnumLines_ShouldEnumerateLines_PropertyBased), QuietOnSuccess = true)]
+    public void EnumLines_ShouldEnumerateLines_PropertyBased(string[] data)
     {
         var i = 0;
-        var len = data.Length > 0 && data[data.Length - 1].Length == 0 ? data.Length - 1 : data.Length;
+        var len = data.Length > 0 && data[^1].Length == 0 ? data.Length - 1 : data.Length;
         using var sr = new StringReader(string.Join("\n", data));
         foreach (var line in sr.EnumLines())
         {
             line.Should().Be(data[i]);
             i++;
         }
-        i.Should().Be(len);
-    }
-
-    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(TextReader_ForEachLine), QuietOnSuccess = true)]
-    public void TextReader_ForEachLine(string[] data)
-    {
-        var i = 0;
-        var idx = data.Length - 1;
-        var len = data.Length > 0 && data[idx].Length == 0 ? data.Length - 1 : data.Length;
-        using var sr = new StringReader(string.Join("\n", data));
-        sr.ForEachLine(line =>
-        {
-            line.Should().Be(data[i]);
-            i++;
-        });
         i.Should().Be(len);
     }
 
@@ -71,10 +56,24 @@ public class TextReaderExtensionsTests
         result.Should().BeEquivalentTo(expectedLines);
     }
 
+    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(EnumLinesAsync_ShouldEnumerateLines_PropertyBased), QuietOnSuccess = true)]
+    public void EnumLinesAsync_ShouldEnumerateLines_PropertyBased(string[] data)
+    {
+        var i = 0;
+        var len = data.Length > 0 && data[^1].Length == 0 ? data.Length - 1 : data.Length;
+        using var reader = new StringReader(string.Join("\n", data));
+        foreach (var line in reader.EnumLinesAsync().ToBlockingEnumerable())
+        {
+            line.Should().Be(data[i]);
+            i++;
+        }
+        i.Should().Be(len);
+    }
+
     [Fact]
     public async Task EnumLinesAsync_ShouldReturnEmptyEnumerableForEmptyReader()
     {
-        var reader = new StringReader(string.Empty);
+        using var reader = new StringReader(string.Empty);
         var result = new List<string>();
         await foreach (var line in reader.EnumLinesAsync())
         {

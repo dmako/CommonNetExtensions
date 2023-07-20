@@ -42,12 +42,14 @@ public static class TextReaderExtensions
         string? line;
 #if NET7_0_OR_GREATER
         while ((line = await reader.ReadLineAsync(cancellationToken)) is not null)
+        {
             yield return line!;
+        }
 #else
         while ((line = await reader.ReadLineAsync()) is not null)
         {
-            yield return line!;
             cancellationToken.ThrowIfCancellationRequested();
+            yield return line!;
         }
 #endif
     }
