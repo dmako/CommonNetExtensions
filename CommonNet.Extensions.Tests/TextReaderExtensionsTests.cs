@@ -99,5 +99,17 @@ public class TextReaderExtensionsTests
         var func = async () => await enumerator.MoveNextAsync();
         await func.Should().ThrowAsync<OperationCanceledException>();
     }
+
+    [Fact]
+    public void ForeachLine_ShouldPerformActionForEachLine()
+    {
+        var textToRead = "Line 1\nLine 2\nLine 3\n";
+        using var reader = new StringReader(textToRead);
+
+        var result = new List<string>();
+        reader.ForEachLine(result.Add);
+        var expectedLines = textToRead.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        result.Should().BeEquivalentTo(expectedLines);
+    }
 }
 
