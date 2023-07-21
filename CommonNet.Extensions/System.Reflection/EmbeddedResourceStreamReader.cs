@@ -46,7 +46,7 @@ public static class EmbeddedResourceStreamExtensions
     {
         Guard.IsNotNull(assembly);
 
-        using var stream = assembly.GetManifestResourceStream(resourceName);
+        using var stream = assembly.GetEmbeddedResourceStream(resourceName);
         Guard.IsNotNull(stream, nameof(resourceName));
 
         var data = new byte[stream.Length];
@@ -65,13 +65,16 @@ public static class EmbeddedResourceStreamExtensions
     {
         Guard.IsNotNull(assembly);
 
-        using var stream = assembly.GetManifestResourceStream(resourceName);
+        using var stream = assembly.GetEmbeddedResourceStream(resourceName);
         Guard.IsNotNull(stream, nameof(resourceName));
 
         encoding ??= Encoding.UTF8;
         using var reader = new StreamReader(stream, encoding);
 
-        return reader.EnumLines();
+        foreach (var line in reader.EnumLines())
+        {
+            yield return line;
+        }
     }
 
     /// <summary>
@@ -91,7 +94,7 @@ public static class EmbeddedResourceStreamExtensions
     {
         Guard.IsNotNull(assembly);
 
-        using var stream = assembly.GetManifestResourceStream(resourceName);
+        using var stream = assembly.GetEmbeddedResourceStream(resourceName);
         Guard.IsNotNull(stream, nameof(resourceName));
 
         encoding ??= Encoding.UTF8;
