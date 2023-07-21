@@ -46,28 +46,6 @@ public static class ArrayAndSpanExtensions
     }
 
     /// <summary>
-    /// Returns first occurrences of <paramref name="pattern"/>.
-    /// </summary>
-    /// <param name="self">Span where perform the search.</param>
-    /// <param name="pattern">Pattern to search for.</param>
-    /// <returns>Returns first index of <paramref name="pattern"/> match.</returns>
-    public static int IndexOf<T>(this ReadOnlySpan<T> self, ReadOnlySpan<T> pattern)
-        where T : IEquatable<T>
-    {
-        Guard.IsNotEmpty(pattern);
-
-        for (var i = 0; i < self.Length; i++)
-        {
-            if (self.Slice(i).StartsWith(pattern))
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    /// <summary>
     /// XOR byte span with given <paramref name="key"/>.
     /// </summary>
     /// <param name="self">Byte span where to apply XOR.</param>
@@ -78,7 +56,7 @@ public static class ArrayAndSpanExtensions
     {
         Guard.IsNotEmpty(key);
         Guard.IsBetweenOrEqualTo(index, 0, self.Length);
-        Guard.IsLessThanOrEqualTo(index + length, self.Length, nameof(length));
+        Guard.IsLessThanOrEqualTo(index + length, self.Length);
 
         for (int i = index, j = 0; i < index + length; i++, j++)
         {
