@@ -30,7 +30,7 @@ public class LocationEnricher : KeyValueEnricherBase
     /// <returns>Log event property.</returns>
     protected override LogEventProperty CreateProperty(ILogEventPropertyFactory propertyFactory)
     {
-        Guard.IsNotNull(propertyFactory, nameof(propertyFactory));
+        Guard.IsNotNull(propertyFactory);
 
         return propertyFactory.CreateProperty(PropertyName, _locationName);
     }

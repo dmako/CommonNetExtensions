@@ -7,6 +7,9 @@ namespace Microsoft.Extensions.Logging;
 /// </summary>
 public static class LoggerSuppressingExtensions
 {
+
+#pragma warning disable CA2254 // Template should be a static expression
+
     /// <summary>
     /// Runs the provided action. If the action throws, the exception is logged
     /// at Error level. The exception is not propagated outside of this method.
@@ -87,7 +90,7 @@ public static class LoggerSuppressingExtensions
     /// does not depend on completion of task. This method is avoids C# warning CS4014
     /// in such situations.
     /// </remarks>
-    public static async void Swallow(this ILogger logger, Task task, string message = "", LogLevel logLevel = LogLevel.Error)
+    public static async Task Swallow(this ILogger logger, Task task, string message = "", LogLevel logLevel = LogLevel.Error)
     {
         Guard.IsNotNull(logger);
         Guard.IsNotNull(task);
@@ -210,4 +213,7 @@ public static class LoggerSuppressingExtensions
         }
         return fallback;
     }
+
+#pragma warning restore CA2254
+
 }

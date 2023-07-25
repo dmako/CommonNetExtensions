@@ -89,7 +89,11 @@ public static class StreamExtensions
                 readBytes = 0;
                 while (readBytes < bufferSize)
                 {
+#if NETSTANDARD2_0
                     var numBytes = await source.ReadAsync(rentedBuffer, readBytes, bufferSize - readBytes, cancellationToken).ConfigureAwait(false);
+#else
+                    var numBytes = await source.ReadAsync(rentedBuffer.AsMemory(readBytes, bufferSize - readBytes), cancellationToken).ConfigureAwait(false);
+#endif
                     if (numBytes == 0)
                     {
                         break;
@@ -97,7 +101,11 @@ public static class StreamExtensions
                     readBytes += numBytes;
                 }
 
+#if NETSTANDARD2_0
                 await destination.WriteAsync(rentedBuffer, 0, readBytes, cancellationToken).ConfigureAwait(false);
+#else
+                await destination.WriteAsync(rentedBuffer.AsMemory(0, readBytes), cancellationToken).ConfigureAwait(false);
+#endif
 
                 hashAlgorithm.TransformBlock(rentedBuffer, 0, readBytes, rentedBuffer, 0); // input and output buffer have to be the same
 

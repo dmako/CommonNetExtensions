@@ -36,7 +36,7 @@ public static class ArrayAndSpanExtensions
 
         for (var i = 0; i < self.Length; i++)
         {
-            if (self.Slice(i).StartsWith(pattern))
+            if (self[i..].StartsWith(pattern))
             {
                 results.Add(i);
             }

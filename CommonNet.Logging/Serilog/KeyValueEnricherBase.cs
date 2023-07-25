@@ -33,8 +33,8 @@ public abstract class KeyValueEnricherBase : ILogEventEnricher
     /// <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        Guard.IsNotNull(logEvent, nameof(logEvent));
-        Guard.IsNotNull(propertyFactory, nameof(propertyFactory));
+        Guard.IsNotNull(logEvent);
+        Guard.IsNotNull(propertyFactory);
 
         logEvent.AddPropertyIfAbsent(GetLogEventProperty(propertyFactory));
     }
@@ -46,9 +46,7 @@ public abstract class KeyValueEnricherBase : ILogEventEnricher
     /// <returns>Log event property.</returns>
     private LogEventProperty GetLogEventProperty(ILogEventPropertyFactory propertyFactory)
     {
-        if (_cachedProperty is null)
-            _cachedProperty = CreateProperty(propertyFactory);
-
+        _cachedProperty ??= CreateProperty(propertyFactory);
         return _cachedProperty;
     }
 
