@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonNet.Extensions\CommonNet.Extensions.csproj" />
+    <ProjectReference Include="..\CommonNet.Logging\CommonNet.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

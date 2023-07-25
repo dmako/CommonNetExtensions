@@ -2,7 +2,7 @@
 using Xunit;
 
 namespace CommonNet.Extensions.Tests;
-public class DictionaryExtensions
+public class DictionaryExtensionsTests
 {
     readonly Func<int, int> factoryFnc = (key) => key;
     readonly Func<int, int> factoryFncPlusOne = (key) => key + 1;

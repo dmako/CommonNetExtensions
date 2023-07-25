@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Diagnostics;
-using Profiprint.Infrastructure.Serilog;
 using Serilog.Configuration;
 
 namespace Serilog;
@@ -54,5 +53,4 @@ public static class LoggerConfigurationExtensions
         Guard.IsNotNull(enrichmentConfiguration, nameof(enrichmentConfiguration));
         return enrichmentConfiguration.With(new LocationEnricher(locationName));
     }
-
 }

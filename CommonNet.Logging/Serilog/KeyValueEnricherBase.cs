@@ -2,7 +2,7 @@
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Profiprint.Infrastructure.Serilog;
+namespace Serilog;
 
 /// <summary>
 /// Base class for KeyValue properties enricher.

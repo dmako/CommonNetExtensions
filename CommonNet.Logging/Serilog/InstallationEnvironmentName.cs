@@ -2,7 +2,7 @@
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Profiprint.Infrastructure.Serilog;
+namespace Serilog;
 
 /// <summary>
 /// Creates log event property containing the information about the installation environment.

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace CommonNet.Extensions.Tests;
 
-public class ValueTypesExtensions
+public class ValueTypesExtensionsTests
 {
     struct TS
     {

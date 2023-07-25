@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CommonNet.Extensions.Tests;
 
-public class EnumerableExtensions
+public class EnumerableExtensionsTests
 {
     [Fact]
     public void Enumerable_ForEachBasicTest()
