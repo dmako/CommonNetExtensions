@@ -22,7 +22,7 @@ public abstract class KeyValueEnricherBase : ILogEventEnricher
     /// <param name="name">Propetry name.</param>
     protected KeyValueEnricherBase(string name)
     {
-        Guard.IsNotNullOrWhiteSpace(name, nameof(name));
+        Guard.IsNotNullOrWhiteSpace(name);
         PropertyName = name;
     }
 
