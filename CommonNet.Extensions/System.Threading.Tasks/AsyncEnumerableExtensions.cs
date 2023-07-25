@@ -39,10 +39,11 @@ public static class AsyncEnumerableExtensions
 
                 if (!moveNextTask.IsCompleted)
                 {
-                    (manResEvt ??= new ManualResetEventWithAwaiter()).Wait(moveNextTask.GetAwaiter());
+                    manResEvt ??= new ManualResetEventWithAwaiter();
+                    manResEvt.Wait(moveNextTask.GetAwaiter());
                 }
 
-                if (!moveNextTask.Result)
+                if (!moveNextTask.IsCompletedSuccessfully || !moveNextTask.Result)
                 {
                     yield break;
                 }
@@ -56,7 +57,8 @@ public static class AsyncEnumerableExtensions
 
             if (!disposeTask.IsCompleted)
             {
-                (manResEvt ?? new ManualResetEventWithAwaiter()).Wait(disposeTask.GetAwaiter());
+                manResEvt ??= new ManualResetEventWithAwaiter();
+                manResEvt.Wait(disposeTask.GetAwaiter());
             }
 
             disposeTask.GetAwaiter().GetResult();
