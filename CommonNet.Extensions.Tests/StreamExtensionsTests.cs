@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -142,6 +143,49 @@ public class StreamExtensionsTests
 
         totalBytesRead.Should().Be(0);
         hashValue.Should().Be("E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855");
+    }
+
+    public static readonly IList<object[]> ComputeHashData =
+    new List<object[]>
+    {
+        new object[]
+        {
+            "Hello, hash me!!!",
+            "39951640B6DA39AB3B97DE3F5B48D79B",
+            "AFE6B43272DD26D18322D01A1FD5582E2C1187C2",
+            "C5BA80CBB4A5A5CE07EE8F42325F28C8AF1EE6DAF0DBEC1B1F46C025CDC44477",
+            "F38E5A0503DF8EC4AE5D2BF2283ECD74CDE2C6993533D0D91E359DAE1B5A22533B129F260D9B3D26EFC966AAA5CA620F734E85A66490376E5794F24858B55788"
+        },
+        new object[]
+        {
+            "The quick brown fox jumps over the lazy dog. 1234567890",
+            "BFB85E401A205CDE01D17164BD3DE689",
+            "3A6CD59F35D9C8A5E202D904CBCEDD8175CA1632",
+            "A4DF915F4220CAF6152E8B5ADAEC19D015AAF2B540F8D565B19885A8EF186A36",
+            "FA8418498F96F374BA634FFAC226724BD7E950046E63161C8C149FC3C2E26BD8D7FF8D6C4588A48551F86CE815532004F01F8C4CDDEC3EEB95B4982155CA5F9F"
+        }
+    };
+
+    [Theory]
+    [MemberData(nameof(ComputeHashData))]
+    public async Task ComputeHashAsync_ShouldComputeCorrectHashes_ForGivenData(string inputDataString, string expectedMd5, string expectedSha1, string expectedSha256, string expectedSha512)
+    {
+        using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputDataString));
+
+        var md5 = await inputStream.ComputeHashAsync<MD5>();
+        md5.Should().Be(expectedMd5);
+
+        inputStream.Position = 0;
+        var sha1 = await inputStream.ComputeHashAsync<SHA1>();
+        sha1.Should().Be(expectedSha1);
+
+        inputStream.Position = 0;
+        var sha256 = await inputStream.ComputeHashAsync<SHA256>();
+        sha256.Should().Be(expectedSha256);
+
+        inputStream.Position = 0;
+        var sha512 = await inputStream.ComputeHashAsync<SHA512>();
+        sha512.Should().Be(expectedSha512);
     }
 
 }

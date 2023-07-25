@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Buffers;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using CommunityToolkit.Diagnostics;
@@ -40,6 +41,18 @@ public static class StreamExtensions
         }
     }
 
+    private static HashAlgorithm CreateHashAlgorithm<THashAlgorithm>()
+        where THashAlgorithm : HashAlgorithm
+    {
+#if NET6_0_OR_GREATER
+        var createMethod = typeof(THashAlgorithm).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, Array.Empty<Type>());
+#else
+        var createMethod = typeof(THashAlgorithm).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, null, Array.Empty<Type>(), Array.Empty<ParameterModifier>());
+#endif
+
+        return (HashAlgorithm)createMethod!.Invoke(null, null)!;
+    }
+
     /// <summary>
     /// Asynchronously reads the bytes from the source stream and writes them to destination stream. Both streams positions are advanced by the number of bytes copied.
     /// The required hash value is being calculated via requested hash algoritm type parameter and the total bytes read 
@@ -63,46 +76,72 @@ public static class StreamExtensions
             bufferSize = 0x10_000;
         }
 
-#if NET6_0_OR_GREATER
-        var createMethod = typeof(THashAlgorithm).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, Array.Empty<Type>());
-#else
-        var createMethod = typeof(THashAlgorithm).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, null, Array.Empty<Type>(), Array.Empty<ParameterModifier>());
-#endif
-
-        using var hash = (HashAlgorithm)createMethod!.Invoke(null, null)!;
-        var buffer = new byte[bufferSize];
-        var totalBytes = 0;
-        int readBytes;
-        do
+        using var hashAlgorithm = CreateHashAlgorithm<THashAlgorithm>();
+        byte[]? rentedBuffer = null;
+        try
         {
-            readBytes = 0;
-            while (readBytes < bufferSize)
+            rentedBuffer = ArrayPool<byte>.Shared.Rent(0x1_000);
+
+            var totalBytes = 0;
+            int readBytes;
+            do
             {
-                var numBytes = await source.ReadAsync(buffer, readBytes, bufferSize - readBytes, cancellationToken);
-                if (numBytes == 0)
+                readBytes = 0;
+                while (readBytes < bufferSize)
                 {
-                    break;
+                    var numBytes = await source.ReadAsync(rentedBuffer, readBytes, bufferSize - readBytes, cancellationToken).ConfigureAwait(false);
+                    if (numBytes == 0)
+                    {
+                        break;
+                    }
+                    readBytes += numBytes;
                 }
-                readBytes += numBytes;
-            }
 
-            await destination.WriteAsync(buffer, 0, readBytes, cancellationToken);
+                await destination.WriteAsync(rentedBuffer, 0, readBytes, cancellationToken).ConfigureAwait(false);
 
-            hash.TransformBlock(buffer, 0, readBytes, buffer, 0); // input and output buffer have to be the same
+                hashAlgorithm.TransformBlock(rentedBuffer, 0, readBytes, rentedBuffer, 0); // input and output buffer have to be the same
 
-            totalBytes += readBytes;
-            totalBytesRead(totalBytes);
-        } while (readBytes == bufferSize);
+                totalBytes += readBytes;
+                totalBytesRead(totalBytes);
+            } while (readBytes == bufferSize);
 
-        hash.TransformFinalBlock(buffer, 0, 0);
+            hashAlgorithm.TransformFinalBlock(rentedBuffer, 0, 0);
 
 #if NETSTANDARD2_0
-        return ConvertPolyfills.ToHexString(hash.Hash.AsReadOnlySpan());
+            return ConvertPolyfills.ToHexString(hashAlgorithm.Hash.AsReadOnlySpan());
 #else
-        return Convert.ToHexString(hash.Hash!.AsReadOnlySpan());
+            return Convert.ToHexString(hashAlgorithm.Hash!.AsReadOnlySpan());
 #endif
+        }
+        finally
+        {
+            if (rentedBuffer is not null)
+            {
+                ArrayPool<byte>.Shared.Return(rentedBuffer, clearArray: false);
+            }
+        }
     }
 
+    /// <summary>
+    /// Asynchronously computes the hash value for the specified Stream object and returns it as Hex16 encoded string.
+    /// </summary>
+    /// <typeparam name="THashAlgorithm">Hash algorithm.</typeparam>
+    /// <param name="stream">The input to compute the hash code for.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+    /// <returns>Base16 string encoded hash value.</returns>
+    public static async Task<string> ComputeHashAsync<THashAlgorithm>(this Stream stream, CancellationToken cancellationToken = default)
+        where THashAlgorithm : HashAlgorithm
+    {
+        Guard.IsNotNull(stream);
 
+        using var hashAlgorithm = CreateHashAlgorithm<THashAlgorithm>();
+        var hash = await hashAlgorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
+
+#if NETSTANDARD2_0
+        return ConvertPolyfills.ToHexString(hash.AsReadOnlySpan());
+#else
+        return Convert.ToHexString(hash.AsReadOnlySpan());
+#endif
+    }
 }
 
