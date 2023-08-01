@@ -6,7 +6,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace CommonNet.Extensions.Tests;
 
-public class StringExtensions
+public class StringExtensionsTests
 {
     [Property(MaxTest = 100, DisplayName = nameof(String_IsNotNullOrXTest), QuietOnSuccess = true)]
     public void String_IsNotNullOrXTest(string data)
@@ -150,11 +150,11 @@ public class StringExtensions
     public void String_AllIndexesOf()
     {
         const string? nullStr = null;
-        Action action = () => nullStr!.AllIndexesOf(" ").ToArray();
+        Action action = () => _ = nullStr!.AllIndexesOf(" ").ToArray();
         action.Should().ThrowExactly<ArgumentNullException>();
-        action = () => "test".AllIndexesOf(null!).ToArray();
+        action = () => _ = "test".AllIndexesOf(null!).ToArray();
         action.Should().ThrowExactly<ArgumentNullException>();
-        action = () => "test".AllIndexesOf("").ToArray();
+        action = () => _ = "test".AllIndexesOf("").ToArray();
         action.Should().ThrowExactly<ArgumentException>();
         "".AllIndexesOf(" ").ToArray().Should().BeEquivalentTo(Array.Empty<int>());
         "test".AllIndexesOf("tset").ToArray().Should().BeEquivalentTo(Array.Empty<int>());

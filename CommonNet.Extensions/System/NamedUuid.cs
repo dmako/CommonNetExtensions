@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Text;
 using CommunityToolkit.Diagnostics;
 
@@ -56,8 +57,12 @@ public static class NamedUuid
 
         // Compute the hash of the name space ID concatenated with the name.
         var data = namespaceBytes.Concat(nameBytes).ToArray();
+#if NETSTANDARD2_0
         using var algorithm = SHA1.Create();
         var hash = algorithm.ComputeHash(data);
+#else
+        var hash = SHA1.HashData(data);
+#endif
         var newGuid = new byte[16];
 
         // 0                   1                   2                   3
@@ -78,7 +83,7 @@ public static class NamedUuid
         // Set the clock_seq_hi_and_reserved field to octet 8 of the hash.
         // Set the clock_seq_low field to octet 9 of the hash.
         // Set octets zero through five of the node field to octets 10 through 15 of the hash.
-        hash.AsReadOnlySpan().Slice(0, newGuid.Length).CopyTo(newGuid);
+        hash.AsReadOnlySpan()[..newGuid.Length].CopyTo(newGuid);
 
         // mark it as V5 - The name-based version that uses SHA-1 hashing.
         // Set the four most significant bits (bits 12 through 15) of the time_hi_and_version field to the appropriate 4-bit version number from Section 4.1.3.

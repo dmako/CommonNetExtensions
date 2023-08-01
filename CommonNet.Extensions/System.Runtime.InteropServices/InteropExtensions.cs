@@ -41,7 +41,7 @@ public static class InteropExtensions
         where T : unmanaged
     {
         Guard.IsNotNull(self);
-        Guard.IsGreaterThanOrEqualTo(self.Length, sizeof(T), nameof(self));
+        Guard.IsGreaterThanOrEqualTo(self.Length, sizeof(T));
 
         var result = new T();
         fixed (byte* bufferPtr = self)

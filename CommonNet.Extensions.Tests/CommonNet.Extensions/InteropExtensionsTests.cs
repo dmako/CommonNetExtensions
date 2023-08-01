@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CommonNet.Extensions.Tests;
 
-public class InteropExtensions
+public class InteropExtensionsTests
 {
     struct T1
     {
@@ -41,7 +41,7 @@ public class InteropExtensions
     [Fact]
     public unsafe void Marshal_Tests()
     {
-        Assert.Equal(8, Marshal.SizeOf(typeof(T2)));
+        Marshal.SizeOf(typeof(T2)).Should().Be(8);
 
         var data = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         var t2 = data.BufferToStructure<T2>();

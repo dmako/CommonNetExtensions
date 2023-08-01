@@ -19,6 +19,7 @@ public static class StringBuilderExtensions
     public static StringBuilder AppendIf(this StringBuilder sb, bool condition, string value)
     {
         Guard.IsNotNull(sb);
+        Guard.IsNotNullOrEmpty(value);
 
         if (condition)
         {

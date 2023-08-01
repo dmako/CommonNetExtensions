@@ -7,6 +7,9 @@ namespace Microsoft.Extensions.Logging;
 /// </summary>
 public static class LoggerSuppressingExtensions
 {
+
+#pragma warning disable CA2254 // Template should be a static expression
+
     /// <summary>
     /// Runs the provided action. If the action throws, the exception is logged
     /// at Error level. The exception is not propagated outside of this method.
@@ -73,33 +76,6 @@ public static class LoggerSuppressingExtensions
             logger.Log(logLevel, e, message);
         }
         return fallback;
-    }
-
-    /// <summary>
-    /// Logs an exception is logged at Error level if the provided task does not run to completion.
-    /// </summary>
-    /// <param name="logger">Logger context</param>
-    /// <param name="task">The task for which to log an error if it does not run to completion.</param>
-    /// <param name="message">Log message template.</param>
-    /// <param name="logLevel">Desired log level to log in case of error. Default value is Error.</param>
-    /// <remarks>
-    /// This method is useful in fire-and-forget situations, where application logic
-    /// does not depend on completion of task. This method is avoids C# warning CS4014
-    /// in such situations.
-    /// </remarks>
-    public static async void Swallow(this ILogger logger, Task task, string message = "", LogLevel logLevel = LogLevel.Error)
-    {
-        Guard.IsNotNull(logger);
-        Guard.IsNotNull(task);
-
-        try
-        {
-            await task;
-        }
-        catch (Exception e)
-        {
-            logger.Log(logLevel, e, message);
-        }
     }
 
     /// <summary>
@@ -210,4 +186,7 @@ public static class LoggerSuppressingExtensions
         }
         return fallback;
     }
+
+#pragma warning restore CA2254
+
 }

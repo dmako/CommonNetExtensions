@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Diagnostics;
-using Profiprint.Infrastructure.Serilog;
 using Serilog.Configuration;
 
 namespace Serilog;
@@ -16,7 +15,7 @@ public static class LoggerConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration WithOsInfo(this LoggerEnrichmentConfiguration enrichmentConfiguration)
     {
-        Guard.IsNotNull(enrichmentConfiguration, nameof(enrichmentConfiguration));
+        Guard.IsNotNull(enrichmentConfiguration);
         return enrichmentConfiguration.With<OsInfoEnricher>();
     }
 
@@ -27,7 +26,7 @@ public static class LoggerConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration WithFrameworkVersion(this LoggerEnrichmentConfiguration enrichmentConfiguration)
     {
-        Guard.IsNotNull(enrichmentConfiguration, nameof(enrichmentConfiguration));
+        Guard.IsNotNull(enrichmentConfiguration);
         return enrichmentConfiguration.With<FrameworkVersionEnricher>();
     }
 
@@ -39,7 +38,7 @@ public static class LoggerConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration WithInstallationEnvironmentName(this LoggerEnrichmentConfiguration enrichmentConfiguration, string envName = "")
     {
-        Guard.IsNotNull(enrichmentConfiguration, nameof(enrichmentConfiguration));
+        Guard.IsNotNull(enrichmentConfiguration);
         return enrichmentConfiguration.With(new InstallationEnvironmentName(envName));
     }
 
@@ -51,8 +50,7 @@ public static class LoggerConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration WithLocation(this LoggerEnrichmentConfiguration enrichmentConfiguration, string locationName = "")
     {
-        Guard.IsNotNull(enrichmentConfiguration, nameof(enrichmentConfiguration));
+        Guard.IsNotNull(enrichmentConfiguration);
         return enrichmentConfiguration.With(new LocationEnricher(locationName));
     }
-
 }

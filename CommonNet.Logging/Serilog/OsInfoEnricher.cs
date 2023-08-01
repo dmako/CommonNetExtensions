@@ -3,7 +3,7 @@ using CommunityToolkit.Diagnostics;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Profiprint.Infrastructure.Serilog;
+namespace Serilog;
 
 /// <summary>
 /// Creates log event property containing the information about OS the application is running on.
@@ -25,7 +25,7 @@ public class OsInfoEnricher : KeyValueEnricherBase
     /// <returns>Log event property.</returns>
     protected override LogEventProperty CreateProperty(ILogEventPropertyFactory propertyFactory)
     {
-        Guard.IsNotNull(propertyFactory, nameof(propertyFactory));
+        Guard.IsNotNull(propertyFactory);
         return propertyFactory.CreateProperty(PropertyName, RuntimeInformation.OSDescription);
     }
 }

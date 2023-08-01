@@ -9,7 +9,7 @@ using Xunit;
 
 namespace CommonNet.Extensions.Tests;
 
-public class NamedUuids
+public class NamedUuidsTests
 {
     public static readonly List<object[]> NamedUuidGenerationTestData = new()
     {
@@ -24,7 +24,7 @@ public class NamedUuids
 
     [Theory]
     [MemberData(nameof(NamedUuidGenerationTestData))]
-    public void Subsequent_generation_with_same_input_shoud_produce_same_output(Guid namespaceId, string name)
+    public void Create_ShouldProduceSameOutput_WithSameInput(Guid namespaceId, string name)
     {
         var uuid1= NamedUuid.Create(namespaceId, name);
         var uuid2 = NamedUuid.Create(namespaceId, name);
@@ -35,7 +35,7 @@ public class NamedUuids
     [InlineData("6ba7b810-9dad-11d1-80b4-00c04fd430c8", "www.example.org", "74738ff5-5367-5958-9aee-98fffdcd1876")]
     [InlineData("b08bfdda-de67-4bad-b2d3-b6bb3a747761", "exmaple name", "f5f17fe3-4176-563e-b0e8-0c2f41cc8fbd")]
     [InlineData("6ba7b810-9dad-11d1-80b4-00c04fd430c8", "my.computer.org", "3aa8cd3e-12cb-5d4f-9ad4-ee0774b4b93d")]
-    public void Should_generate_equivalent_to_test_vector(string namespaceId, string name, string expectedOutput)
+    public void Create_ShouldProduceSameOutput_BasedOnTestVectorsFromInternet(string namespaceId, string name, string expectedOutput)
     {
         var ns = Guid.Parse(namespaceId);
         var exp = Guid.Parse(expectedOutput);
