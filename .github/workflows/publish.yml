@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       build_version_base:
-        description: 'Build version base number X.Y.Z'
+        description: 'Build version number X.Y.Z'
         required: false
-        default: 0.5.0
+        default: 0.6.0
 
 jobs:
 
@@ -17,8 +17,8 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       DOTNET_NOLOGO: true
-      NuGetDirectory: ${{ github.workspace  }}/nuget
-      BUILD_VERSION: ${{ github.event.inputs.build_version_base }}.${{ github.run_number }}
+      NuGetDirectory: ${{ github.workspace }}/nuget
+      BUILD_VERSION: ${{ github.event.inputs.build_version_base }}
 
     defaults:
       run:
