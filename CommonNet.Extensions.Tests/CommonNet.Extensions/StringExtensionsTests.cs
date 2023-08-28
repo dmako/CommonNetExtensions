@@ -2,7 +2,6 @@
 using FluentAssertions;
 using FsCheck.Xunit;
 using Xunit;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CommonNet.Extensions.Tests;
 
