@@ -5,6 +5,7 @@
 |:--|:--|
 |**CommonNet.Extensions**|[![NuGet](https://img.shields.io/nuget/v/CommonNet.Extensions.svg)](https://www.nuget.org/packages/CommonNet.Extensions/)
 |**CommonNet.Logging**|[![NuGet](https://img.shields.io/nuget/v/CommonNet.Logging.svg)](https://www.nuget.org/packages/CommonNet.Logging/)
+|**CommonNet.DependencyInjection**|[![NuGet](https://img.shields.io/nuget/v/CommonNet.DependencyInjection.svg)](https://www.nuget.org/packages/CommonNet.DependencyInjection/)
 
 **master**
 * ![Build status](https://github.com/dmako/CommonNetExtensions/actions/workflows/verify.yml/badge.svg?branch=master)

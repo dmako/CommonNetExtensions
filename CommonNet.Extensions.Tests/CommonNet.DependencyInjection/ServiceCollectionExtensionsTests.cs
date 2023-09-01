@@ -34,8 +34,8 @@ public class ServiceCollectionExtensionsTests
         var services = new ServiceCollection();
 
         services
-            .AddSingleton<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>()
-            .AddSingleton<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>();
+            .AddSingletonIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true)
+            .AddSingletonIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>(true);
 
         using var sp = services.BuildServiceProvider();
 
@@ -75,8 +75,8 @@ public class ServiceCollectionExtensionsTests
         var services = new ServiceCollection();
 
         services
-            .AddSingleton<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(sp => new A4_1())
-            .AddSingleton<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>(sp => new B4_2());
+            .AddSingletonIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true, sp => new A4_1())
+            .AddSingletonIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>(true, sp => new B4_2());
 
         using var sp = services.BuildServiceProvider();
 
@@ -115,7 +115,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
 
-        services.AddTransient<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>();
+        services.AddTransientIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true);
 
         using var sp = services.BuildServiceProvider();
 
@@ -142,7 +142,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
 
-        services.AddTransient<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(sp => new A4_1());
+        services.AddTransientIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true, sp => new A4_1());
 
         using var sp = services.BuildServiceProvider();
 
@@ -169,7 +169,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
 
-        services.AddScoped<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>();
+        services.AddScopedIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true);
 
         using var sp = services.BuildServiceProvider();
 
@@ -209,7 +209,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
 
-        services.AddScoped<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(sp => new A4_1());
+        services.AddScopedIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true, sp => new A4_1());
 
         using var sp = services.BuildServiceProvider();
 
@@ -242,6 +242,72 @@ public class ServiceCollectionExtensionsTests
         s2_bif1_2.Should().Be(s2_bif1_1);
 
         s2_bif1_1.Should().NotBe(s1_bif1_1);
+    }
+
+    [Fact]
+    public void AddIf_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services
+            .AddSingletonIf<IBaseInterface1, A4_1>(true)
+            .AddSingletonIf<IInheritedIface2, A4_1>(false)
+            .AddTransientIf<IBaseInterface2, B4_1>(true)
+            .AddTransientIf<IBaseInterface3, B4_1>(false)
+            .AddScopedIf<IBaseInterface4, B4_2>(true)
+            .AddScopedIf<IBaseInterface5, B4_2>(false);
+
+        using var sp = services.BuildServiceProvider();
+        using var scope1 = sp.CreateScope();
+
+        var a41_1 = sp.GetService<IBaseInterface1>();
+        a41_1.Should().NotBeNull();
+        var a41_2 = sp.GetService<IInheritedIface2>();
+        a41_2.Should().BeNull();
+
+
+        var b41_1 = sp.GetService<IBaseInterface2>();
+        b41_1.Should().NotBeNull();
+        var b41_2 = sp.GetService<IBaseInterface3>();
+        b41_2.Should().BeNull();
+
+        var b42_1 = scope1.ServiceProvider.GetService<IBaseInterface4>();
+        b42_1.Should().NotBeNull();
+        var b42_2 = scope1.ServiceProvider.GetService<IBaseInterface5>();
+        b42_2.Should().BeNull();
+    }
+
+    [Fact]
+    public void AddIfFact_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services
+            .AddSingletonIf<IBaseInterface1, A4_1>(true, sp => new A4_1())
+            .AddSingletonIf<IInheritedIface2, A4_1>(false, sp => new A4_1())
+            .AddTransientIf<IBaseInterface2, B4_1>(true, sp => new B4_1())
+            .AddTransientIf<IBaseInterface3, B4_1>(false, sp => new B4_1())
+            .AddScopedIf<IBaseInterface4, B4_2>(true, sp => new B4_2())
+            .AddScopedIf<IBaseInterface5, B4_2>(false, sp => new B4_2());
+
+        using var sp = services.BuildServiceProvider();
+        using var scope1 = sp.CreateScope();
+
+        var a41_1 = sp.GetService<IBaseInterface1>();
+        a41_1.Should().NotBeNull();
+        var a41_2 = sp.GetService<IInheritedIface2>();
+        a41_2.Should().BeNull();
+
+
+        var b41_1 = sp.GetService<IBaseInterface2>();
+        b41_1.Should().NotBeNull();
+        var b41_2 = sp.GetService<IBaseInterface3>();
+        b41_2.Should().BeNull();
+
+        var b42_1 = scope1.ServiceProvider.GetService<IBaseInterface4>();
+        b42_1.Should().NotBeNull();
+        var b42_2 = scope1.ServiceProvider.GetService<IBaseInterface5>();
+        b42_2.Should().BeNull();
     }
 }
 
