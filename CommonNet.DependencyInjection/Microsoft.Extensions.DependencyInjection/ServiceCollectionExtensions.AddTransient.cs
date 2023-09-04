@@ -40,7 +40,6 @@ public static partial class ServiceCollectionExtensions
         where TService2 : class
     {
         return services
-            .AddTransient<TImplementation>()
             .AddTransient<TService1, TImplementation>()
             .AddTransient<TService2, TImplementation>();
     }
@@ -209,7 +208,6 @@ public static partial class ServiceCollectionExtensions
         where TService2 : class
     {
         return services
-            .AddTransient(implementationFactory)
             .AddTransient<TService1, TImplementation>(implementationFactory)
             .AddTransient<TService2, TImplementation>(implementationFactory);
     }

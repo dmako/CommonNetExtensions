@@ -40,9 +40,8 @@ public static partial class ServiceCollectionExtensions
         where TService2 : class
     {
         return services
-            .AddScoped<TImplementation>()
-            .AddScoped<TService1, TImplementation>(sp => sp.GetRequiredService<TImplementation>())
-            .AddScoped<TService2, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddScoped<TService1, TImplementation>()
+            .AddScoped(sp => (sp.GetRequiredService<TService1>() as TService2)!);
     }
 
     /// <summary>
@@ -88,7 +87,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddScoped<TService1, TService2, TImplementation>()
-            .AddScoped<TService3, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddScoped(sp => (sp.GetRequiredService<TService1>() as TService3)!);
     }
 
     /// <summary>
@@ -138,7 +137,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddScoped<TService1, TService2, TService3, TImplementation>()
-            .AddScoped<TService4, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddScoped(sp => (sp.GetRequiredService<TService1>() as TService4)!);
     }
 
     /// <summary>
@@ -209,9 +208,8 @@ public static partial class ServiceCollectionExtensions
         where TService2 : class
     {
         return services
-            .AddScoped(implementationFactory)
-            .AddScoped<TService1, TImplementation>(sp => sp.GetRequiredService<TImplementation>())
-            .AddScoped<TService2, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddScoped<TService1, TImplementation>(implementationFactory)
+            .AddScoped(sp => (sp.GetRequiredService<TService1>() as TService2)!);
     }
 
     /// <summary>
@@ -259,7 +257,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddScoped<TService1, TService2, TImplementation>(implementationFactory)
-            .AddScoped<TService3, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddScoped(sp => (sp.GetRequiredService<TService1>() as TService3)!);
     }
 
     /// <summary>
@@ -311,7 +309,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddScoped<TService1, TService2, TService3, TImplementation>(implementationFactory)
-            .AddScoped<TService4, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddScoped(sp => (sp.GetRequiredService<TService1>() as TService4)!);
     }
 
     /// <summary>

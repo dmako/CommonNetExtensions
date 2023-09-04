@@ -39,9 +39,8 @@ public static partial class ServiceCollectionExtensions
         where TService2 : class
     {
         return services
-            .AddSingleton<TImplementation>()
-            .AddSingleton<TService1, TImplementation>(sp => sp.GetRequiredService<TImplementation>())
-            .AddSingleton<TService2, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddSingleton<TService1, TImplementation>()
+            .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService2)!);
     }
 
     /// <summary>
@@ -87,7 +86,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddSingleton<TService1, TService2, TImplementation>()
-            .AddSingleton<TService3, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService3)!);
     }
 
     /// <summary>
@@ -138,7 +137,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddSingleton<TService1, TService2, TService3, TImplementation>()
-            .AddSingleton<TService4, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService4)!);
     }
 
     /// <summary>
@@ -209,9 +208,8 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             //.AddSingleton<TService1>(sp => sp.GetRequiredService<TIm>)
-            .AddSingleton(implementationFactory)
-            .AddSingleton<TService1, TImplementation>(sp => sp.GetRequiredService<TImplementation>())
-            .AddSingleton<TService2, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddSingleton<TService1, TImplementation>(implementationFactory)
+            .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService2)!);
     }
 
     /// <summary>
@@ -259,7 +257,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddSingleton<TService1, TService2, TImplementation>(implementationFactory)
-            .AddSingleton<TService3, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService3)!);
     }
 
     /// <summary>
@@ -311,7 +309,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services
             .AddSingleton<TService1, TService2, TService3, TImplementation>(implementationFactory)
-            .AddSingleton<TService4, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService4)!);
     }
 
     /// <summary>
