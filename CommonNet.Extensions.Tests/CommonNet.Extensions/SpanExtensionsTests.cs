@@ -13,7 +13,7 @@ public class SpanExtensionsTests
         action.Should().ThrowExactly<ArgumentNullException>();
 
         var arr = new byte[] { 0x00 };
-        arr.Length.Should().Be(1);
+        arr.Should().HaveCount(1);
     }
 
     [Fact]

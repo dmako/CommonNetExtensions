@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable xUnit1031
+
+using FluentAssertions;
 using Xunit;
 
 namespace CommonNet.Extensions.Tests;
@@ -62,3 +64,5 @@ public class WaitHandleExtensionsTests
         task.IsCanceled.Should().BeTrue();
     }
 }
+
+#pragma warning restore xUnit1031
