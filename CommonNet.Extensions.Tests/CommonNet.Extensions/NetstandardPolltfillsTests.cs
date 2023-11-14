@@ -27,7 +27,6 @@ public class NetstandardPolltfillsTests
         };
 
 
-
     [Theory]
     [MemberData(nameof(PlatformAttributesTestData))]
     public void VersioningAttributesCoverageTest(OSPlatformAttribute attr, string expectedPlatform)
