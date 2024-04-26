@@ -1,4 +1,5 @@
 ﻿#pragma warning disable S2436 // Reduce the number of generic parameters in method to no more than the 3 authorized
+#pragma warning disable S4136 // All method overloads should be adjacent
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -345,3 +346,4 @@ public static partial class ServiceCollectionExtensions
 }
 
 #pragma warning restore S2436 // Reduce the number of generic parameters in method to no more than the 3 authorized
+#pragma warning restore S4136 // All method overloads should be adjacent

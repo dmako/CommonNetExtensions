@@ -43,34 +43,21 @@ public static class EqualityComparerFactory
     }
 
 
-    private class EqualityComparer<T> : IEqualityComparer<T>
+    private sealed class EqualityComparer<T>(Func<T?, T?, bool> equals, Func<T, int>? getHashCode) : IEqualityComparer<T>
     {
-        private readonly Func<T?, T?, bool> _equals;
-        private readonly Func<T, int>? _getHashCode;
-
-        public EqualityComparer(Func<T?, T?, bool> equals, Func<T, int>? getHashCode)
-        {
-            _equals = equals;
-            _getHashCode = getHashCode;
-        }
+        private readonly Func<T?, T?, bool> _equals = equals;
+        private readonly Func<T, int>? _getHashCode = getHashCode;
 
         public bool Equals(T? x, T? y) => _equals(x, y);
 
         public int GetHashCode(T obj) => _getHashCode is not null ? _getHashCode(obj) : throw new NotSupportedException();
     }
 
-    private class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
+    private sealed class KeyEqualityComparer<T, TKey>(Func<T, TKey> keySelector, Func<TKey?, TKey?, bool>? equals, Func<TKey, int>? getHashCode) : IEqualityComparer<T>
     {
-        private readonly Func<T, TKey> _keySelector;
-        private readonly Func<TKey, int>? _getHashCode;
-        private readonly Func<TKey?, TKey?, bool>? _equals;
-
-        public KeyEqualityComparer(Func<T, TKey> keySelector, Func<TKey?, TKey?, bool>? equals, Func<TKey, int>? getHashCode)
-        {
-            _keySelector = keySelector;
-            _equals = equals;
-            _getHashCode = getHashCode;
-        }
+        private readonly Func<T, TKey> _keySelector = keySelector;
+        private readonly Func<TKey, int>? _getHashCode = getHashCode;
+        private readonly Func<TKey?, TKey?, bool>? _equals = equals;
 
         public bool Equals(T? x, T? y)
         {

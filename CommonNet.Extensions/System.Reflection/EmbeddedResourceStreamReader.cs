@@ -41,7 +41,7 @@ public static class EmbeddedResourceStreamExtensions
     /// </summary>
     /// <param name="assembly">Assembly that contains the embedded resource stream.</param>
     /// <param name="resourceName"></param>
-    /// <returns>The mebedded stream data.</returns>
+    /// <returns>The embedded stream data.</returns>
     public static byte[] ReadEmbeddedResourceData(this Assembly assembly, string resourceName)
     {
         Guard.IsNotNull(assembly);

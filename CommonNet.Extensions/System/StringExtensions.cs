@@ -207,7 +207,9 @@ public static class StringExtensions
         var rightPos = self.LastIndexOf(right, StringComparison.Ordinal);
 
         if (leftPos == -1 || rightPos == -1)
+        {
             return string.Empty;
+        }
 
         var startIndex = leftPos + left.Length;
         return startIndex >= rightPos ? string.Empty : self.Substring(startIndex, rightPos - startIndex);
@@ -227,12 +229,16 @@ public static class StringExtensions
         Guard.IsNotNullOrEmpty(value);
 
         var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        for (var index = 0; ; ++index)
+        var index = 0;
+        while (true)
         {
             index = self.IndexOf(value, index, comparison);
             if (index == -1)
+            {
                 break;
+            }
             yield return index;
+            ++index;
         }
     }
 }
