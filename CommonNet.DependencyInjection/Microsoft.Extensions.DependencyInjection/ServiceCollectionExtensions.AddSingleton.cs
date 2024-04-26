@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿#pragma warning disable S2436 // Reduce the number of generic parameters in method to no more than the 3 authorized
+
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -341,3 +343,5 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 }
+
+#pragma warning restore S2436 // Reduce the number of generic parameters in method to no more than the 3 authorized
