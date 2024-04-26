@@ -5,7 +5,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageDescription>C# .Net Extensions and Utilities. The .NET Standard 2.0 version also provides the IAsyncEnumerable&lt;T&gt; and IAsyncDisposable interfaces, stream extensions, helper compiler types and attributes for  to allow using latest C# features.</PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-</PropertyGroup>
+  </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
@@ -14,16 +14,16 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <CompilerVisibleProperty Include="PolySharpIncludeRuntimeSupportedAttributes" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageReference Include="PolySharp" Version="1.13.2">
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="PolySharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
+    <PackageReference Include="CommunityToolkit.Diagnostics" />
   </ItemGroup>
 
 </Project>
