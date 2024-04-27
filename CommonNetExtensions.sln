@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Logging", "Common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.DependencyInjection", "CommonNet.DependencyInjection\CommonNet.DependencyInjection.csproj", "{B37D1C84-8566-4EEC-838B-5061F25943A3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonNet.Json", "CommonNet.Json\CommonNet.Json.csproj", "{A9A635C1-C884-4E62-840E-6889C5868D42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{B37D1C84-8566-4EEC-838B-5061F25943A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B37D1C84-8566-4EEC-838B-5061F25943A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B37D1C84-8566-4EEC-838B-5061F25943A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9A635C1-C884-4E62-840E-6889C5868D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9A635C1-C884-4E62-840E-6889C5868D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9A635C1-C884-4E62-840E-6889C5868D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A635C1-C884-4E62-840E-6889C5868D42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

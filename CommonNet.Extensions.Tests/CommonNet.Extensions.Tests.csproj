@@ -34,6 +34,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CommonNet.DependencyInjection\CommonNet.DependencyInjection.csproj" />
     <ProjectReference Include="..\CommonNet.Extensions\CommonNet.Extensions.csproj" />
+    <ProjectReference Include="..\CommonNet.Json\CommonNet.Json.csproj" />
     <ProjectReference Include="..\CommonNet.Logging\CommonNet.Logging.csproj" />
   </ItemGroup>
 
