@@ -5,6 +5,7 @@
     <Configurations>Debug;Release</Configurations>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -40,6 +41,6 @@
   </PropertyGroup>
   <ItemGroup Condition=" '$(CI)' != '' ">
     <!-- PackageReference specific to GitHub repositories when running on GitHub pipeline -->
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
   </ItemGroup>
 </Project>

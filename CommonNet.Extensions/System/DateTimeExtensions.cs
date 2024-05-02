@@ -28,7 +28,8 @@ public static class DateTimeExtensions
         return self.DayOfWeek == DayOfWeek.Saturday || self.DayOfWeek == DayOfWeek.Sunday;
     }
 
-    private static readonly DateTime unixEpochBeginning = new(1970, 1, 1, 0, 0, 0);
+    private static readonly DateTime UnixEpochBeginning = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
     /// <summary>
     /// Converts a <see cref="DateTime"/> value to Unix timestamp.
     /// </summary>
@@ -36,7 +37,7 @@ public static class DateTimeExtensions
     /// <returns>The 64-bit Unix timestamp. Values before Unix epoch are represented as negative number.</returns>
     public static long ToUnixTimestamp(this DateTime self)
     {
-        var ts = self - unixEpochBeginning;
+        var ts = self - UnixEpochBeginning;
         return (long)ts.TotalSeconds;
     }
 }

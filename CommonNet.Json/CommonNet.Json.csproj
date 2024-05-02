@@ -2,14 +2,16 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageDescription>Various Serilog enrichers. MS ILogger Swallow extensions to safely execute actions and tasks.</PackageDescription>
+    <PackageDescription>
+      Various System.Text.Json converters typically used for configuration scenarios.
+      The package contaings converters fo IPAddress, IPEndPoint, Absolute Uri, and more.
+    </PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Serilog" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
 </Project>
