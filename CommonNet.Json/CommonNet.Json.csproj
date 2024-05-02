@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageDescription>Various System.Text.Json converters.</PackageDescription>
+    <PackageDescription>
+      Various System.Text.Json converters typically used for configuration scenarios.
+      The package contaings converters fo IPAddress, IPEndPoint, Absolute Uri, and more.
+    </PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 

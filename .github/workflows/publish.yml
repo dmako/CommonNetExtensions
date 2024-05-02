@@ -6,7 +6,7 @@ on:
       build_version_base:
         description: 'Build version number X.Y.Z'
         required: false
-        default: 0.8.0
+        default: 0.9.0
 
 jobs:
 
@@ -45,6 +45,7 @@ jobs:
         dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Extensions/CommonNet.Extensions.csproj
         dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Logging/CommonNet.Logging.csproj
         dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.DependencyInjection/CommonNet.DependencyInjection.csproj
+        dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} CommonNet.Json/CommonNet.Json.csproj
 
     # Publish all NuGet packages to NuGet.org
     # Use --skip-duplicate to prevent errors if a package with the same version already exists.
