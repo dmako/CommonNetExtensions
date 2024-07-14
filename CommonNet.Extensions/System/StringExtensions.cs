@@ -116,20 +116,34 @@ public static class StringExtensions
     /// Generates a sequence that contains a repeated string value optionally concatenated with separator.
     /// </summary>
     /// <param name="self">The string to repeat.</param>
-    /// <param name="count">Number of repetitions.</param>
+    /// <param name="numberOfRepetitions">Number of repetitions.</param>
     /// <param name="separator">Optional separator of repeated string value.</param>
     /// <returns></returns>
-    public static string Repeat(this string self, int count, string separator = "")
+    public static string Repeat(this string self, int numberOfRepetitions, string separator = "")
     {
         Guard.IsNotNull(self);
-        Guard.IsGreaterThan(count, 0);
+        Guard.IsGreaterThanOrEqualTo(numberOfRepetitions, 0);
 
-        if (self.Length > 0 && count > 0)
+        if (self is { Length: > 0 } && numberOfRepetitions > 0)
         {
-            return string.Join(separator, Enumerable.Repeat(self, count).ToArray());
+            return string.Join(separator, Enumerable.Repeat(self, numberOfRepetitions).ToArray());
         }
-
         return string.Empty;
+    }
+
+    /// <summary>
+    /// Repeats the specified character a given number of times.
+    /// </summary>
+    /// <param name="self">The character to repeat.</param>
+    /// <param name="numberOfRepetitions">The number of times to repeat the character. Must be greater than or equal to 0.</param>
+    /// <returns>A new string consisting of the specified character repeated the specified number of times. Returns an empty string if <paramref name="numberOfRepetitions"/> is 0.</returns>
+    public static string Repeat(this char self, int numberOfRepetitions)
+    {
+        Guard.IsGreaterThanOrEqualTo(numberOfRepetitions, 0);
+
+        return numberOfRepetitions == 0 ?
+            string.Empty :
+            new string(Enumerable.Repeat(self, numberOfRepetitions).ToArray());
     }
 
     /// <summary>
@@ -143,10 +157,37 @@ public static class StringExtensions
         Guard.IsNotNull(self);
         Guard.IsGreaterThan(tabSize, 0);
 
-        if (tabSize < 0)
-            throw new ArgumentException($"Parameter {nameof(tabSize)} cannot be negative");
-
         return self.Replace("\t", " ".Repeat(tabSize));
+    }
+
+    /// <summary>
+    /// Pads the right side of the string with a specified character up to a total specified length.
+    /// </summary>
+    /// <param name="self">The original string to pad.</param>
+    /// <param name="totalLength">The total length of the string after padding.</param>
+    /// <param name="padCharacter">The character to pad on the right side of the string. Defaults to a space character if not specified.</param>
+    /// <returns>A new string that is right-padded with the <paramref name="padCharacter"/> up to the <paramref name="totalLength"/>.</returns>
+    public static string PadRight(this string self, int totalLength, char padCharacter = ' ')
+    {
+        Guard.IsNotNull(self);
+        Guard.IsGreaterThan(totalLength, 0);
+
+        return self + padCharacter.Repeat(Math.Max(totalLength - self.Length, 0));
+    }
+
+    /// <summary>
+    /// Pads the left side of the string with a specified character up to a total specified length.
+    /// </summary>
+    /// <param name="self">The original string to pad.</param>
+    /// <param name="totalLength">The total length of the string after padding.</param>
+    /// <param name="padCharacter">The character to pad on the left side of the string. Defaults to a space character if not specified.</param>
+    /// <returns>A new string that is left-padded with the <paramref name="padCharacter"/> up to the <paramref name="totalLength"/>.</returns>
+    public static string PadLeft(this string self, int totalLength, char padCharacter = ' ')
+    {
+        Guard.IsNotNull(self);
+        Guard.IsGreaterThan(totalLength, 0);
+
+        return padCharacter.Repeat(Math.Max(totalLength - self.Length, 0)) + self;
     }
 
     /// <summary>

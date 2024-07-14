@@ -13,16 +13,16 @@ public static class TextReaderExtensions
     /// <summary>
     /// Iterates over lines by using <see cref="TextReader"/> instance without writing while cycle code.
     /// </summary>
-    /// <param name="readed"><see cref="TextReader"/> instance to use for retrieving lines.</param>
+    /// <param name="reader"><see cref="TextReader"/> instance to use for retrieving lines.</param>
     /// <returns><see cref="IEnumerable{String}"/> yielded lines.</returns>
     public static IEnumerable<string> EnumLines(
-        this TextReader readed
+        this TextReader reader
     )
     {
-        Guard.IsNotNull(readed);
+        Guard.IsNotNull(reader);
 
         string? line;
-        while ((line = readed.ReadLine()) != null)
+        while ((line = reader.ReadLine()) != null)
             yield return line;
     }
 
@@ -57,16 +57,16 @@ public static class TextReaderExtensions
     /// <summary>
     /// Performs <see cref="Action{String}"/> on every line while iterating over lines by using <see cref="TextReader"/> instance.
     /// </summary>
-    /// <param name="readed"><see cref="TextReader"/> instance to use for retrieving lines.</param>
+    /// <param name="reader"><see cref="TextReader"/> instance to use for retrieving lines.</param>
     /// <param name="action"><see cref="Action{String}"/> to be performed.</param>
     public static void ForEachLine(
-        this TextReader readed,
+        this TextReader reader,
         Action<string> action
     )
     {
-        Guard.IsNotNull(readed);
+        Guard.IsNotNull(reader);
         Guard.IsNotNull(action);
 
-        readed.EnumLines().ForEach(line => action(line));
+        reader.EnumLines().ForEach(line => action(line));
     }
 }

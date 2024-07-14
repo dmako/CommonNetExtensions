@@ -55,11 +55,11 @@ public static class StreamExtensions
 
     /// <summary>
     /// Asynchronously reads the bytes from the source stream and writes them to destination stream. Both streams positions are advanced by the number of bytes copied.
-    /// The required hash value is being calculated via requested hash algoritm type parameter and the total bytes read 
+    /// The required hash value is being calculated via requested hash algorithm type parameter and the total bytes read 
     /// </summary>
     /// <typeparam name="THashAlgorithm"></typeparam>
-    /// <param name="source">Source strem where to read from.</param>
-    /// <param name="destination">The destination stream to wite to.</param>
+    /// <param name="source">Source stream where to read from.</param>
+    /// <param name="destination">The destination stream to write to.</param>
     /// <param name="totalBytesRead">Action to be called with updated total number of bytes read.</param>
     /// <param name="bufferSize">The size of requested chunks.</param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>

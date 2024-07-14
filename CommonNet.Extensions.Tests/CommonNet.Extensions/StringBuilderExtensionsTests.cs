@@ -55,7 +55,8 @@ public class StringBuilderExtensionsTests
         var sb = new StringBuilder();
         var type = typeof(StringBuilderExtensionsTests);
 
-        sb.AppendIf(type.IsNotPublic, "internal")
+        sb
+            .AppendIf(type.IsNotPublic, "internal")
             .AppendIf(type.IsPublic, "public")
             .Append(' ')
             .AppendIf(type.IsClass, "class")
@@ -134,5 +135,113 @@ public class StringBuilderExtensionsTests
         var suffix = "ThisIsALongSuffix";
         var result = sb.EndsWith(suffix);
         result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void AppendLineIf_ShouldAppendValueWithNewLine_WhenConditionIsTrue()
+    {
+        var sb = new StringBuilder("Hello ");
+        var condition = true;
+        var valueToAppend = "World";
+
+        sb.AppendLineIf(condition, valueToAppend);
+
+        sb.ToString().Should().Be("Hello " + "World" + Environment.NewLine);
+    }
+
+    [Fact]
+    public void AppendLineIf_ShouldNotAppendValue_WhenConditionIsFalse()
+    {
+        var sb = new StringBuilder("Hello");
+        var condition = false;
+        var valueToAppend = "World";
+
+        sb.AppendLineIf(condition, valueToAppend);
+
+        sb.ToString().Should().Be("Hello");
+    }
+
+    [Fact]
+    public void AppendLineIf_ShouldThrow_WhenNullStringBuilderIsGiven()
+    {
+        StringBuilder sb = null!;
+        var action = () => sb.AppendLineIf(true, "World");
+
+        action.Should().ThrowExactly<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void AppendLineIf_ShouldThrow_WhenNullValueIsGiven()
+    {
+        var sb = new StringBuilder("Hello");
+        var action = () => sb.AppendLineIf(true, null!);
+
+        action.Should().ThrowExactly<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void AppendLineIf_ShouldAppendEmptyStringWithNewLine_WhenValueIsEmpty()
+    {
+        var sb = new StringBuilder("Hello");
+        var condition = true;
+
+        sb.AppendLineIf(condition, string.Empty);
+
+        sb.ToString().Should().Be("Hello" + Environment.NewLine);
+    }
+
+    [Fact]
+    public void AppendLines_ShouldAppendMultipleLines_WhenGivenMultipleStrings()
+    {
+        var sb = new StringBuilder($"Initial line{Environment.NewLine}");
+        var lines = new[] { "First line", "Second line", "Third line" };
+
+        sb.AppendLines(lines);
+
+        sb.ToString().Should().Be($"Initial line{Environment.NewLine}First line{Environment.NewLine}Second line{Environment.NewLine}Third line{Environment.NewLine}");
+    }
+
+    [Fact]
+    public void AppendLines_ShouldNotModifyStringBuilder_WhenGivenEmptyCollection()
+    {
+        var sb = new StringBuilder("Initial content");
+        var lines = Array.Empty<string>();
+
+        sb.AppendLines(lines);
+
+        sb.ToString().Should().Be("Initial content");
+    }
+
+    [Fact]
+    public void AppendLines_ShouldThrowArgumentNullException_WhenStringBuilderIsNull()
+    {
+        StringBuilder sb = null!;
+        var lines = new[] { "Some line" };
+
+        Action act = () => sb.AppendLines(lines);
+
+        act.Should().ThrowExactly<ArgumentNullException>().WithParameterName("sb");
+    }
+
+    [Fact]
+    public void AppendLines_ShouldThrowArgumentNullException_WhenLinesCollectionIsNull()
+    {
+        var sb = new StringBuilder("Initial content");
+        IEnumerable<string> lines = null!;
+
+        Action act = () => sb.AppendLines(lines);
+
+        act.Should().ThrowExactly<ArgumentNullException>().WithParameterName("lines");
+    }
+
+    [Fact]
+    public void AppendLines_ShouldHandleNewLineForSingleElement_WhenGivenSingleString()
+    {
+        var sb = new StringBuilder($"Start{Environment.NewLine}");
+        var lines = new[] { "Only line" };
+
+        sb.AppendLines(lines);
+
+        sb.ToString().Should().Be($"Start{Environment.NewLine}Only line{Environment.NewLine}");
     }
 }
