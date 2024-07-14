@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FsCheck.Xunit;
 using Xunit;
 
@@ -63,9 +62,8 @@ public class StringExtensionsTests
         action.Should().ThrowExactly<ArgumentNullException>();
         action = () => " ".Repeat(-5);
         action.Should().ThrowExactly<ArgumentOutOfRangeException>();
-        action = () => " ".Repeat(0);
-        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
 
+        " ".Repeat(0).Should().Be(string.Empty);
         "0123456789".Should().Be("0123456789".Repeat(1));
         "----------".Should().Be("-".Repeat(10));
         "00:00:00:00:00:00".Should().Be("00".Repeat(6, ":"));
@@ -165,4 +163,117 @@ public class StringExtensionsTests
         "tttt".AllIndexesOf("tT", true).ToArray().Should().BeEquivalentTo(new int[] { 0, 1, 2 });
         "test\r\nnew\r\nlines\r\n".AllIndexesOf("\r\n").ToArray().Should().BeEquivalentTo(new int[] { 4, 9, 16 });
     }
+
+    [Fact]
+    public void Char_Repeat_ZeroTimes_ReturnsEmptyString()
+    {
+        var result = 'a'.Repeat(0);
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Char_Repeat_NegativeTimes_ThrowsArgumentOutOfRangeException()
+    {
+        Action action = () => _ = 'a'.Repeat(-1);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+    }
+
+    [Fact]
+    public void Char_Repeat_PositiveTimes_ReturnsRepeatedCharacterString()
+    {
+        var result = 'a'.Repeat(5);
+        result.Should().Be("aaaaa");
+    }
+
+    [Fact]
+    public void Char_Repeat_OneTime_ReturnsSingleCharacterString()
+    {
+        var result = 'b'.Repeat(1);
+        result.Should().Be("b");
+    }
+
+    [Fact]
+    public void String_PadRight_WithDefaultSpaceCharacter()
+    {
+        var result = "test".PadRight(10);
+        result.Should().Be("test      ");
+    }
+
+    [Fact]
+    public void String_PadRight_WithCustomCharacter()
+    {
+        var result = "test".PadRight(10, '-');
+        result.Should().Be("test------");
+    }
+
+    [Fact]
+    public void String_PadRight_WithNoPaddingNeeded()
+    {
+        var result = "test".PadRight(4);
+        result.Should().Be("test");
+    }
+
+    [Fact]
+    public void String_PadRight_WithLengthLessThanString()
+    {
+        var result = "test".PadRight(2);
+        result.Should().Be("test");
+    }
+
+    [Fact]
+    public void String_PadRight_WithNullString_ThrowsArgumentNullException()
+    {
+        Action action = () => StringExtensions.PadRight(null!, 10);
+        action.Should().ThrowExactly<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void String_PadRight_WithNegativeTotalLength_ThrowsArgumentOutOfRangeException()
+    {
+        Action action = () => "test".PadRight(-1);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+    }
+
+    [Fact]
+    public void String_PadLeft_WithDefaultSpaceCharacter()
+    {
+        var result = "test".PadLeft(10);
+        result.Should().Be("      test");
+    }
+
+    [Fact]
+    public void String_PadLeft_WithCustomCharacter()
+    {
+        var result = "test".PadLeft(10, '-');
+        result.Should().Be("------test");
+    }
+
+    [Fact]
+    public void String_PadLeft_WithNoPaddingNeeded()
+    {
+        var result = "test".PadLeft(4);
+        result.Should().Be("test");
+    }
+
+    [Fact]
+    public void String_PadLeft_WithLengthLessThanString()
+    {
+        var result = "test".PadLeft(2);
+        result.Should().Be("test");
+    }
+
+    [Fact]
+    public void String_PadLeft_WithNullString_ThrowsArgumentNullException()
+    {
+        Action action = () => StringExtensions.PadLeft(null!, 10);
+        action.Should().ThrowExactly<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void String_PadLeft_WithNegativeTotalLength_ThrowsArgumentOutOfRangeException()
+    {
+        Action action = () => "test".PadLeft(-1);
+        action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+    }
+
 }

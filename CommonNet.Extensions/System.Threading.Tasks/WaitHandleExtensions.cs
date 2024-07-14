@@ -3,16 +3,16 @@
 namespace System.Threading.Tasks;
 
 /// <summary>
-/// Provides extension methods to convert WaitHandle instances to Task&lt;bool&gt; for asynchronous waiting.
+/// Provides extension methods to convert WaitHandle instances to <see cref="Task{Boolean}"/> for asynchronous waiting.
 /// </summary>
 public static class WaitHandleExtensions
 {
     /// <summary>
-    /// Converts a WaitHandle to a Task&lt;bool&gt; that completes when the WaitHandle is signaled.
+    /// Converts a WaitHandle to a <see cref="Task{Boolean}"/> that completes when the WaitHandle is signaled.
     /// </summary>
     /// <param name="handle">The WaitHandle to convert.</param>
     /// <returns>
-    /// A Task&lt;bool&gt; that completes with a value of true when the WaitHandle is signaled,
+    /// A <see cref="Task{Boolean}"/> that completes with a value of true when the WaitHandle is signaled,
     /// or false if the WaitHandle is disposed before it is signaled.
     /// </returns>
     public static Task<bool> AsTask(this WaitHandle handle)
@@ -21,12 +21,12 @@ public static class WaitHandleExtensions
     }
 
     /// <summary>
-    /// Converts a WaitHandle to a Task&lt;bool&gt; that completes when the WaitHandle is signaled or when the specified timeout is reached.
+    /// Converts a WaitHandle to a <see cref="Task{Boolean}"/> that completes when the WaitHandle is signaled or when the specified timeout is reached.
     /// </summary>
     /// <param name="handle">The WaitHandle to convert.</param>
     /// <param name="timeout">The maximum time to wait for the WaitHandle to be signaled.</param>
     /// <returns>
-    /// A Task&lt;bool&gt; that completes with a value of true when the WaitHandle is signaled,
+    /// A <see cref="Task{Boolean}"/> that completes with a value of true when the WaitHandle is signaled,
     /// false if the WaitHandle is disposed before it is signaled, or canceled if the specified timeout is reached.
     /// </returns>
     public static Task<bool> AsTask(this WaitHandle handle, TimeSpan timeout)

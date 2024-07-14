@@ -21,7 +21,7 @@ public sealed class ManualResetEventWithAwaiter : ManualResetEventSlim
     /// <summary>
     /// Waits for the specified awaiter to complete, and then resets the event.
     /// </summary>
-    /// <typeparam name="TAwaiter">The type of the awaiter implementing the ICriticalNotifyCompletion interface.</typeparam>
+    /// <typeparam name="TAwaiter">The type of the awaiter implementing the <see cref="ICriticalNotifyCompletion"/> interface.</typeparam>
     /// <param name="awaiter">The awaiter to wait for.</param>
     /// <remarks>
     /// The method first waits for the specified awaiter to complete using the UnsafeOnCompleted method.

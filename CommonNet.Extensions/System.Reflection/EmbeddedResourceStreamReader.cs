@@ -33,7 +33,7 @@ public static class EmbeddedResourceStreamExtensions
         Guard.IsNotNullOrWhiteSpace(resourceName);
 
         resourceName = ExpandResourceName(assembly, resourceName);
-        return assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException();
+        return assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException("Cannot find or resolve requested resource.");
     }
 
     /// <summary>
