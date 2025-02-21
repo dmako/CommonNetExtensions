@@ -50,4 +50,62 @@ public static class WaitHandleExtensions
         tcs.Task.ContinueWith((_, state) => ((RegisteredWaitHandle)state!).Unregister(null), registration, TaskScheduler.Default);
         return tcs.Task;
     }
+
+#if NET8_0_OR_GREATER
+
+    /// <summary>
+    /// Asynchronously waits for a <see cref="WaitHandle"/> to be signaled, with support for cancellation.
+    /// </summary>
+    /// <param name="waitHandle">The <see cref="WaitHandle"/> to wait for.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the handle to be signaled.</param>
+    /// <returns>A <see cref="Task"/> that completes when the <see cref="WaitHandle"/> is signaled or the <paramref name="cancellationToken"/> is canceled.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="waitHandle"/> is null.</exception>
+    /// <remarks>
+    /// This method registers a callback with the thread pool to wait for the <see cref="WaitHandle"/> to be signaled.
+    /// If the <paramref name="cancellationToken"/> is canceled before the handle is signaled, the returned <see cref="Task"/> will be canceled.
+    /// </remarks>
+    public static Task WaitAsync(this WaitHandle waitHandle, CancellationToken cancellationToken = default)
+    {
+        Guard.IsNotNull(waitHandle);
+
+        CancellationTokenRegistration cancellationRegistration = default;
+
+        var tcs = new TaskCompletionSource();
+        var handle = ThreadPool.RegisterWaitForSingleObject(
+            waitObject: waitHandle,
+            callBack: (o, timeout) =>
+            {
+                _ = cancellationRegistration.Unregister();
+                _ = tcs.TrySetResult();
+            },
+            state: null,
+            timeout: Timeout.InfiniteTimeSpan,
+            executeOnlyOnce: true);
+
+        if (cancellationToken.CanBeCanceled)
+        {
+            cancellationRegistration = cancellationToken.Register(() =>
+            {
+                _ = handle.Unregister(waitHandle);
+                _ = tcs.TrySetCanceled(cancellationToken);
+            });
+        }
+
+        return tcs.Task;
+    }
+
+    /// <summary>
+    /// Asynchronously waits for a <see cref="ManualResetEventSlim"/> to be set, with support for cancellation.
+    /// </summary>
+    /// <param name="manualResetEvent">The <see cref="ManualResetEventSlim"/> to wait for.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the event to be set.</param>
+    /// <returns>A <see cref="Task"/> that completes when the <see cref="ManualResetEventSlim"/> is set or the <paramref name="cancellationToken"/> is canceled.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="manualResetEvent"/> is null.</exception>
+    /// <remarks>
+    /// This method calls <see cref="WaitAsync(WaitHandle, CancellationToken)"/> with the <see cref="WaitHandle"/> of the <paramref name="manualResetEvent"/>.
+    /// </remarks>
+    public static Task WaitAsync(this ManualResetEventSlim manualResetEvent, CancellationToken cancellationToken = default)
+        => WaitAsync(manualResetEvent.WaitHandle, cancellationToken);
+
+#endif
 }
