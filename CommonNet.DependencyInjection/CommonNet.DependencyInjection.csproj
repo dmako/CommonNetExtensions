@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageDescription>Various Dependency Injectionextensions.</PackageDescription>
+    <PackageDescription>Various Dependency Injection extensions.</PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
