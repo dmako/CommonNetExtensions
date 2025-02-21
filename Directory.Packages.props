@@ -1,23 +1,26 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="CommunityToolkit.Diagnostics" Version="[8.0,)" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="FsCheck.Xunit" Version="2.16.6" />
-    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
-    <PackageVersion Include="FluentAssertions.Analyzers" Version="0.31.0" />
-    <PackageVersion Include="Serilog" Version="[3.0,)" />
-    <PackageVersion Include="System.Text.Json" Version="[6.0,)" />
+    <PackageVersion Include="AwesomeAssertions" Version="8.0.1" />
+    <PackageVersion Include="AwesomeAssertions.Analyzers" Version="0.34.1" />
+    <PackageVersion Include="Serilog" Version="[4.0,)" />
     <PackageVersion Include="xunit" Version="2.7.1" />
     <PackageVersion Include="xunit.analyzers" Version="1.12.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
-    <PackageVersion Include="Moq" Version="4.20.69" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,)" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[6.0,)" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="[8.0,)" Condition=" '$(TargetFramework)' != 'net9.0' " />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="[9.0,)" Condition=" '$(TargetFramework)' == 'net9.0' " />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[8.0,)" Condition=" '$(TargetFramework)' != 'net9.0' " />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[9.0,)" Condition=" '$(TargetFramework)' == 'net9.0' " />
+    <PackageVersion Include="System.Text.Json" Version="[8.0.5,)" Condition=" '$(TargetFramework)' != 'net9.0' " />
+    <PackageVersion Include="System.Text.Json" Version="[9.0,)" Condition=" '$(TargetFramework)' == 'net9.0' " />
     <PackageVersion Include="System.Memory" Version="4.5.5" Condition=" '$(TargetFramework)' == 'netstandard2.0'" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="[6.0,)" Condition=" '$(TargetFramework)' == 'netstandard2.0'" />
-    <PackageVersion Include="PolySharp" Version="1.13.2" Condition=" '$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="[8.0,)" Condition=" '$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageVersion Include="PolySharp" Version="1.15.0" Condition=" '$(TargetFramework)' == 'netstandard2.0'" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 </Project>

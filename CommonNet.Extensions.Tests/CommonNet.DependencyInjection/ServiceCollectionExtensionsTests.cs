@@ -70,6 +70,47 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void AddSingletonWithFactory_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services
+            .AddSingletonIf<IInheritedIface4, IInheritedIface3, IInheritedIface2, IBaseInterface1, A4_1>(true, sp => new A4_1())
+            .AddSingletonIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>(true, sp => new B4_2());
+
+        using var sp = services.BuildServiceProvider();
+
+        var iif4 = sp.GetRequiredService<IInheritedIface4>();
+        iif4.Should().NotBeNull();
+        var iif3 = sp.GetRequiredService<IInheritedIface3>();
+        iif3.Should().NotBeNull();
+        var iif2 = sp.GetRequiredService<IInheritedIface2>();
+        iif2.Should().NotBeNull();
+        var bif1 = sp.GetRequiredService<IBaseInterface1>();
+        bif1.Should().NotBeNull();
+
+        iif4.Should().Be(iif3);
+        iif3.Should().Be(iif2);
+        iif2.Should().Be(bif1);
+
+
+        var bif2 = sp.GetRequiredService<IBaseInterface2>();
+        bif2.Should().NotBeNull();
+        var bif3 = sp.GetRequiredService<IBaseInterface3>();
+        bif3.Should().NotBeNull();
+        var bif4 = sp.GetRequiredService<IBaseInterface4>();
+        bif4.Should().NotBeNull();
+        var bif5 = sp.GetRequiredService<IBaseInterface5>();
+        bif5.Should().NotBeNull();
+
+        bif2.Should().Be(bif3);
+        bif3.Should().Be(bif4);
+        bif4.Should().Be(bif5);
+
+        bif2.Should().NotBe(bif1);
+    }
+
+    [Fact]
     public void AddSingletonFact_ShouldSucceed()
     {
         var services = new ServiceCollection();

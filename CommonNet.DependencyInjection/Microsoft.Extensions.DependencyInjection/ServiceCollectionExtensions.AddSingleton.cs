@@ -210,7 +210,6 @@ public static partial class ServiceCollectionExtensions
         where TService2 : class
     {
         return services
-            //.AddSingleton<TService1>(sp => sp.GetRequiredService<TIm>)
             .AddSingleton<TService1, TImplementation>(implementationFactory)
             .AddSingleton(sp => (sp.GetRequiredService<TService1>() as TService2)!);
     }

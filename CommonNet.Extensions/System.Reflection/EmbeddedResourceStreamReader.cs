@@ -50,7 +50,7 @@ public static class EmbeddedResourceStreamExtensions
         Guard.IsNotNull(stream, nameof(resourceName));
 
         var data = new byte[stream.Length];
-        stream.Read(data, 0, data.Length);
+        _ = stream.Read(data, 0, data.Length);
         return data;
     }
 

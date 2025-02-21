@@ -63,6 +63,74 @@ public class WaitHandleExtensionsTests
 
         task.IsCanceled.Should().BeTrue();
     }
+
+
+#if NET8_0_OR_GREATER
+
+    [Fact]
+    public async Task WaitAsync_WaitHandle_Signaled_CompletesTask()
+    {
+        using var manualEvent = new ManualResetEvent(false);
+        WaitHandle waitHandle = manualEvent;
+        var cancellationToken = CancellationToken.None;
+
+        var task = waitHandle.WaitAsync(cancellationToken);
+        manualEvent.Set();
+
+        await task.Awaiting(t => t).Should().NotThrowAsync();
+    }
+
+    [Fact]
+    public async Task WaitAsync_WaitHandle_Canceled_ThrowsTaskCanceledException()
+    {
+        using var manualEvent = new ManualResetEvent(false);
+        WaitHandle waitHandle = manualEvent;
+        var cts = new CancellationTokenSource();
+
+        var task = waitHandle.WaitAsync(cts.Token);
+        cts.Cancel();
+
+        await task.Awaiting(t => t).Should().ThrowAsync<TaskCanceledException>();
+    }
+
+    [Fact]
+    public async Task WaitAsync_ManualResetEventSlim_Signaled_CompletesTask()
+    {
+
+        using var manualResetEvent = new ManualResetEventSlim(false);
+        var cancellationToken = CancellationToken.None;
+
+        var task = manualResetEvent.WaitAsync(cancellationToken);
+        manualResetEvent.Set();
+
+        await task.Awaiting(t => t).Should().NotThrowAsync();
+    }
+
+    [Fact]
+    public async Task WaitAsync_ManualResetEventSlim_Canceled_ThrowsTaskCanceledException()
+    {
+        // Arrange
+        using var manualResetEvent = new ManualResetEventSlim(false);
+        var cts = new CancellationTokenSource();
+
+        var task = manualResetEvent.WaitAsync(cts.Token);
+        cts.Cancel();
+
+        await task.Awaiting(t => t).Should().ThrowAsync<TaskCanceledException>();
+    }
+
+    [Fact]
+    public void WaitAsync_WaitHandle_Null_ThrowsArgumentNullException()
+    {
+        WaitHandle waitHandle = null!;
+        var cancellationToken = CancellationToken.None;
+
+        var func = () => waitHandle.WaitAsync(cancellationToken);
+        func.Should().ThrowAsync<ArgumentException>();
+    }
+
+#endif
+
 }
 
 #pragma warning restore xUnit1031
