@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace System.Collections.Generic;
 
@@ -25,14 +26,22 @@ public static class DictionaryExtensions
         where TKey : notnull
     {
         Guard.IsNotNull(self);
-        Guard.IsNotNull(key);
         Guard.IsNotNull(valueFactory);
 
+#if NET8_0_OR_GREATER
+        ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(self, key, out var exists);
+        if (exists)
+        {
+            return value!;
+        }
+        value = valueFactory(key);
+#else
         if (!self.TryGetValue(key, out var value))
         {
             value = valueFactory(key);
             self.Add(key, value);
         }
+#endif
         return value;
     }
 
@@ -51,13 +60,21 @@ public static class DictionaryExtensions
         where TKey : notnull
     {
         Guard.IsNotNull(self);
-        Guard.IsNotNull(key);
 
+#if NET8_0_OR_GREATER
+        ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(self, key, out var exists);
+        if (exists)
+        {
+            return value!;
+        }
+        value = newValue;
+#else
         if (!self.TryGetValue(key, out var value))
         {
             value = newValue;
             self.Add(key, value);
         }
+#endif
         return value;
     }
 
@@ -100,21 +117,32 @@ public static class DictionaryExtensions
         where TKey : notnull
     {
         Guard.IsNotNull(self);
-        Guard.IsNotNull(key);
         Guard.IsNotNull(updateValueFactory);
 
-        TValue newValue;
-        if (self.TryGetValue(key, out var oldValue))
+#if NET8_0_OR_GREATER
+        ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(self, key, out var exists);
+        if (exists)
         {
-            newValue = updateValueFactory(key, oldValue);
-            self[key] = newValue;
+            value = updateValueFactory(key, value!);
         }
         else
         {
-            newValue = addValue;
-            self.Add(key, newValue);
+            value = addValue;
         }
-        return newValue;
+#else
+        TValue value;
+        if (self.TryGetValue(key, out var oldValue))
+        {
+            value = updateValueFactory(key, oldValue);
+            self[key] = value;
+        }
+        else
+        {
+            value = addValue;
+            self.Add(key, value);
+        }
+#endif
+        return value;
     }
 
     /// <summary>
@@ -135,22 +163,33 @@ public static class DictionaryExtensions
         where TKey : notnull
     {
         Guard.IsNotNull(self);
-        Guard.IsNotNull(key);
         Guard.IsNotNull(addValueFactory);
         Guard.IsNotNull(updateValueFactory);
 
-        TValue newValue;
-        if (self.TryGetValue(key, out var oldValue))
+#if NET8_0_OR_GREATER
+        ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(self, key, out var exists);
+        if (exists)
         {
-            newValue = updateValueFactory(key, oldValue);
-            self[key] = newValue;
+            value = updateValueFactory(key, value!);
         }
         else
         {
-            newValue = addValueFactory(key);
-            self.Add(key, newValue);
+            value = addValueFactory(key);
         }
-        return newValue;
+#else
+        TValue value;
+        if (self.TryGetValue(key, out var oldValue))
+        {
+            value = updateValueFactory(key, oldValue);
+            self[key] = value;
+        }
+        else
+        {
+            value = addValueFactory(key);
+            self.Add(key, value);
+        }
+#endif
+        return value;
     }
 
     /// <summary>
