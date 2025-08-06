@@ -6,6 +6,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetArchitecture Condition=" '$(TargetFramework)' == 'net48' ">x64</TargetArchitecture>
     <RuntimeIdentifier Condition=" '$(TargetFramework)' == 'net48' ">win-x64</RuntimeIdentifier>
+    <NoWarn>$(NoWarn);TUnit0046</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
