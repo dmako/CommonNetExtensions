@@ -4,6 +4,8 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">net8.0;net9.0;net48</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetArchitecture Condition=" '$(TargetFramework)' == 'net48' ">x64</TargetArchitecture>
+    <RuntimeIdentifier Condition=" '$(TargetFramework)' == 'net48' ">win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
