@@ -1,12 +1,9 @@
-﻿using FluentAssertions;
-using Xunit;
-
-namespace CommonNet.Extensions.Tests;
+﻿namespace CommonNet.Extensions.Tests;
 
 public class ManualResetEventWithAwaiterTests
 {
-    [Fact]
-    public void ManualResetEventWithAwaiter_ShouldWaitForAwaiterAndReset()
+    [Test]
+    public async Task ManualResetEventWithAwaiter_ShouldWaitForAwaiterAndReset()
     {
         var count = 0;
         var asyncFunc = async () => { await Task.Delay(TimeSpan.FromMilliseconds(1)); count++; };
@@ -15,15 +12,21 @@ public class ManualResetEventWithAwaiterTests
         var awaiter = asyncFunc().GetAwaiter();
         mre.Wait(awaiter);
 
-        awaiter.IsCompleted.Should().BeTrue();
-        mre.IsSet.Should().BeFalse();
-        count.Should().Be(1);
+        await Assert.That(awaiter.IsCompleted)
+            .IsTrue();
+        await Assert.That(mre.IsSet)
+            .IsFalse();
+        await Assert.That(count)
+            .IsEqualTo(1);
 
         awaiter = asyncFunc().GetAwaiter();
         mre.Wait(awaiter);
 
-        awaiter.IsCompleted.Should().BeTrue();
-        mre.IsSet.Should().BeFalse();
-        count.Should().Be(2);
+        await Assert.That(awaiter.IsCompleted)
+            .IsTrue();
+        await Assert.That(mre.IsSet)
+            .IsFalse();
+        await Assert.That(count)
+            .IsEqualTo(2);
     }
 }

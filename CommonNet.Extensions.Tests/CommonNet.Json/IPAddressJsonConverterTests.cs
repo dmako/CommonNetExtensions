@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
-using FluentAssertions;
-using Xunit;
 
 namespace CommonNet.Json.Tests;
 
@@ -10,19 +8,21 @@ public class IPAddressJsonConverterTests
 {
     private readonly IPAddressJsonConverter _converter = new IPAddressJsonConverter();
 
-    [Fact]
-    public void CanConvert_Should_Return_True_For_IPAddress_Type()
+    [Test]
+    public async Task CanConvert_Should_Return_True_For_IPAddress_Type()
     {
         var result = _converter.CanConvert(typeof(IPAddress));
-        result.Should().BeTrue();
+        await Assert.That(result)
+            .IsTrue();
         result = _converter.CanConvert(typeof(EndPoint));
-        result.Should().BeFalse();
+        await Assert.That(result)
+            .IsFalse();
     }
 
-    [Theory]
-    [InlineData("192.168.1.1")]
-    [InlineData("::1")]
-    public void Read_Should_Convert_Json_To_IPAddress(string jsonValue)
+    [Test]
+    [Arguments("192.168.1.1")]
+    [Arguments("::1")]
+    public async Task Read_Should_Convert_Json_To_IPAddress(string jsonValue)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
         var options = new JsonSerializerOptions();
@@ -30,12 +30,13 @@ public class IPAddressJsonConverterTests
         reader.Read();
         var result = _converter.Read(ref reader, typeof(IPAddress), options);
 
-        result.Should().NotBeNull();
-        result!.ToString().Should().Be(jsonValue);
+        await Assert.That(result)
+            .IsNotNull()
+            .And.IsEqualTo(IPAddress.Parse(jsonValue));
     }
 
-    [Fact]
-    public void Read_Should_Handle_Null_Value()
+    [Test]
+    public async Task Read_Should_Handle_Null_Value()
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes("null"));
         var options = new JsonSerializerOptions();
@@ -43,13 +44,14 @@ public class IPAddressJsonConverterTests
         reader.Read();
         var result = _converter.Read(ref reader, typeof(IPAddress), options);
 
-        result.Should().BeNull();
+        await Assert.That(result)
+            .IsNull();
     }
 
-    [Theory]
-    [InlineData("not_an_ip_address")]
-    [InlineData("")]
-    public void Read_Should_Handle_Invalid_IPAddress(string jsonValue)
+    [Test]
+    [Arguments("not_an_ip_address")]
+    [Arguments("")]
+    public async Task Read_Should_Handle_Invalid_IPAddress(string jsonValue)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
         var options = new JsonSerializerOptions();
@@ -64,13 +66,14 @@ public class IPAddressJsonConverterTests
         {
             exceptionType = ex.GetType();
         }
-        exceptionType.Should().Be(typeof(JsonException));
+        await Assert.That(exceptionType)
+            .IsEqualTo(typeof(JsonException));
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("192.168.1.1")]
-    public void Write_Should_Convert_IPAddress_To_Json(string? ipAddressString)
+    [Test]
+    [Arguments(null)]
+    [Arguments("192.168.1.1")]
+    public async Task Write_Should_Convert_IPAddress_To_Json(string? ipAddressString)
     {
         using var ms = new MemoryStream();
         var writer = new Utf8JsonWriter(ms);
@@ -83,11 +86,13 @@ public class IPAddressJsonConverterTests
         var json = Encoding.UTF8.GetString(ms.ToArray());
         if (ipAddressString != null)
         {
-            json.Should().Be($"\"{ipAddressString}\"");
+            await Assert.That(json)
+                .IsEqualTo($"\"{ipAddressString}\"");
         }
         else
         {
-            json.Should().Be("null");
+            await Assert.That(json)
+                .IsEqualTo("null");
         }
     }
 }

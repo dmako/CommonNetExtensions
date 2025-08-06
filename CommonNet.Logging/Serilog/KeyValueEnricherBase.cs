@@ -19,7 +19,7 @@ public abstract class KeyValueEnricherBase : ILogEventEnricher
     /// <summary>
     /// Base class constructor.
     /// </summary>
-    /// <param name="name">Propetry name.</param>
+    /// <param name="name">Property name.</param>
     protected KeyValueEnricherBase(string name)
     {
         Guard.IsNotNullOrWhiteSpace(name);

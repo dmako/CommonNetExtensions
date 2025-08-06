@@ -15,20 +15,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="FsCheck.Xunit" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="AwesomeAssertions" />
-    <PackageReference Include="AwesomeAssertions.Analyzers">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="TUnit" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Condition=" '$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Condition=" '$(TargetFramework)' == 'net48'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,12 +28,6 @@
     <ProjectReference Include="..\CommonNet.Extensions\CommonNet.Extensions.csproj" />
     <ProjectReference Include="..\CommonNet.Json\CommonNet.Json.csproj" />
     <ProjectReference Include="..\CommonNet.Logging\CommonNet.Logging.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="app.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

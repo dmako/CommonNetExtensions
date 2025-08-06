@@ -1,29 +1,30 @@
-﻿using System.Data;
-using FluentAssertions;
-using FsCheck.Xunit;
-using Xunit;
+﻿using System.Text;
+using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Extensions.Tests;
 
 public class EnumerableExtensionsTests
 {
-    [Fact]
-    public void ForEach_ArgumentsConstraintsTests_ShouldSucceed()
+    [Test]
+    public async Task ForEach_ArgumentsConstraintsTests_ShouldSucceed()
     {
         var data = Array.Empty<object>();
 
-        Action action = () => ((object[])null!).ForEach(o => { });
-        action.Should().ThrowExactly<ArgumentNullException>();
-        action = () => data.ForEach(null!);
-        action.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => data.ForEach(null!))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Property(MaxTest = 100, DisplayName = nameof(ForEach_ShouldEnumerateAllValues_PropertyTest), QuietOnSuccess = true)]
-    public void ForEach_ShouldEnumerateAllValues_PropertyTest(int[] data)
+    [Test]
+#pragma warning disable TUnit0001 // Invalid Data for Tests
+    [IntArrayGenerator(100, AllowEmpty: false)]
+#pragma warning restore TUnit0001 // Invalid Data for Tests
+    [ArgumentDisplayFormatter<EnumerableFormatter>]
+    public async Task ForEach_ShouldEnumerateAllValues_PropertyTest(int[] data)
     {
-        var sum = 0;
-        data.ForEach(v => sum += v);
-        sum.Should().Be(data.Sum());
+        StringBuilder sb = new();
+        data.ForEach(v => sb.Append(v));
+        await Assert.That(() => sb.ToString())
+            .IsEqualTo(string.Join(string.Empty, data.Select(v => v.ToString())));
     }
 
     private class Person
@@ -32,68 +33,71 @@ public class EnumerableExtensionsTests
         public int Age { get; set; }
     }
 
-    [Fact]
-    public void Median_WithDoubleSelector_ReturnsCorrectMedian()
+    [Test]
+    public async Task Median_WithDoubleSelector_ReturnsCorrectMedian()
     {
         var people = new List<Person>
         {
-            new Person { Name = "Alice", Age = 25 },
-            new Person { Name = "Bob", Age = 30 },
-            new Person { Name = "Charlie", Age = 40 }
+            new() { Name = "Alice", Age = 25 },
+            new() { Name = "Bob", Age = 30 },
+            new() { Name = "Charlie", Age = 40 }
         };
-        var medianAge = people.Median(person => person.Age);
-        medianAge.Should().Be(30.0);
+        await Assert.That(people.Median(person => person.Age))
+            .IsEqualTo(30.0);
+
     }
 
-    [Fact]
-    public void Median_WithDoubleSequence_ReturnsCorrectMedian()
+    [Test]
+    public async Task Median_WithDoubleSequence_ReturnsCorrectMedian()
     {
         // odd case
-        var numbers = new List<double> { 1.0, 2.0, 3.0, 4.0, 5.0 };
-        var median = numbers.Median();
-        median.Should().Be(3.0);
+        List<double> numbers = [1.0, 2.0, 3.0, 4.0, 5.0];
+        await Assert.That(numbers.Median())
+            .IsEqualTo(3.0);
 
         // even case
-        numbers = new List<double> { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-        median = numbers.Median();
-        median.Should().Be(3.5);
+        numbers = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
+        await Assert.That(numbers.Median())
+            .IsEqualTo(3.5);
     }
 
-    [Fact]
-    public void Median_WithIntSequence_ReturnsCorrectMedian()
+    [Test]
+    public async Task Median_WithIntSequence_ReturnsCorrectMedian()
     {
         // odd case
-        var numbers = new List<int> { 1, 2, 3, 4, 5 };
+        List<int> numbers = [1, 2, 3, 4, 5];
         var median = numbers.Median();
-        median.Should().Be(3);
+        await Assert.That(median)
+            .IsEqualTo(3);
 
         // even case
-        numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
+        numbers = [1, 2, 3, 4, 5, 6];
         median = numbers.Median();
-        median.Should().Be(3.5);
+        await Assert.That(median)
+            .IsEqualTo(3.5);
     }
 
-    [Fact]
-    public void Median_EmptySequence_ThrowsArgumentException()
+    [Test]
+    public async Task Median_EmptySequence_ThrowsArgumentException()
     {
         var emptyList = new List<int>();
-        var act = () => emptyList.Median();
-        act.Should().ThrowExactly<ArgumentException>();
+        await Assert.That(() => emptyList.Median())
+            .ThrowsExactly<ArgumentException>();
     }
 
-    [Fact]
-    public void Median_NullSelector_ThrowsArgumentNullException()
+    [Test]
+    public async Task Median_NullSelector_ThrowsArgumentNullException()
     {
-        var people = new List<Person> { new Person { Name = "Alice", Age = 25 } };
-        var act = () => people.Median(null!);
-        act.Should().ThrowExactly<ArgumentNullException>();
+        var people = new List<Person> { new() { Name = "Alice", Age = 25 } };
+        await Assert.That(() => people.Median(null!))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
-    public void Median_NullSequence_ThrowsArgumentNullException()
+    [Test]
+    public async Task Median_NullSequence_ThrowsArgumentNullException()
     {
         IEnumerable<double> nullSequence = null!;
-        var act = () => nullSequence.Median();
-        act.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => nullSequence.Median())
+            .ThrowsExactly<ArgumentNullException>();
     }
 }

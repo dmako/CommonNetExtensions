@@ -1,28 +1,26 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using FluentAssertions;
 using Moq;
-using Xunit;
 
 namespace CommonNet.Extensions.Tests;
 
 public class StreamExtensionsTests
 {
-    [Fact]
+    [Test]
     public async Task ReadChunksAsync_ShouldEnumerateStreamContentInChunks()
     {
 
         var data = new byte[64];
-        var random = new System.Random();
+        var random = new Random();
         random.NextBytes(data);
 
         var bufferSize = 16;
         var expectedChunks = new List<ReadOnlyMemory<byte>>
         {
-            new ReadOnlyMemory<byte>(data, 0, bufferSize),
-            new ReadOnlyMemory<byte>(data, bufferSize, bufferSize),
-            new ReadOnlyMemory<byte>(data, bufferSize * 2, bufferSize),
-            new ReadOnlyMemory<byte>(data, bufferSize * 3, bufferSize),
+            new(data, 0, bufferSize),
+            new(data, bufferSize, bufferSize),
+            new(data, bufferSize * 2, bufferSize),
+            new(data, bufferSize * 3, bufferSize),
         };
 
         var stream = new MemoryStream(data);
@@ -32,14 +30,16 @@ public class StreamExtensionsTests
             result.Add(chunk.ToArray());
         }
 
-        result.Should().HaveCount(expectedChunks.Count);
+        await Assert.That(result)
+            .HasCount(expectedChunks.Count);
         for (var i = 0; i < expectedChunks.Count; i++)
         {
-            result[i].ToArray().Should().BeEquivalentTo(expectedChunks[i].ToArray());
+            await Assert.That(result[i].ToArray())
+                .IsEquivalentTo(expectedChunks[i].ToArray());
         }
     }
 
-    [Fact]
+    [Test]
     public async Task ReadChunksAsync_ShouldReturnEmptyResult_WhenStreamIsEmpty()
     {
         var mockStream = new Mock<Stream>();
@@ -53,10 +53,11 @@ public class StreamExtensionsTests
             result.Add(chunk);
         }
 
-        result.Should().BeEmpty();
+        await Assert.That(result)
+            .IsEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task ReadChunksAsync_ShouldUseDefaultBufferSize_WhenBufferSizeIsNotProvided()
     {
         var mockStream = new Mock<Stream>();
@@ -102,11 +103,13 @@ public class StreamExtensionsTests
         }
 
         var defaultBufferSize = 0x10_000;
-        result.Should().ContainSingle();
-        result[0].Length.Should().Be(defaultBufferSize);
+        await Assert.That(result)
+            .HasSingleItem();
+        await Assert.That(result[0].Length)
+            .IsEqualTo(defaultBufferSize);
     }
 
-    [Fact]
+    [Test]
     public async Task CopyToWithProgressAndHashAsync_ShouldCopyStreamAndCalculateHash()
     {
         var sourceData = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90 };
@@ -122,12 +125,15 @@ public class StreamExtensionsTests
 
         var hashValue = await sourceStream.CopyToWithProgressAndHashAsync<SHA256>(destinationStream, updateTotalBytesRead, bufferSize);
 
-        totalBytesRead.Should().Be(sourceData.Length);
-        destinationData.Should().BeEquivalentTo(sourceData);
-        hashValue.Should().Be("6C450E037E79B76F231A71A22FF40403F7D9B74B15E014E52FE1156D3666C3E6");
+        await Assert.That(totalBytesRead)
+            .IsEqualTo(sourceData.Length);
+        await Assert.That(destinationData)
+            .IsEquivalentTo(sourceData);
+        await Assert.That(hashValue)
+            .IsEqualTo("6C450E037E79B76F231A71A22FF40403F7D9B74B15E014E52FE1156D3666C3E6");
     }
 
-    [Fact]
+    [Test]
     public async Task CopyToWithProgressAndHashAsync_ShouldReturnEmptyHash_WhenSourceStreamIsEmpty()
     {
         var emptyData = Array.Empty<byte>();
@@ -141,51 +147,58 @@ public class StreamExtensionsTests
 
         var hashValue = await sourceStream.CopyToWithProgressAndHashAsync<SHA256>(destinationStream, updateTotalBytesRead, bufferSize);
 
-        totalBytesRead.Should().Be(0);
-        hashValue.Should().Be("E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855");
+        await Assert.That(totalBytesRead)
+            .IsEqualTo(0);
+        await Assert.That(hashValue)
+            .IsEqualTo("E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855");
     }
 
-    public static readonly IList<object[]> ComputeHashData =
-    new List<object[]>
+
+    public record HashTestData(string InputDataString, string ExpectedMd5, string ExpectedSha1, string ExpectedSha256, string ExpectedSha512);
+
+    public static IEnumerable<HashTestData> GetTestComputeHashData()
     {
-        new object[]
-        {
+        yield return new(
             "Hello, hash me!!!",
             "39951640B6DA39AB3B97DE3F5B48D79B",
             "AFE6B43272DD26D18322D01A1FD5582E2C1187C2",
             "C5BA80CBB4A5A5CE07EE8F42325F28C8AF1EE6DAF0DBEC1B1F46C025CDC44477",
             "F38E5A0503DF8EC4AE5D2BF2283ECD74CDE2C6993533D0D91E359DAE1B5A22533B129F260D9B3D26EFC966AAA5CA620F734E85A66490376E5794F24858B55788"
-        },
-        new object[]
-        {
+        );
+        yield return new(
             "The quick brown fox jumps over the lazy dog. 1234567890",
             "BFB85E401A205CDE01D17164BD3DE689",
             "3A6CD59F35D9C8A5E202D904CBCEDD8175CA1632",
             "A4DF915F4220CAF6152E8B5ADAEC19D015AAF2B540F8D565B19885A8EF186A36",
             "FA8418498F96F374BA634FFAC226724BD7E950046E63161C8C149FC3C2E26BD8D7FF8D6C4588A48551F86CE815532004F01F8C4CDDEC3EEB95B4982155CA5F9F"
-        }
-    };
+        );
+    }
 
-    [Theory]
-    [MemberData(nameof(ComputeHashData))]
-    public async Task ComputeHashAsync_ShouldComputeCorrectHashes_ForGivenData(string inputDataString, string expectedMd5, string expectedSha1, string expectedSha256, string expectedSha512)
+    [Test]
+    [MethodDataSource(nameof(GetTestComputeHashData))]
+    public async Task ComputeHashAsync_ShouldComputeCorrectHashes_ForGivenData(HashTestData values)
     {
+        var (inputDataString, expectedMd5, expectedSha1, expectedSha256, expectedSha512) = values;
+
         using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputDataString));
 
         var md5 = await inputStream.ComputeHashAsync<MD5>();
-        md5.Should().Be(expectedMd5);
+        await Assert.That(md5)
+            .IsEqualTo(expectedMd5);
 
         inputStream.Position = 0;
         var sha1 = await inputStream.ComputeHashAsync<SHA1>();
-        sha1.Should().Be(expectedSha1);
+        await Assert.That(sha1)
+            .IsEqualTo(expectedSha1);
 
         inputStream.Position = 0;
         var sha256 = await inputStream.ComputeHashAsync<SHA256>();
-        sha256.Should().Be(expectedSha256);
+        await Assert.That(sha256)
+            .IsEqualTo(expectedSha256);
 
         inputStream.Position = 0;
         var sha512 = await inputStream.ComputeHashAsync<SHA512>();
-        sha512.Should().Be(expectedSha512);
+        await Assert.That(sha512)
+            .IsEqualTo(expectedSha512);
     }
-
 }

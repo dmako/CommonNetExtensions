@@ -1,7 +1,5 @@
 ﻿using System.Text;
 using System.Text.Json;
-using FluentAssertions;
-using Xunit;
 
 namespace CommonNet.Json.Tests;
 
@@ -9,20 +7,22 @@ public class AbsoluteUriJsonConverterTests
 {
     private readonly AbsoluteUriJsonConverter _converter = new();
 
-    [Fact]
-    public void CanConvert_Should_Return_True_For_Uri_Type()
+    [Test]
+    public async Task CanConvert_Should_Return_True_For_Uri_Type()
     {
         var result = _converter.CanConvert(typeof(Uri));
-        result.Should().BeTrue();
+        await Assert.That(result)
+            .IsTrue();
         result = _converter.CanConvert(typeof(UriBuilder));
-        result.Should().BeFalse();
+        await Assert.That(result)
+            .IsFalse();
     }
 
-    [Theory]
-    [InlineData("https://example.com")]
-    [InlineData("file:///path/to/resource")]
-    [InlineData("https://example.com/?someparam=somevalue")]
-    public void Read_Should_Convert_Json_To_Uri(string jsonValue)
+    [Test]
+    [Arguments("https://example.com")]
+    [Arguments("file:///path/to/resource")]
+    [Arguments("https://example.com/?someparam=somevalue")]
+    public async Task Read_Should_Convert_Json_To_Uri(string jsonValue)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
         var options = new JsonSerializerOptions();
@@ -30,12 +30,14 @@ public class AbsoluteUriJsonConverterTests
         reader.Read();
         var result = _converter.Read(ref reader, typeof(Uri), options);
 
-        result.Should().NotBeNull();
-        result!.OriginalString.Should().Be(jsonValue);
+        await Assert.That(result)
+            .IsNotNull();
+        await Assert.That(result!.OriginalString)
+            .IsEqualTo(jsonValue);
     }
 
-    [Fact]
-    public void Read_Should_Handle_Null_Value()
+    [Test]
+    public async Task Read_Should_Handle_Null_Value()
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes("null"));
         var options = new JsonSerializerOptions();
@@ -43,13 +45,14 @@ public class AbsoluteUriJsonConverterTests
         reader.Read();
         var result = _converter.Read(ref reader, typeof(Uri), options);
 
-        result.Should().BeNull();
+        await Assert.That(result)
+            .IsNull();
     }
 
-    [Theory]
-    [InlineData("not_a_valid_uri:")]
-    [InlineData("     ")]
-    public void Read_Should_Handle_Invalid_Uri(string jsonValue)
+    [Test]
+    [Arguments("not_a_valid_uri:")]
+    [Arguments("     ")]
+    public async Task Read_Should_Handle_Invalid_Uri(string jsonValue)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
         var options = new JsonSerializerOptions();
@@ -64,13 +67,14 @@ public class AbsoluteUriJsonConverterTests
         {
             exceptionType = ex.GetType();
         }
-        exceptionType.Should().Be(typeof(JsonException));
+        await Assert.That(exceptionType)
+            .IsEqualTo(typeof(JsonException));
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("https://example.com")]
-    public void Write_Should_Convert_Uri_To_Json(string? uriString)
+    [Test]
+    [Arguments(null)]
+    [Arguments("https://example.com")]
+    public async Task Write_Should_Convert_Uri_To_Json(string? uriString)
     {
         using var ms = new MemoryStream();
         var writer = new Utf8JsonWriter(ms);
@@ -84,11 +88,13 @@ public class AbsoluteUriJsonConverterTests
         var json = Encoding.UTF8.GetString(ms.ToArray());
         if (uriString is not null)
         {
-            json.Should().Be($"\"{uriString}\"");
+            await Assert.That(json)
+                .IsEqualTo($"\"{uriString}\"");
         }
         else
         {
-            json.Should().Be("null");
+            await Assert.That(json)
+                .IsEqualTo("null");
         }
     }
 }

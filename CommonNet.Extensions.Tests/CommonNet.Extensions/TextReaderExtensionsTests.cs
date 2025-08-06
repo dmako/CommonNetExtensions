@@ -1,47 +1,49 @@
-﻿using FluentAssertions;
-using FsCheck.Xunit;
-using Xunit;
+﻿using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Extensions.Tests;
 
 public class TextReaderExtensionsTests
 {
-    [Fact]
-    public void TextReader_BasicTests()
+    [Test]
+    public async Task TextReader_BasicTests()
     {
         const StreamReader? nullReader = null;
-        Action action = () => nullReader!.ForEachLine(l => { });
-        action.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => nullReader!.ForEachLine(l => { }))
+            .ThrowsExactly<ArgumentNullException>();
 
         using var reader = new StreamReader(new MemoryStream());
-        action = () => reader.ForEachLine(null!);
-        action.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => reader.ForEachLine(null!))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(EnumLines_ShouldEnumerateLines_PropertyBased), QuietOnSuccess = true)]
-    public void EnumLines_ShouldEnumerateLines_PropertyBased(string[] data)
+    [Test]
+    [TextBlockGenerator(100)]
+    [ArgumentDisplayFormatter<TextBlockFormatter>]
+    public async Task EnumLines_ShouldEnumerateLines_PropertyBased(string[] data)
     {
         var i = 0;
         var len = data.Length > 0 && data[^1].Length == 0 ? data.Length - 1 : data.Length;
         using var sr = new StringReader(string.Join("\n", data));
         foreach (var line in sr.EnumLines())
         {
-            line.Should().Be(data[i]);
+            await Assert.That(line)
+                .IsEqualTo(data[i]);
             i++;
         }
-        i.Should().Be(len);
+        await Assert.That(i)
+            .IsEqualTo(len);
     }
 
-    [Fact]
+    [Test]
     public async Task EnumLinesAsync_ShouldThrow_WhenNullTextReaderIsGiven()
     {
         TextReader reader = null!;
         var enumerator = reader.EnumLinesAsync().GetAsyncEnumerator();
-        var func = async () => await enumerator.MoveNextAsync(); ;
-        await func.Should().ThrowExactlyAsync<ArgumentNullException>();
+        await Assert.That(async () => await enumerator.MoveNextAsync())
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
+    [Test]
     public async Task EnumLinesAsync_ShouldEnumerateLines()
     {
         var textToRead = "Line 1\nLine 2\nLine 3\n";
@@ -53,24 +55,28 @@ public class TextReaderExtensionsTests
             result.Add(line);
         }
         var expectedLines = textToRead.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        result.Should().BeEquivalentTo(expectedLines);
+        await Assert.That(result).IsEquivalentTo(expectedLines);
     }
 
-    [Property(MaxTest = 100, Arbitrary = new[] { typeof(NonNullNoCrLfStringArbitrary) }, DisplayName = nameof(EnumLinesAsync_ShouldEnumerateLines_PropertyBased), QuietOnSuccess = true)]
-    public void EnumLinesAsync_ShouldEnumerateLines_PropertyBased(string[] data)
+    [Test]
+    [TextBlockGenerator(100)]
+    [ArgumentDisplayFormatter<TextBlockFormatter>]
+    public async Task EnumLinesAsync_ShouldEnumerateLines_PropertyBased(string[] data)
     {
         var i = 0;
         var len = data.Length > 0 && data[^1].Length == 0 ? data.Length - 1 : data.Length;
         using var reader = new StringReader(string.Join("\n", data));
         foreach (var line in reader.EnumLinesAsync().ToBlockingEnumerable())
         {
-            line.Should().Be(data[i]);
+            await Assert.That(line)
+                .IsEqualTo(data[i]);
             i++;
         }
-        i.Should().Be(len);
+        await Assert.That(i)
+            .IsEqualTo(len);
     }
 
-    [Fact]
+    [Test]
     public async Task EnumLinesAsync_ShouldReturnEmptyEnumerableForEmptyReader()
     {
         using var reader = new StringReader(string.Empty);
@@ -79,10 +85,11 @@ public class TextReaderExtensionsTests
         {
             result.Add(line);
         }
-        result.Should().BeEmpty();
+        await Assert.That(result)
+            .IsEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task EnumLinesAsync_ShouldStopEnumerationOnCancellation()
     {
         var cancellationTokenSource = new CancellationTokenSource();
@@ -92,16 +99,17 @@ public class TextReaderExtensionsTests
         var enumerator = reader.EnumLinesAsync(cancellationTokenSource.Token).GetAsyncEnumerator();
 
         var moveNextResult = await enumerator.MoveNextAsync();
-        moveNextResult.Should().BeTrue();
+        await Assert.That(moveNextResult)
+            .IsTrue();
 
         cancellationTokenSource.Cancel();
 
-        var func = async () => await enumerator.MoveNextAsync();
-        await func.Should().ThrowAsync<OperationCanceledException>();
+        await Assert.That(async () => await enumerator.MoveNextAsync())
+            .Throws<OperationCanceledException>();
     }
 
-    [Fact]
-    public void ForeachLine_ShouldPerformActionForEachLine()
+    [Test]
+    public async Task ForeachLine_ShouldPerformActionForEachLine()
     {
         var textToRead = "Line 1\nLine 2\nLine 3\n";
         using var reader = new StringReader(textToRead);
@@ -109,7 +117,8 @@ public class TextReaderExtensionsTests
         var result = new List<string>();
         reader.ForEachLine(result.Add);
         var expectedLines = textToRead.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        result.Should().BeEquivalentTo(expectedLines);
+        await Assert.That(result)
+            .IsEquivalentTo(expectedLines);
     }
 }
 

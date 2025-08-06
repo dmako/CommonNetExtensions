@@ -1,56 +1,55 @@
 ﻿using System.Text;
-using FluentAssertions;
-using Xunit;
+using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Extensions.Tests;
 
 public class StringBuilderExtensionsTests
 {
-    [Fact]
-    public void AppendIf_ShouldThrow_WhenNullStringBuilderIsGiven()
+    [Test]
+    public async Task AppendIf_ShouldThrow_WhenNullStringBuilderIsGiven()
     {
         StringBuilder sb = null!;
-        var fnc = () => sb.AppendIf(true, "null");
-        fnc.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => sb.AppendIf(true, "null"))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
-    public void AppendIf_ShouldAppendValue_WhenConditionIsTrue()
+    [Test]
+    public async Task AppendIf_ShouldAppendValue_WhenConditionIsTrue()
     {
         var sb = new StringBuilder("Hello, ");
         var condition = true;
         var valueToAppend = "World!";
 
         sb.AppendIf(condition, valueToAppend);
-
-        sb.ToString().Should().Be("Hello, World!");
+        await Assert.That(sb.ToString())
+            .IsEqualTo("Hello, World!");
     }
 
-    [Fact]
-    public void AppendIf_ShouldNotAppendValue_WhenConditionIsFalse()
+    [Test]
+    public async Task AppendIf_ShouldNotAppendValue_WhenConditionIsFalse()
     {
         var sb = new StringBuilder("Hello, ");
         var condition = false;
         var valueToAppend = "World!";
 
         sb.AppendIf(condition, valueToAppend);
-
-        sb.ToString().Should().Be("Hello, ");
+        await Assert.That(sb.ToString())
+            .IsEqualTo("Hello, ");
     }
 
-    [Fact]
-    public void AppendIf_ShouldThrow_WhenInvalidValueIsGiven()
+    [Test]
+    public async Task AppendIf_ShouldThrow_WhenInvalidValueIsGiven()
     {
         var sb = new StringBuilder();
-        var fnc = () => sb.AppendIf(true, null!);
-        fnc.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => sb.AppendIf(true, null!))
+            .ThrowsExactly<ArgumentNullException>();
 
-        fnc = () => sb.AppendIf(true, string.Empty);
-        fnc.Should().ThrowExactly<ArgumentException>();
+        await Assert.That(() => sb.AppendIf(true, string.Empty))
+            .ThrowsExactly<ArgumentException>();
     }
 
-    [Fact]
-    public void AppendIf_TypeConstructExampleShouldSucceed()
+    [Test]
+    public async Task AppendIf_TypeConstructExampleShouldSucceed()
     {
         var sb = new StringBuilder();
         var type = typeof(StringBuilderExtensionsTests);
@@ -65,80 +64,87 @@ public class StringBuilderExtensionsTests
             .Append(type.Name);
 
         var result = sb.ToString();
-        result.Should().Be($"public class {nameof(StringBuilderExtensionsTests)}");
+        await Assert.That(result)
+            .IsEqualTo($"public class {nameof(StringBuilderExtensionsTests)}");
     }
 
 
-    [Fact]
-    public void EndsWith_ShouldReturnTrue_WhenSuffixIsPresent()
+    [Test]
+    public async Task EndsWith_ShouldReturnTrue_WhenSuffixIsPresent()
     {
         var sb = new StringBuilder("Hello, World!");
         var suffix = "World!";
         var result = sb.EndsWith(suffix);
-        result.Should().BeTrue();
+        await Assert.That(result)
+            .IsTrue();
 
         sb.Clear().Append("Hello\r\n");
         suffix = "\r\n";
         result = sb.EndsWith(suffix);
-        result.Should().BeTrue();
+        await Assert.That(result)
+            .IsTrue();
     }
 
-    [Fact]
-    public void EndsWith_ShouldReturnFalse_WhenSuffixIsNotPresent()
+    [Test]
+    public async Task EndsWith_ShouldReturnFalse_WhenSuffixIsNotPresent()
     {
         var sb = new StringBuilder("Hello, World!");
         var suffix = "Universe!";
         var result = sb.EndsWith(suffix);
-        result.Should().BeFalse();
+        await Assert.That(result)
+            .IsFalse();
     }
 
-    [Fact]
-    public void EndsWith_ShouldReturnTrue_WhenSuffixIsPresentWithCaseInsensitiveComparison()
+    [Test]
+    public async Task EndsWith_ShouldReturnTrue_WhenSuffixIsPresentWithCaseInsensitiveComparison()
     {
         var sb = new StringBuilder("Hello, World!");
         var suffix = "world!";
         var result = sb.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase);
-        result.Should().BeTrue();
+        await Assert.That(result)
+            .IsTrue();
     }
 
-    [Fact]
-    public void EndsWith_ShouldReturnFalse_WhenSuffixIsNotPresentWithCaseInsensitiveComparison()
+    [Test]
+    public async Task EndsWith_ShouldReturnFalse_WhenSuffixIsNotPresentWithCaseInsensitiveComparison()
     {
         var sb = new StringBuilder("Hello, World!");
         var suffix = "universe!";
         var result = sb.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase);
-        result.Should().BeFalse();
+        await Assert.That(result)
+            .IsFalse();
     }
 
-    [Fact]
-    public void EndsWith_ShouldThrow_WhenNullStringBuilderIsGiven()
+    [Test]
+    public async Task EndsWith_ShouldThrow_WhenNullStringBuilderIsGiven()
     {
         StringBuilder sb = null!;
-        var func = () => sb.EndsWith("World!");
-        func.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => sb.EndsWith("World!"))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
-    public void EndsWith_ShouldThrow_WhenInvalidSuffixValueIsGiven()
+    [Test]
+    public async Task EndsWith_ShouldThrow_WhenInvalidSuffixValueIsGiven()
     {
         var sb = new StringBuilder("Hello, World!");
-        var func = () => sb.EndsWith(string.Empty);
-        func.Should().ThrowExactly<ArgumentException>();
-        func = () => sb.EndsWith(null!);
-        func.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => sb.EndsWith(string.Empty))
+            .ThrowsExactly<ArgumentException>();
+        await Assert.That(() => sb.EndsWith(null!))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
-    public void EndsWith_ShouldReturnFalse_WhenSuffixIsLongerThanStringBuilder()
+    [Test]
+    public async Task EndsWith_ShouldReturnFalse_WhenSuffixIsLongerThanStringBuilder()
     {
         var sb = new StringBuilder("Hello, World!");
         var suffix = "ThisIsALongSuffix";
         var result = sb.EndsWith(suffix);
-        result.Should().BeFalse();
+        await Assert.That(result)
+            .IsFalse();
     }
 
-    [Fact]
-    public void AppendLineIf_ShouldAppendValueWithNewLine_WhenConditionIsTrue()
+    [Test]
+    public async Task AppendLineIf_ShouldAppendValueWithNewLine_WhenConditionIsTrue()
     {
         var sb = new StringBuilder("Hello ");
         var condition = true;
@@ -146,11 +152,12 @@ public class StringBuilderExtensionsTests
 
         sb.AppendLineIf(condition, valueToAppend);
 
-        sb.ToString().Should().Be("Hello " + "World" + Environment.NewLine);
+        await Assert.That(sb.ToString())
+            .IsEqualTo("Hello " + "World" + Environment.NewLine);
     }
 
-    [Fact]
-    public void AppendLineIf_ShouldNotAppendValue_WhenConditionIsFalse()
+    [Test]
+    public async Task AppendLineIf_ShouldNotAppendValue_WhenConditionIsFalse()
     {
         var sb = new StringBuilder("Hello");
         var condition = false;
@@ -158,90 +165,90 @@ public class StringBuilderExtensionsTests
 
         sb.AppendLineIf(condition, valueToAppend);
 
-        sb.ToString().Should().Be("Hello");
+        await Assert.That(sb.ToString())
+            .IsEqualTo("Hello");
     }
 
-    [Fact]
-    public void AppendLineIf_ShouldThrow_WhenNullStringBuilderIsGiven()
+    [Test]
+    public async Task AppendLineIf_ShouldThrow_WhenNullStringBuilderIsGiven()
     {
         StringBuilder sb = null!;
-        var action = () => sb.AppendLineIf(true, "World");
-
-        action.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => sb.AppendLineIf(true, "World"))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
-    public void AppendLineIf_ShouldThrow_WhenNullValueIsGiven()
+    [Test]
+    public async Task AppendLineIf_ShouldThrow_WhenNullValueIsGiven()
     {
         var sb = new StringBuilder("Hello");
-        var action = () => sb.AppendLineIf(true, null!);
-
-        action.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => sb.AppendLineIf(true, null!))
+            .ThrowsExactly<ArgumentNullException>();
     }
 
-    [Fact]
-    public void AppendLineIf_ShouldAppendEmptyStringWithNewLine_WhenValueIsEmpty()
+    [Test]
+    public async Task AppendLineIf_ShouldAppendEmptyStringWithNewLine_WhenValueIsEmpty()
     {
         var sb = new StringBuilder("Hello");
         var condition = true;
 
         sb.AppendLineIf(condition, string.Empty);
-
-        sb.ToString().Should().Be("Hello" + Environment.NewLine);
+        await Assert.That(sb.ToString())
+            .IsEqualTo("Hello" + Environment.NewLine);
     }
 
-    [Fact]
-    public void AppendLines_ShouldAppendMultipleLines_WhenGivenMultipleStrings()
+    [Test]
+    public async Task AppendLines_ShouldAppendMultipleLines_WhenGivenMultipleStrings()
     {
         var sb = new StringBuilder($"Initial line{Environment.NewLine}");
         var lines = new[] { "First line", "Second line", "Third line" };
 
         sb.AppendLines(lines);
-
-        sb.ToString().Should().Be($"Initial line{Environment.NewLine}First line{Environment.NewLine}Second line{Environment.NewLine}Third line{Environment.NewLine}");
+        await Assert.That(sb.ToString())
+            .IsEqualTo($"Initial line{Environment.NewLine}First line{Environment.NewLine}Second line{Environment.NewLine}Third line{Environment.NewLine}");
     }
 
-    [Fact]
-    public void AppendLines_ShouldNotModifyStringBuilder_WhenGivenEmptyCollection()
+    [Test]
+    public async Task AppendLines_ShouldNotModifyStringBuilder_WhenGivenEmptyCollection()
     {
         var sb = new StringBuilder("Initial content");
         var lines = Array.Empty<string>();
 
         sb.AppendLines(lines);
 
-        sb.ToString().Should().Be("Initial content");
+        await Assert.That(sb.ToString())
+            .IsEqualTo("Initial content");
     }
 
-    [Fact]
-    public void AppendLines_ShouldThrowArgumentNullException_WhenStringBuilderIsNull()
+    [Test]
+    public async Task AppendLines_ShouldThrowArgumentNullException_WhenStringBuilderIsNull()
     {
         StringBuilder sb = null!;
         var lines = new[] { "Some line" };
 
-        Action act = () => sb.AppendLines(lines);
-
-        act.Should().ThrowExactly<ArgumentNullException>().WithParameterName("sb");
+        await Assert.That(() => sb.AppendLines(lines))
+            .ThrowsExactly<ArgumentNullException>()
+            .WithParameterName("sb");
     }
 
-    [Fact]
-    public void AppendLines_ShouldThrowArgumentNullException_WhenLinesCollectionIsNull()
+    [Test]
+    public async Task AppendLines_ShouldThrowArgumentNullException_WhenLinesCollectionIsNull()
     {
         var sb = new StringBuilder("Initial content");
         IEnumerable<string> lines = null!;
 
-        Action act = () => sb.AppendLines(lines);
-
-        act.Should().ThrowExactly<ArgumentNullException>().WithParameterName("lines");
+        await Assert.That(() => sb.AppendLines(lines))
+            .ThrowsExactly<ArgumentNullException>()
+            .WithParameterName("lines");
     }
 
-    [Fact]
-    public void AppendLines_ShouldHandleNewLineForSingleElement_WhenGivenSingleString()
+    [Test]
+    public async Task AppendLines_ShouldHandleNewLineForSingleElement_WhenGivenSingleString()
     {
         var sb = new StringBuilder($"Start{Environment.NewLine}");
         var lines = new[] { "Only line" };
 
         sb.AppendLines(lines);
-
-        sb.ToString().Should().Be($"Start{Environment.NewLine}Only line{Environment.NewLine}");
+        await Assert.That(sb.ToString())
+            .IsEqualTo($"Start{Environment.NewLine}Only line{Environment.NewLine}");
     }
 }
