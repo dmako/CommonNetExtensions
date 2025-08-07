@@ -58,7 +58,11 @@ jobs:
     - name: Build Tests
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
-      run: dotnet test --no-restore --configuration Release --no-build --verbosity normal -p:CollectCoverage=true --collect:"XPlat Code Coverage;Format=cobertura,opencover" --results-directory ./coverage CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+      shell: pwsh
+      run:
+        $currentDirectory = Get-Location
+        dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --coverage-output $currentDirectory/coverage/net8.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net9.0 --coverage-output $currentDirectory/coverage/net9.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: SonarCloud End
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -87,7 +91,12 @@ jobs:
     - name: Build Tests
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
-      run: dotnet test --no-restore --configuration Release --no-build --verbosity normal -p:CollectCoverage=true --collect:"XPlat Code Coverage;Format=cobertura" --results-directory ./coverage CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+      shell: pwsh
+      run:
+        $currentDirectory = Get-Location
+        dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net48  --coverage-output $currentDirectory/coverage/net48/coverage.opencover.xml  --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --coverage-output $currentDirectory/coverage/net8.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net9.0 --coverage-output $currentDirectory/coverage/net9.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
       with:
