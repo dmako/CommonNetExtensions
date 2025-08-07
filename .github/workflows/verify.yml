@@ -59,7 +59,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
       shell: pwsh
-      run:
+      run: |
         $currentDirectory = Get-Location
         dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --coverage-output $currentDirectory/coverage/net8.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
         dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net9.0 --coverage-output $currentDirectory/coverage/net9.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
@@ -92,7 +92,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
       shell: pwsh
-      run:
+      run: |
         $currentDirectory = Get-Location
         dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net48  --coverage-output $currentDirectory/coverage/net48/coverage.opencover.xml  --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
         dotnet run --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --coverage-output $currentDirectory/coverage/net8.0/coverage.opencover.xml --coverage-output-format cobertura  --coverage --project  CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
