@@ -3,13 +3,12 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Json.Tests;
 
 public class IPEndPointJsonConverterTests
 {
-    private readonly IPEndPointJsonConverter _converter = new IPEndPointJsonConverter();
+    private readonly IPEndPointJsonConverter _converter = new();
 
     [Test]
     public async Task CanConvert_Should_Return_True_For_IPEndPoint_Type()

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Extensions.Tests;
 
@@ -65,7 +64,7 @@ public class InteropExtensionsTests
             .IsEquivalentTo(new byte[] { 5, 6, 7, 8 });
     }
 
-    private unsafe byte[] CapturePart(T2 t2)
+    private static unsafe byte[] CapturePart(T2 t2)
     {
         return new ReadOnlySpan<byte>(t2.Data, 4).ToArray();
     }

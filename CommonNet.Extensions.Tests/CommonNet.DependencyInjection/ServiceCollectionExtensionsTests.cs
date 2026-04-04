@@ -50,11 +50,11 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(iif4)
-            .IsEqualTo(iif3);
+            .IsSameReferenceAs(iif3);
         await Assert.That(iif3)
-            .IsEqualTo(iif2);
+            .IsSameReferenceAs(iif2);
         await Assert.That(iif2)
-            .IsEqualTo(bif1);
+            .IsSameReferenceAs(bif1);
 
         var bif2 = sp.GetRequiredService<IBaseInterface2>();
         await Assert.That(bif2)
@@ -104,11 +104,11 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(iif4)
-            .IsEqualTo(iif3);
+            .IsSameReferenceAs(iif3);
         await Assert.That(iif3)
-            .IsEqualTo(iif2);
+            .IsSameReferenceAs(iif2);
         await Assert.That(iif2)
-            .IsEqualTo(bif1);
+            .IsSameReferenceAs(bif1);
 
         var bif2 = sp.GetRequiredService<IBaseInterface2>();
         await Assert.That(bif2)
@@ -159,11 +159,11 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(iif4)
-            .IsEqualTo(iif3);
+            .IsSameReferenceAs(iif3);
         await Assert.That(iif3)
-            .IsEqualTo(iif2);
+            .IsSameReferenceAs(iif2);
         await Assert.That(iif2)
-            .IsEqualTo(bif1);
+            .IsSameReferenceAs(bif1);
 
         var bif2 = sp.GetRequiredService<IBaseInterface2>();
         await Assert.That(bif2)
@@ -211,17 +211,17 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(iif4)
-            .IsNotEqualTo(iif3);
+            .IsNotSameReferenceAs(iif3);
         await Assert.That(iif3)
-            .IsNotEqualTo(iif2);
+            .IsNotSameReferenceAs(iif2);
         await Assert.That(iif2)
-            .IsNotEqualTo(bif1_1);
+            .IsNotSameReferenceAs(bif1_1);
 
         var bif1_2 = sp.GetRequiredService<IBaseInterface1>();
         await Assert.That(bif1_2)
             .IsNotNull();
         await Assert.That(bif1_2)
-            .IsNotEqualTo(bif1_1);
+            .IsNotSameReferenceAs(bif1_1);
     }
 
     [Test]
@@ -247,17 +247,17 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(iif4)
-            .IsNotEqualTo(iif3);
+            .IsNotSameReferenceAs(iif3);
         await Assert.That(iif3)
-            .IsNotEqualTo(iif2);
+            .IsNotSameReferenceAs(iif2);
         await Assert.That(iif2)
-            .IsNotEqualTo(bif1_1);
+            .IsNotSameReferenceAs(bif1_1);
 
         var bif1_2 = sp.GetRequiredService<IBaseInterface1>();
         await Assert.That(bif1_2)
             .IsNotNull();
         await Assert.That(bif1_2)
-            .IsNotEqualTo(bif1_1);
+            .IsNotSameReferenceAs(bif1_1);
     }
 
     [Test]
@@ -285,11 +285,11 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(s1_iif4)
-            .IsEqualTo(s1_iif3);
+            .IsSameReferenceAs(s1_iif3);
         await Assert.That(s1_iif3)
-            .IsEqualTo(s1_iif2);
+            .IsSameReferenceAs(s1_iif2);
         await Assert.That(s1_iif2)
-            .IsEqualTo(s1_bif1_1);
+            .IsSameReferenceAs(s1_bif1_1);
 
         var s1_bif1_2 = scope1.ServiceProvider.GetRequiredService<IBaseInterface1>();
         await Assert.That(s1_bif1_2)
@@ -338,11 +338,11 @@ public class ServiceCollectionExtensionsTests
             .IsNotNull();
 
         await Assert.That(s1_iif4)
-            .IsEqualTo(s1_iif3);
+            .IsSameReferenceAs(s1_iif3);
         await Assert.That(s1_iif3)
-            .IsEqualTo(s1_iif2);
+            .IsSameReferenceAs(s1_iif2);
         await Assert.That(s1_iif2)
-            .IsEqualTo(s1_bif1_1);
+            .IsSameReferenceAs(s1_bif1_1);
 
         var s1_bif1_2 = scope1.ServiceProvider.GetRequiredService<IBaseInterface1>();
         await Assert.That(s1_bif1_2)

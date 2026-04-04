@@ -31,7 +31,8 @@ public class StreamExtensionsTests
         }
 
         await Assert.That(result)
-            .HasCount(expectedChunks.Count);
+            .Count()
+            .IsEqualTo(expectedChunks.Count);
         for (var i = 0; i < expectedChunks.Count; i++)
         {
             await Assert.That(result[i].ToArray())

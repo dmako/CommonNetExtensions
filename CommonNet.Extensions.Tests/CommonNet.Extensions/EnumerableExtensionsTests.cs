@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Extensions.Tests;
 

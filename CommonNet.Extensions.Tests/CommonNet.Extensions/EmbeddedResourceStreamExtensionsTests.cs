@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Text;
-using TUnit.Assertions.AssertConditions.Throws;
 using Assembly =  System.Reflection.Assembly;
 
 #if NET6_0_OR_GREATER

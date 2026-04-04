@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 using Moq;
-using TUnit.Assertions.AssertConditions.Throws;
 
 namespace CommonNet.Extensions.Tests;
 
@@ -20,7 +19,7 @@ public class IPAddressExtensionsTests
         var result = ip.Mask(subnetMask);
 
         await Assert.That(result)
-            .IsEquivalentTo(expectedResult);
+            .EqualTo(expectedResult);
     }
 
     [Test]
@@ -54,7 +53,7 @@ public class IPAddressExtensionsTests
         var result = ip.Mask(subnetMask);
 
         await Assert.That(result)
-            .IsEquivalentTo(expected);
+            .EqualTo(expected);
     }
 
     [Test]
@@ -85,7 +84,7 @@ public class IPAddressExtensionsTests
         {
             var result = targetIPAddress.GetLocalAddressOnTheSameNetwork(interfaces);
             await Assert.That(result)
-                .IsEquivalentTo(localIPAddress);
+                .EqualTo(localIPAddress);
         }
         else
         {
@@ -122,7 +121,7 @@ public class IPAddressExtensionsTests
         {
             var result = targetIPAddress.GetLocalAddressOnTheSameNetwork(interfaces);
             await Assert.That(result)
-                .IsEquivalentTo(localIPAddress);
+                .EqualTo(localIPAddress);
         }
         else
         {

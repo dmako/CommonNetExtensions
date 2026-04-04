@@ -1,6 +1,4 @@
-﻿using TUnit.Assertions.AssertConditions.Throws;
-
-namespace CommonNet.Extensions.Tests;
+﻿namespace CommonNet.Extensions.Tests;
 
 public class TextReaderExtensionsTests
 {
