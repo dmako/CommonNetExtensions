@@ -54,15 +54,15 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: pwsh
-      run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"dmako_CommonNetExtensions" /o:"dmako-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.scanAll=false /d:sonar.coverageReportPaths="coverage/*.xml"
+      run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"dmako_CommonNetExtensions" /o:"dmako-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.scanAll=false /d:sonar.cs.vscoveragexml.reportsPaths="coverage/*.xml"
     - name: Build Tests
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
       shell: pwsh
       run: |
         $currentDirectory = Get-Location
-        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net8.0.xml --coverage-output-format=cobertura --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
-        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net10.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net10.0.xml --coverage-output-format=cobertura --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net8.0.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net10.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net10.0.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: SonarCloud End
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,9 +96,9 @@ jobs:
       shell: pwsh
       run: |
         $currentDirectory = Get-Location
-        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net48 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net48.xml --coverage-output-format=cobertura --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
-        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net8.0.xml --coverage-output-format=cobertura --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
-        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net10.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net10.0.xml --coverage-output-format=cobertura --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net48 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net48.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net8.0.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
+        dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net10.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net10.0.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       with:
