@@ -54,7 +54,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: pwsh
-      run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"dmako_CommonNetExtensions" /o:"dmako-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.scanAll=false /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml"
+      run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"dmako_CommonNetExtensions" /o:"dmako-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.scanAll=false /d:sonar.cs.opencover.reportsPaths="coverage/**/*.xml"
     - name: Build Tests
       run: dotnet build --configuration Release --no-restore CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
     - name: Tests
@@ -75,7 +75,9 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         working-directory: coverage
         flags: unittests
+        files: CommonNet.Extensions.Tests.net48.xml,CommonNet.Extensions.Tests.net8.0.xml,CommonNet.Extensions.Tests.net10.0.xml
         os: linux
+        verbose: true
   windows-build:
     runs-on: windows-latest
     steps:
@@ -102,5 +104,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         working-directory: coverage
+        files: CommonNet.Extensions.Tests.net48.xml,CommonNet.Extensions.Tests.net8.0.xml,CommonNet.Extensions.Tests.net10.0.xml
         flags: unittests
         os: windows
+        verbose: true
