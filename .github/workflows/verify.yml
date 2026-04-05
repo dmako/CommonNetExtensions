@@ -69,15 +69,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: pwsh
       run: ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        working-directory: coverage
-        flags: unittests
-        files: CommonNet.Extensions.Tests.net48.xml,CommonNet.Extensions.Tests.net8.0.xml,CommonNet.Extensions.Tests.net10.0.xml
-        os: linux
-        verbose: true
   windows-build:
     runs-on: windows-latest
     steps:
@@ -99,12 +90,3 @@ jobs:
         dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net48 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net48.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
         dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net8.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net8.0.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
         dotnet test --no-restore --configuration Release --no-build --verbosity normal --framework net10.0 --results-directory $currentDirectory/coverage --coverage-output=$currentDirectory/coverage/CommonNet.Extensions.Tests.net10.0.xml --coverage-output-format=xml --coverage --project CommonNet.Extensions.Tests/CommonNet.Extensions.Tests.csproj
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        working-directory: coverage
-        files: CommonNet.Extensions.Tests.net48.xml,CommonNet.Extensions.Tests.net8.0.xml,CommonNet.Extensions.Tests.net10.0.xml
-        flags: unittests
-        os: windows
-        verbose: true
