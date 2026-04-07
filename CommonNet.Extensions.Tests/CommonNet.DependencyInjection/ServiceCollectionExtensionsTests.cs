@@ -441,5 +441,416 @@ public class ServiceCollectionExtensionsTests
         await Assert.That(b42_2)
             .IsNull();
     }
-}
 
+    // ===== New tests for 2-service registrations =====
+
+    [Test]
+    public async Task AddSingleton_TwoServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingletonIf<IInheritedInterface2, IBaseInterface1, A4_1>(true);
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc2)
+            .IsNotNull();
+
+        await Assert.That(svc1)
+            .IsSameReferenceAs(svc2);
+    }
+
+    [Test]
+    public async Task AddSingletonWithFactory_TwoServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingletonIf<IInheritedInterface2, IBaseInterface1, A4_1>(true, sp => new A4_1());
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc2)
+            .IsNotNull();
+
+        await Assert.That(svc1)
+            .IsSameReferenceAs(svc2);
+    }
+
+    [Test]
+    public async Task AddTransient_TwoServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddTransientIf<IBaseInterface1, IBaseInterface2, B4_1>(true);
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IBaseInterface2>();
+        await Assert.That(svc2)
+            .IsNotNull();
+
+        var svc1_2 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1_2)
+            .IsNotNull();
+        await Assert.That(svc1_2)
+            .IsNotSameReferenceAs(svc1);
+    }
+
+    [Test]
+    public async Task AddTransientWithFactory_TwoServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddTransientIf<IBaseInterface1, IBaseInterface2, B4_1>(true, sp => new B4_1());
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IBaseInterface2>();
+        await Assert.That(svc2)
+            .IsNotNull();
+
+        var svc1_2 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1_2)
+            .IsNotNull();
+        await Assert.That(svc1_2)
+            .IsNotSameReferenceAs(svc1);
+    }
+
+    [Test]
+    public async Task AddScoped_TwoServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddScopedIf<IInheritedInterface2, IBaseInterface1, A4_1>(true);
+
+        using var sp = services.BuildServiceProvider();
+
+        using var scope1 = sp.CreateScope();
+
+        var s1_svc1 = scope1.ServiceProvider.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(s1_svc1)
+            .IsNotNull();
+        var s1_svc2 = scope1.ServiceProvider.GetRequiredService<IBaseInterface1>();
+        await Assert.That(s1_svc2)
+            .IsNotNull();
+
+        await Assert.That(s1_svc1)
+            .IsSameReferenceAs(s1_svc2);
+
+        using var scope2 = sp.CreateScope();
+
+        var s2_svc1 = scope2.ServiceProvider.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(s2_svc1)
+            .IsNotNull();
+        await Assert.That(s2_svc1)
+            .IsNotSameReferenceAs(s1_svc1);
+    }
+
+    [Test]
+    public async Task AddScopedWithFactory_TwoServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddScopedIf<IInheritedInterface2, IBaseInterface1, A4_1>(true, sp => new A4_1());
+
+        using var sp = services.BuildServiceProvider();
+
+        using var scope1 = sp.CreateScope();
+
+        var s1_svc1 = scope1.ServiceProvider.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(s1_svc1)
+            .IsNotNull();
+        var s1_svc2 = scope1.ServiceProvider.GetRequiredService<IBaseInterface1>();
+        await Assert.That(s1_svc2)
+            .IsNotNull();
+
+        await Assert.That(s1_svc1)
+            .IsSameReferenceAs(s1_svc2);
+
+        using var scope2 = sp.CreateScope();
+
+        var s2_svc1 = scope2.ServiceProvider.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(s2_svc1)
+            .IsNotNull();
+        await Assert.That(s2_svc1)
+            .IsNotSameReferenceAs(s1_svc1);
+    }
+
+    // ===== New tests for 3-service registrations =====
+
+    [Test]
+    public async Task AddSingleton_ThreeServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingletonIf<IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(true);
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IInheritedInterface3>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(svc2)
+            .IsNotNull();
+        var svc3 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc3)
+            .IsNotNull();
+
+        await Assert.That(svc1)
+            .IsSameReferenceAs(svc2);
+        await Assert.That(svc2)
+            .IsSameReferenceAs(svc3);
+    }
+
+    [Test]
+    public async Task AddSingletonWithFactory_ThreeServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingletonIf<IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(true, sp => new A4_1());
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IInheritedInterface3>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(svc2)
+            .IsNotNull();
+        var svc3 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc3)
+            .IsNotNull();
+
+        await Assert.That(svc1)
+            .IsSameReferenceAs(svc2);
+        await Assert.That(svc2)
+            .IsSameReferenceAs(svc3);
+    }
+
+    [Test]
+    public async Task AddTransient_ThreeServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddTransientIf<IBaseInterface1, IBaseInterface2, IBaseInterface3, B4_1>(true);
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IBaseInterface2>();
+        await Assert.That(svc2)
+            .IsNotNull();
+        var svc3 = sp.GetRequiredService<IBaseInterface3>();
+        await Assert.That(svc3)
+            .IsNotNull();
+
+        var svc1_2 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1_2)
+            .IsNotNull();
+        await Assert.That(svc1_2)
+            .IsNotSameReferenceAs(svc1);
+    }
+
+    [Test]
+    public async Task AddTransientWithFactory_ThreeServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddTransientIf<IBaseInterface1, IBaseInterface2, IBaseInterface3, B4_1>(true, sp => new B4_1());
+
+        using var sp = services.BuildServiceProvider();
+
+        var svc1 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1)
+            .IsNotNull();
+        var svc2 = sp.GetRequiredService<IBaseInterface2>();
+        await Assert.That(svc2)
+            .IsNotNull();
+        var svc3 = sp.GetRequiredService<IBaseInterface3>();
+        await Assert.That(svc3)
+            .IsNotNull();
+
+        var svc1_2 = sp.GetRequiredService<IBaseInterface1>();
+        await Assert.That(svc1_2)
+            .IsNotNull();
+        await Assert.That(svc1_2)
+            .IsNotSameReferenceAs(svc1);
+    }
+
+    [Test]
+    public async Task AddScoped_ThreeServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddScopedIf<IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(true);
+
+        using var sp = services.BuildServiceProvider();
+
+        using var scope1 = sp.CreateScope();
+
+        var s1_svc1 = scope1.ServiceProvider.GetRequiredService<IInheritedInterface3>();
+        await Assert.That(s1_svc1)
+            .IsNotNull();
+        var s1_svc2 = scope1.ServiceProvider.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(s1_svc2)
+            .IsNotNull();
+        var s1_svc3 = scope1.ServiceProvider.GetRequiredService<IBaseInterface1>();
+        await Assert.That(s1_svc3)
+            .IsNotNull();
+
+        await Assert.That(s1_svc1)
+            .IsSameReferenceAs(s1_svc2);
+        await Assert.That(s1_svc2)
+            .IsSameReferenceAs(s1_svc3);
+
+        using var scope2 = sp.CreateScope();
+
+        var s2_svc1 = scope2.ServiceProvider.GetRequiredService<IInheritedInterface3>();
+        await Assert.That(s2_svc1)
+            .IsNotNull();
+        await Assert.That(s2_svc1)
+            .IsNotSameReferenceAs(s1_svc1);
+    }
+
+    [Test]
+    public async Task AddScopedWithFactory_ThreeServices_ShouldSucceed()
+    {
+        var services = new ServiceCollection();
+
+        services.AddScopedIf<IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(true, sp => new A4_1());
+
+        using var sp = services.BuildServiceProvider();
+
+        using var scope1 = sp.CreateScope();
+
+        var s1_svc1 = scope1.ServiceProvider.GetRequiredService<IInheritedInterface3>();
+        await Assert.That(s1_svc1)
+            .IsNotNull();
+        var s1_svc2 = scope1.ServiceProvider.GetRequiredService<IInheritedInterface2>();
+        await Assert.That(s1_svc2)
+            .IsNotNull();
+        var s1_svc3 = scope1.ServiceProvider.GetRequiredService<IBaseInterface1>();
+        await Assert.That(s1_svc3)
+            .IsNotNull();
+
+        await Assert.That(s1_svc1)
+            .IsSameReferenceAs(s1_svc2);
+        await Assert.That(s1_svc2)
+            .IsSameReferenceAs(s1_svc3);
+
+        using var scope2 = sp.CreateScope();
+
+        var s2_svc1 = scope2.ServiceProvider.GetRequiredService<IInheritedInterface3>();
+        await Assert.That(s2_svc1)
+            .IsNotNull();
+        await Assert.That(s2_svc1)
+            .IsNotSameReferenceAs(s1_svc1);
+    }
+
+    // ===== New tests for false condition on multi-service registrations =====
+
+    [Test]
+    public async Task AddIf_MultiService_FalseCondition_ShouldNotRegister()
+    {
+        var services = new ServiceCollection();
+
+        // Singleton: 2, 3, 4 services with false condition
+        services
+            .AddSingletonIf<IInheritedInterface2, IBaseInterface1, A4_1>(false)
+            .AddSingletonIf<IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(false)
+            .AddSingletonIf<IInheritedInterface4, IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(false);
+
+        // Transient: 2, 3, 4 services with false condition
+        services
+            .AddTransientIf<IBaseInterface1, IBaseInterface2, B4_1>(false)
+            .AddTransientIf<IBaseInterface1, IBaseInterface2, IBaseInterface3, B4_1>(false)
+            .AddTransientIf<IBaseInterface1, IBaseInterface2, IBaseInterface3, IBaseInterface4, B4_1>(false);
+
+        // Scoped: 2, 3, 4 services with false condition
+        services
+            .AddScopedIf<IBaseInterface2, IBaseInterface3, B4_1>(false)
+            .AddScopedIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, B4_1>(false)
+            .AddScopedIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>(false);
+
+        using var sp = services.BuildServiceProvider();
+        using var scope = sp.CreateScope();
+
+        await Assert.That(sp.GetService<IInheritedInterface4>())
+            .IsNull();
+        await Assert.That(sp.GetService<IInheritedInterface3>())
+            .IsNull();
+        await Assert.That(sp.GetService<IInheritedInterface2>())
+            .IsNull();
+        await Assert.That(sp.GetService<IBaseInterface1>())
+            .IsNull();
+        await Assert.That(sp.GetService<IBaseInterface2>())
+            .IsNull();
+        await Assert.That(scope.ServiceProvider.GetService<IBaseInterface3>())
+            .IsNull();
+        await Assert.That(scope.ServiceProvider.GetService<IBaseInterface4>())
+            .IsNull();
+        await Assert.That(scope.ServiceProvider.GetService<IBaseInterface5>())
+            .IsNull();
+    }
+
+    [Test]
+    public async Task AddIfWithFactory_MultiService_FalseCondition_ShouldNotRegister()
+    {
+        var services = new ServiceCollection();
+
+        // Singleton: 2, 3, 4 services with false condition + factory
+        services
+            .AddSingletonIf<IInheritedInterface2, IBaseInterface1, A4_1>(false, sp => new A4_1())
+            .AddSingletonIf<IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(false, sp => new A4_1())
+            .AddSingletonIf<IInheritedInterface4, IInheritedInterface3, IInheritedInterface2, IBaseInterface1, A4_1>(false, sp => new A4_1());
+
+        // Transient: 2, 3, 4 services with false condition + factory
+        services
+            .AddTransientIf<IBaseInterface1, IBaseInterface2, B4_1>(false, sp => new B4_1())
+            .AddTransientIf<IBaseInterface1, IBaseInterface2, IBaseInterface3, B4_1>(false, sp => new B4_1())
+            .AddTransientIf<IBaseInterface1, IBaseInterface2, IBaseInterface3, IBaseInterface4, B4_1>(false, sp => new B4_1());
+
+        // Scoped: 2, 3, 4 services with false condition + factory
+        services
+            .AddScopedIf<IBaseInterface2, IBaseInterface3, B4_1>(false, sp => new B4_1())
+            .AddScopedIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, B4_1>(false, sp => new B4_1())
+            .AddScopedIf<IBaseInterface2, IBaseInterface3, IBaseInterface4, IBaseInterface5, B4_2>(false, sp => new B4_2());
+
+        using var sp = services.BuildServiceProvider();
+        using var scope = sp.CreateScope();
+
+        await Assert.That(sp.GetService<IInheritedInterface4>())
+            .IsNull();
+        await Assert.That(sp.GetService<IInheritedInterface3>())
+            .IsNull();
+        await Assert.That(sp.GetService<IInheritedInterface2>())
+            .IsNull();
+        await Assert.That(sp.GetService<IBaseInterface1>())
+            .IsNull();
+        await Assert.That(sp.GetService<IBaseInterface2>())
+            .IsNull();
+        await Assert.That(scope.ServiceProvider.GetService<IBaseInterface3>())
+            .IsNull();
+        await Assert.That(scope.ServiceProvider.GetService<IBaseInterface4>())
+            .IsNull();
+        await Assert.That(scope.ServiceProvider.GetService<IBaseInterface5>())
+            .IsNull();
+    }
+}

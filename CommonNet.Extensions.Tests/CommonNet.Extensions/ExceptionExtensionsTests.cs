@@ -13,8 +13,8 @@ public class ExceptionExtensionsTests
 
         exception.AddData(key, value);
 
-        await Assert.That(exception.Data.Keys.OfType<object>())
-            .Contains(obj => obj is string str && str == key);
+        await Assert.That(exception.Data.Contains(key))
+            .IsTrue();
         await Assert.That(exception.Data[key])
             .IsEqualTo(value);
     }
@@ -28,8 +28,8 @@ public class ExceptionExtensionsTests
 
         exception.AddData(key, values);
 
-        await Assert.That(exception.Data.Keys.OfType<object>())
-            .Contains(obj => obj is string str && str == key);
+        await Assert.That(exception.Data.Contains(key))
+            .IsTrue();
         await Assert.That(exception.Data[key])
             .IsEquivalentTo(values);
     }
