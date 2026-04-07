@@ -1,15 +1,13 @@
-﻿using FluentAssertions;
+﻿#if !NET7_0_OR_GREATER
+
 using Moq;
-using Xunit;
 
 namespace CommonNet.Extensions.Tests;
 
 public class AsyncEnumerableExtensionsTests
 {
 
-#if !NET7_0_OR_GREATER
-
-    // Helper class for creating a mock
+    //Helper class for creating a mock
     private sealed class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> _enumerator;
@@ -33,8 +31,8 @@ public class AsyncEnumerableExtensionsTests
         }
     }
 
-    [Fact]
-    public void ToBlockingEnumerable_ShouldEnumerateAsyncEnumerable()
+    [Test]
+    public async Task ToBlockingEnumerable_ShouldEnumerateAsyncEnumerable()
     {
         var sourceList = new List<int> { 1, 2, 3, 4 };
         var asyncEnumMock = new Mock<IAsyncEnumerable<int>>();
@@ -43,9 +41,9 @@ public class AsyncEnumerableExtensionsTests
             .Returns(() => new TestAsyncEnumerator<int>(sourceList.GetEnumerator()));
 
         var blockingEnumerable = asyncEnumMock.Object.ToBlockingEnumerable().ToList();
-        blockingEnumerable.Should().BeEquivalentTo(sourceList);
+        await Assert.That(blockingEnumerable)
+            .IsEquivalentTo(sourceList);
     }
+}
 
 #endif
-
-}

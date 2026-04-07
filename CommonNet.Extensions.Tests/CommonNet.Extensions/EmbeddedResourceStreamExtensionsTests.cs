@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 using System.Text;
-using FluentAssertions;
+using Assembly =  System.Reflection.Assembly;
+
+#if NET6_0_OR_GREATER
 using Moq;
-using Xunit;
+#endif
 
 namespace CommonNet.Extensions.Tests;
 
@@ -30,7 +30,7 @@ public class EmbeddedResourceStreamExtensionsTests
     private Assembly PrepareTestAssembly()
     {
         var mockAssembly = new Mock<Assembly>();
-        mockAssembly.Setup(a => a.GetManifestResourceNames()).Returns(TestData.Keys.ToArray());
+        mockAssembly.Setup(a => a.GetManifestResourceNames()).Returns([.. TestData.Keys]);
         foreach (var key in TestData.Keys)
         {
             mockAssembly.Setup(a => a.GetManifestResourceStream(key)).Returns(new MemoryStream(Encoding.UTF8.GetBytes(TestData[key])));
@@ -54,7 +54,7 @@ public class EmbeddedResourceStreamExtensionsTests
         // Create the dynamic assembly in memory
         var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
             assemblyName,
-            AssemblyBuilderAccess.RunAndSave
+            System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave
         );
 
         var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, $"{assemblyName.Name}.dll");
@@ -71,47 +71,54 @@ public class EmbeddedResourceStreamExtensionsTests
 #endif
 
 
-    [Fact]
-    public void GetEmbeddedResourceStream_ShouldReturnStream_WhenResourceExists()
+    [Test]
+    public async Task GetEmbeddedResourceStream_ShouldReturnStream_WhenResourceExists()
     {
         var stream = _mockAssembly.GetEmbeddedResourceStream("TestTextResource.txt");
-        stream.Should().NotBeNull();
+        await Assert.That(stream)
+            .IsNotNull();
     }
 
-    [Fact]
-    public void GetEmbeddedResourceStream_ShouldThrowException_WhenResourceDoesNotExist()
+    [Test]
+    public async Task GetEmbeddedResourceStream_ShouldThrowException_WhenResourceDoesNotExist()
     {
-        var fnc = () => _mockAssembly.GetEmbeddedResourceStream("NonExistentResource.txt");
-        fnc.Should().ThrowExactly<InvalidOperationException>();
+        await Assert.That(() => _mockAssembly.GetEmbeddedResourceStream("NonExistentResource.txt"))
+            .ThrowsExactly<InvalidOperationException>();
     }
 
-    [Fact]
-    public void ReadEmbeddedResourceData_ShouldReturnData_WhenResourceExists()
+    [Test]
+    public async Task ReadEmbeddedResourceData_ShouldReturnData_WhenResourceExists()
     {
         var testData = Encoding.UTF8.GetBytes(TestData["TestNamespace.TestTextResource.txt"]);
         var result = _mockAssembly.ReadEmbeddedResourceData("TestTextResource.txt");
 
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(testData);
+        await Assert.That(result)
+            .IsNotNull();
+        await Assert.That(result)
+            .IsEquivalentTo(testData);
     }
 
-    [Fact]
-    public void ReadEmbeddedResourceLines_ShouldReturnLines_WhenResourceExists()
+    [Test]
+    public async Task ReadEmbeddedResourceLines_ShouldReturnLines_WhenResourceExists()
     {
         var expectedLines = TestData["TestNamespace.TestTextLinesResource.txt"].Split("\n".ToCharArray());
         var result = _mockAssembly.ReadEmbeddedResourceLines("TestTextLinesResource.txt").ToArray();
 
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expectedLines);
+        await Assert.That(result)
+            .IsNotNull();
+        await Assert.That(result)
+            .IsEquivalentTo(expectedLines);
     }
 
-    [Fact]
-    public void ReadEmbeddedResourceLinesAsync_ShouldReturnLines_WhenResourceExists()
+    [Test]
+    public async Task ReadEmbeddedResourceLinesAsync_ShouldReturnLines_WhenResourceExists()
     {
         var expectedLines = TestData["TestNamespace.TestTextLinesResource.txt"].Split("\n".ToCharArray());
         var result = _mockAssembly.ReadEmbeddedResourceLinesAsync("TestTextLinesResource.txt").ToBlockingEnumerable().ToArray();
 
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expectedLines);
+        await Assert.That(result)
+            .IsNotNull();
+        await Assert.That(result)
+            .IsEquivalentTo(expectedLines);
     }
 }

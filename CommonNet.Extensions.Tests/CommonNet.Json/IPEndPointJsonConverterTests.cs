@@ -3,28 +3,28 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using FluentAssertions;
-using Xunit;
 
 namespace CommonNet.Json.Tests;
 
 public class IPEndPointJsonConverterTests
 {
-    private readonly IPEndPointJsonConverter _converter = new IPEndPointJsonConverter();
+    private readonly IPEndPointJsonConverter _converter = new();
 
-    [Fact]
-    public void CanConvert_Should_Return_True_For_IPEndPoint_Type()
+    [Test]
+    public async Task CanConvert_Should_Return_True_For_IPEndPoint_Type()
     {
         var result = _converter.CanConvert(typeof(IPEndPoint));
-        result.Should().BeTrue();
+        await Assert.That(result)
+            .IsTrue();
         result = _converter.CanConvert(typeof(EndPoint));
-        result.Should().BeFalse();
+        await Assert.That(result)
+            .IsFalse();
     }
 
-    [Theory]
-    [InlineData("192.168.1.1:8080")]
-    [InlineData("[::1]:8080")]
-    public void Read_Should_Convert_Json_To_IPEndPoint(string jsonValue)
+    [Test]
+    [Arguments("192.168.1.1:8080")]
+    [Arguments("[::1]:8080")]
+    public async Task Read_Should_Convert_Json_To_IPEndPoint(string jsonValue)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
         var options = new JsonSerializerOptions();
@@ -32,12 +32,14 @@ public class IPEndPointJsonConverterTests
         reader.Read();
         var result = _converter.Read(ref reader, typeof(IPEndPoint), options);
 
-        result.Should().NotBeNull();
-        result!.ToString().Should().Be(jsonValue);
+        await Assert.That(result)
+            .IsNotNull();
+        await Assert.That(result!.ToString())
+            .IsEqualTo(jsonValue);
     }
 
-    [Fact]
-    public void Read_Should_Handle_Null_Value()
+    [Test]
+    public async Task Read_Should_Handle_Null_Value()
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes("null"));
         var options = new JsonSerializerOptions();
@@ -45,34 +47,28 @@ public class IPEndPointJsonConverterTests
         reader.Read();
         var result = _converter.Read(ref reader, typeof(IPEndPoint), options);
 
-        result.Should().BeNull();
+        await Assert.That(result)
+            .IsNull();
     }
 
-    [Theory]
-    [InlineData("not_an_ip_endpoint")]
-    [InlineData("")]
-    public void Read_Should_Handle_Invalid_IPEndPoint(string jsonValue)
+    [Test]
+    [Arguments("not_an_ip_endpoint")]
+    [Arguments("")]
+    public async Task Read_Should_Handle_Invalid_IPEndPoint(string jsonValue)
     {
-        var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
-        var options = new JsonSerializerOptions();
-
-        Type? exceptionType = null;
-        try
+        await Assert.That(() =>
         {
+            var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes($"\"{jsonValue}\""));
+            var options = new JsonSerializerOptions();
             reader.Read();
-            var value = _converter.Read(ref reader, typeof(IPEndPoint), options);
-        }
-        catch (Exception ex)
-        {
-            exceptionType = ex.GetType();
-        }
-        exceptionType.Should().Be(typeof(JsonException));
+            _ = _converter.Read(ref reader, typeof(IPEndPoint), options);
+        }).Throws<JsonException>();
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("192.168.1.1:8080")]
-    public void Write_Should_Convert_IPEndPoint_To_Json(string? endPointString)
+    [Test]
+    [Arguments(null)]
+    [Arguments("192.168.1.1:8080")]
+    public async Task Write_Should_Convert_IPEndPoint_To_Json(string? endPointString)
     {
         using var ms = new MemoryStream();
         var writer = new Utf8JsonWriter(ms);
@@ -85,11 +81,13 @@ public class IPEndPointJsonConverterTests
         var json = Encoding.UTF8.GetString(ms.ToArray());
         if (endPointString != null)
         {
-            json.Should().Be($"\"{endPointString}\"");
+            await Assert.That(json)
+                .IsEqualTo($"\"{endPointString}\"");
         }
         else
         {
-            json.Should().Be("null");
+            await Assert.That(json)
+                .IsEqualTo("null");
         }
     }
 

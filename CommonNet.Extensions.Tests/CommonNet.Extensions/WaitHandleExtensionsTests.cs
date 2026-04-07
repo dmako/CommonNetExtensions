@@ -1,49 +1,51 @@
-﻿#pragma warning disable xUnit1031
-
-using FluentAssertions;
-using Xunit;
-
-namespace CommonNet.Extensions.Tests;
+﻿namespace CommonNet.Extensions.Tests;
 
 public class WaitHandleExtensionsTests
 {
-    [Fact]
+    [Test]
     public async Task AsTask_ShouldComplete_WhenWaitHandleIsSignaled()
     {
         using var manualResetEvent = new ManualResetEvent(false);
 
         var task = manualResetEvent.AsTask();
-        task.IsCompleted.Should().BeFalse();
+        await Assert.That(task.IsCompleted)
+            .IsFalse();
 
         manualResetEvent.Set();
         await task;
 
-        task.IsCompleted.Should().BeTrue();
-        task.Result.Should().BeTrue();
+        await Assert.That(task.IsCompleted)
+            .IsTrue();
+        await Assert.That(task.Result)
+            .IsTrue();
     }
 
-    [Fact]
+    [Test]
     public async Task AsTask_WithTimeout_ShouldComplete_WhenWaitHandleIsSignaled()
     {
         using var manualResetEvent = new ManualResetEvent(false);
 
         var task = manualResetEvent.AsTask(TimeSpan.FromSeconds(1));
-        task.IsCompleted.Should().BeFalse();
+        await Assert.That(task.IsCompleted)
+            .IsFalse();
 
         manualResetEvent.Set();
         await task;
 
-        task.IsCompleted.Should().BeTrue();
-        task.Result.Should().BeTrue();
+        await Assert.That(task.IsCompleted)
+            .IsTrue();
+        await Assert.That(task.Result)
+            .IsTrue();
     }
 
-    [Fact]
+    [Test]
     public async Task AsTask_WithTimeout_ShouldCancel_WhenTimeoutIsReached()
     {
         using var manualResetEvent = new ManualResetEvent(false);
         var task = manualResetEvent.AsTask(TimeSpan.FromMilliseconds(100));
 
-        task.IsCompleted.Should().BeFalse();
+        await Assert.That(task.IsCompleted)
+            .IsFalse();
 
         Exception? exception = null;
         try
@@ -59,15 +61,17 @@ public class WaitHandleExtensionsTests
             exception = ex;
         }
 
-        exception.Should().NotBeNull();
+        await Assert.That(exception)
+            .IsNotNull();
 
-        task.IsCanceled.Should().BeTrue();
+        await Assert.That(task.IsCanceled)
+            .IsTrue();
     }
 
 
 #if NET8_0_OR_GREATER
 
-    [Fact]
+    [Test]
     public async Task WaitAsync_WaitHandle_Signaled_CompletesTask()
     {
         using var manualEvent = new ManualResetEvent(false);
@@ -77,10 +81,11 @@ public class WaitHandleExtensionsTests
         var task = waitHandle.WaitAsync(cancellationToken);
         manualEvent.Set();
 
-        await task.Awaiting(t => t).Should().NotThrowAsync();
+        await Assert.That(async () => await task)
+            .ThrowsNothing();
     }
 
-    [Fact]
+    [Test]
     public async Task WaitAsync_WaitHandle_Canceled_ThrowsTaskCanceledException()
     {
         using var manualEvent = new ManualResetEvent(false);
@@ -90,10 +95,11 @@ public class WaitHandleExtensionsTests
         var task = waitHandle.WaitAsync(cts.Token);
         cts.Cancel();
 
-        await task.Awaiting(t => t).Should().ThrowAsync<TaskCanceledException>();
+        await Assert.That(async () => await task)
+            .ThrowsExactly<TaskCanceledException>();
     }
 
-    [Fact]
+    [Test]
     public async Task WaitAsync_ManualResetEventSlim_Signaled_CompletesTask()
     {
 
@@ -103,10 +109,11 @@ public class WaitHandleExtensionsTests
         var task = manualResetEvent.WaitAsync(cancellationToken);
         manualResetEvent.Set();
 
-        await task.Awaiting(t => t).Should().NotThrowAsync();
+        await Assert.That(async () => await task)
+            .ThrowsNothing();
     }
 
-    [Fact]
+    [Test]
     public async Task WaitAsync_ManualResetEventSlim_Canceled_ThrowsTaskCanceledException()
     {
         // Arrange
@@ -116,21 +123,20 @@ public class WaitHandleExtensionsTests
         var task = manualResetEvent.WaitAsync(cts.Token);
         cts.Cancel();
 
-        await task.Awaiting(t => t).Should().ThrowAsync<TaskCanceledException>();
+        await Assert.That(async () => await task)
+            .ThrowsExactly<TaskCanceledException>();
     }
 
-    [Fact]
-    public void WaitAsync_WaitHandle_Null_ThrowsArgumentNullException()
+    [Test]
+    public async Task WaitAsync_WaitHandle_Null_ThrowsArgumentNullException()
     {
         WaitHandle waitHandle = null!;
         var cancellationToken = CancellationToken.None;
 
-        var func = () => waitHandle.WaitAsync(cancellationToken);
-        func.Should().ThrowAsync<ArgumentException>();
+        await Assert.That(async () => await waitHandle.WaitAsync(cancellationToken))
+            .Throws<ArgumentException>();
     }
 
 #endif
 
 }
-
-#pragma warning restore xUnit1031

@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using Xunit;
-
-namespace CommonNet.Extensions.Tests;
+﻿namespace CommonNet.Extensions.Tests;
 
 public class EnumExtensionsTests
 {
@@ -13,40 +10,47 @@ public class EnumExtensionsTests
         Value4,
     }
 
-    [Fact]
-    public void IsOneOf_ShouldReturnTrue_WhenEnumIsInEnums()
+    [Test]
+    public async Task IsOneOf_ShouldReturnTrue_WhenEnumIsInEnums()
     {
         var enums = new[] { MyEnum.Value1, MyEnum.Value2, MyEnum.Value3 };
 
-        MyEnum.Value1.IsOneOf(enums).Should().BeTrue();
-        MyEnum.Value2.IsOneOf(enums).Should().BeTrue();
-        MyEnum.Value3.IsOneOf(enums).Should().BeTrue();
+        await Assert.That(MyEnum.Value1.IsOneOf(enums))
+            .IsTrue();
+        await Assert.That(MyEnum.Value2.IsOneOf(enums))
+            .IsTrue();
+        await Assert.That(MyEnum.Value3.IsOneOf(enums))
+            .IsTrue();
     }
 
-    [Fact]
-    public void IsOneOf_ShouldReturnFalse_WhenEnumIsNotInEnums()
+    [Test]
+    public async Task IsOneOf_ShouldReturnFalse_WhenEnumIsNotInEnums()
     {
         var enums = new[] { MyEnum.Value4 };
 
-        MyEnum.Value1.IsOneOf(enums).Should().BeFalse();
-        MyEnum.Value2.IsOneOf(enums).Should().BeFalse();
-        MyEnum.Value3.IsOneOf(enums).Should().BeFalse();
+        await Assert.That(MyEnum.Value1.IsOneOf(enums))
+            .IsFalse();
+        await Assert.That(MyEnum.Value2.IsOneOf(enums))
+            .IsFalse();
+        await Assert.That(MyEnum.Value3.IsOneOf(enums))
+            .IsFalse();
     }
 
-    [Fact]
-    public void IsOneOf_ShouldReturnFalse_WhenEnumsIsEmpty()
+    [Test]
+    public async Task IsOneOf_ShouldReturnFalse_WhenEnumsIsEmpty()
     {
         var enums = Array.Empty<MyEnum>();
 
-        MyEnum.Value1.IsOneOf(enums).Should().BeFalse();
+        await Assert.That(MyEnum.Value1.IsOneOf(enums))
+            .IsFalse();
     }
 
-    [Fact]
-    public void IsOneOf_ShouldThrow_WhenEnumsArrayIsNull()
+    [Test]
+    public async Task IsOneOf_ShouldThrow_WhenEnumsArrayIsNull()
     {
         MyEnum[] enums = null!;
 
-        var fnc = () => MyEnum.Value1.IsOneOf(enums);
-        fnc.Should().ThrowExactly<ArgumentNullException>();
+        await Assert.That(() => MyEnum.Value1.IsOneOf(enums))
+            .ThrowsExactly<ArgumentNullException>();
     }
 }

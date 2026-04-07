@@ -1,25 +1,22 @@
 ﻿using System.Runtime.InteropServices;
-using FluentAssertions;
 using Serilog;
 using Serilog.Events;
-using Xunit;
 
 namespace CommonNet.Logging.Tests;
 
 public class EnrichersTests
 {
-
     private static TResult GetPropertyValue<TResult>(LogEvent logEvent, string propertyName)
     {
         return (TResult)(((ScalarValue)logEvent.Properties[propertyName]!).Value!);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("Switzerland")]
-    [InlineData("Czechia")]
-    [InlineData("Prague")]
-    public void LocationEnricher_ShouldBeApplied(string locationName)
+    [Test]
+    [Arguments("")]
+    [Arguments("Switzerland")]
+    [Arguments("Czechia")]
+    [Arguments("Prague")]
+    public async Task LocationEnricher_ShouldBeApplied(string locationName)
     {
         LogEvent? logEvent = null;
         var log = new LoggerConfiguration()
@@ -29,20 +26,22 @@ public class EnrichersTests
 
         log.Information("Test Message With Properties");
 
-        logEvent.Should().NotBeNull();
+        await Assert.That(logEvent)
+            .IsNotNull();
 
         locationName = locationName != "" ? locationName : Environment.MachineName;
         var eventLocationName = GetPropertyValue<string>(logEvent!, "Location");
 
-        eventLocationName.Should().Be(locationName);
+        await Assert.That(eventLocationName)
+            .IsEqualTo(locationName);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("Testing")]
-    [InlineData("Staging")]
-    [InlineData("PreProduction")]
-    public void InstallationEnvironmentName_ShouldBeApplied(string installationEnvName)
+    [Test]
+    [Arguments("")]
+    [Arguments("Testing")]
+    [Arguments("Staging")]
+    [Arguments("PreProduction")]
+    public async Task InstallationEnvironmentName_ShouldBeApplied(string installationEnvName)
     {
         LogEvent? logEvent = null;
         var log = new LoggerConfiguration()
@@ -52,16 +51,18 @@ public class EnrichersTests
 
         log.Information("Test Message With Properties");
 
-        logEvent.Should().NotBeNull();
+        await Assert.That(logEvent)
+            .IsNotNull();
 
         installationEnvName = installationEnvName != "" ? installationEnvName : Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
         var eventInstallationEnvName = GetPropertyValue<string>(logEvent!, "InstallationEnvironment");
 
-        eventInstallationEnvName.Should().Be(installationEnvName);
+        await Assert.That(eventInstallationEnvName)
+            .IsEqualTo(installationEnvName);
     }
 
-    [Fact]
-    public void OsInfo_ShouldBeApplied()
+    [Test]
+    public async Task OsInfo_ShouldBeApplied()
     {
         LogEvent? logEvent = null;
         var log = new LoggerConfiguration()
@@ -71,16 +72,18 @@ public class EnrichersTests
 
         log.Information("Test Message With Properties");
 
-        logEvent.Should().NotBeNull();
+        await Assert.That(logEvent)
+            .IsNotNull();
 
         var expectedOsInfo = RuntimeInformation.OSDescription;
         var osInfo = GetPropertyValue<string>(logEvent!, "OsInfo");
 
-        osInfo.Should().Be(expectedOsInfo);
+        await Assert.That(osInfo)
+            .IsEqualTo(expectedOsInfo);
     }
 
-    [Fact]
-    public void FrameworkVersion_ShouldBeApplied()
+    [Test]
+    public async Task FrameworkVersion_ShouldBeApplied()
     {
         LogEvent? logEvent = null;
         var log = new LoggerConfiguration()
@@ -90,11 +93,13 @@ public class EnrichersTests
 
         log.Information("Test Message With Properties");
 
-        logEvent.Should().NotBeNull();
+        await Assert.That(logEvent)
+            .IsNotNull();
 
         var expectedFrameworkVersion = RuntimeInformation.FrameworkDescription;
         var frameworkVersion = GetPropertyValue<string>(logEvent!, "FrameworkVersion");
 
-        frameworkVersion.Should().Be(expectedFrameworkVersion);
+        await Assert.That(frameworkVersion)
+            .IsEqualTo(expectedFrameworkVersion);
     }
 }

@@ -1,12 +1,11 @@
-﻿using FluentAssertions;
-using Xunit;
+﻿using System.Linq;
 
 namespace CommonNet.Extensions.Tests;
 
 public class ExceptionExtensionsTests
 {
-    [Fact]
-    public void AddData_ShouldAddSingleValue_WhenCalledWithOneValue()
+    [Test]
+    public async Task AddData_ShouldAddSingleValue_WhenCalledWithOneValue()
     {
         var exception = new Exception();
         var key = "TestKey";
@@ -14,12 +13,14 @@ public class ExceptionExtensionsTests
 
         exception.AddData(key, value);
 
-        var checkDict = new CastedStringKeyDictionary(exception.Data);
-        checkDict.Should().ContainKey(key).WhoseValue.Should().Be(value);
+        await Assert.That(exception.Data.Contains(key))
+            .IsTrue();
+        await Assert.That(exception.Data[key])
+            .IsEqualTo(value);
     }
 
-    [Fact]
-    public void AddData_ShouldAddArrayOfValues_WhenCalledWithMultipleValues()
+    [Test]
+    public async Task AddData_ShouldAddArrayOfValues_WhenCalledWithMultipleValues()
     {
         var exception = new Exception();
         var key = "TestKey";
@@ -27,41 +28,45 @@ public class ExceptionExtensionsTests
 
         exception.AddData(key, values);
 
-        var checkDict = new CastedStringKeyDictionary(exception.Data);
-        checkDict.Should().ContainKey(key).WhoseValue.Should().BeEquivalentTo(values);
+        await Assert.That(exception.Data.Contains(key))
+            .IsTrue();
+        await Assert.That(exception.Data[key])
+            .IsEquivalentTo(values);
     }
 
-    [Fact]
-    public void AddData_ShouldAddNull_WhenCalledWithNoValues()
+    [Test]
+    public async Task AddData_ShouldAddNull_WhenCalledWithNoValues()
     {
         var exception = new Exception();
         var key = "TestKey";
 
         exception.AddData(key);
 
-        var checkDict = new CastedStringKeyDictionary(exception.Data);
-        checkDict.Should().ContainKey(key).WhoseValue.Should().BeNull();
+        await Assert.That(exception.Data.Keys.OfType<object>())
+            .Contains(obj => obj is string str && str == key);
+        await Assert.That(exception.Data[key])
+            .IsNull();
     }
 
-    [Fact]
-    public void AddData_ShouldThrowArgumentNullException_WhenExceptionIsNull()
+    [Test]
+    public async Task AddData_ShouldThrowArgumentNullException_WhenExceptionIsNull()
     {
         Exception exception = null!;
         var key = "TestKey";
 
-        Action act = () => exception!.AddData(key);
-
-        act.Should().Throw<ArgumentNullException>().WithParameterName("exception");
+        await Assert.That(() => exception!.AddData(key))
+            .ThrowsExactly<ArgumentNullException>()
+            .WithParameterName("exception");
     }
 
-    [Fact]
-    public void AddData_ShouldThrowArgumentException_WhenKeyIsEmpty()
+    [Test]
+    public async Task AddData_ShouldThrowArgumentException_WhenKeyIsEmpty()
     {
         var exception = new Exception();
         var key = "";
 
-        Action act = () => exception.AddData(key);
-
-        act.Should().Throw<ArgumentException>().WithParameterName("key");
+        await Assert.That(() => exception!.AddData(key))
+            .ThrowsExactly<ArgumentException>()
+            .WithParameterName("key");
     }
 }

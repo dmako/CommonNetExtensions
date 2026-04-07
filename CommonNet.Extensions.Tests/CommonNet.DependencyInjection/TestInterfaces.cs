@@ -25,15 +25,15 @@ public interface IBaseInterface5
     string Name5 { get; }
 }
 
-public interface IInheritedIface2 : IBaseInterface1
+public interface IInheritedInterface2 : IBaseInterface1
 {
 }
 
-public interface IInheritedIface3 : IInheritedIface2
+public interface IInheritedInterface3 : IInheritedInterface2
 {
 }
 
-public interface IInheritedIface4 : IInheritedIface3
+public interface IInheritedInterface4 : IInheritedInterface3
 {
 }
 

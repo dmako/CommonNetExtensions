@@ -1,14 +1,12 @@
-﻿using FluentAssertions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
 
 namespace CommonNet.Logging.Tests;
 
 public class LoggerSuppressingExtensionsTests
 {
-    [Fact]
-    public void Swallow_Action_NoException_LogsNothing()
+    [Test]
+    public async Task Swallow_Action_NoException_LogsNothing()
     {
         // Arrange
         var loggerMock = new Mock<ILogger>();
@@ -18,7 +16,9 @@ public class LoggerSuppressingExtensionsTests
         loggerMock.Object.Swallow(() => actionExecuted = true);
 
         // Assert
-        actionExecuted.Should().BeTrue();
+        await Assert.That(actionExecuted)
+            .IsTrue();
+
         loggerMock.Verify(
             x => x.Log(
                 It.IsAny<LogLevel>(),
@@ -31,7 +31,7 @@ public class LoggerSuppressingExtensionsTests
         );
     }
 
-    [Fact]
+    [Test]
     public void Swallow_Action_Exception_LogsError()
     {
         // Arrange
@@ -54,7 +54,7 @@ public class LoggerSuppressingExtensionsTests
         );
     }
 
-    [Fact]
+    [Test]
     public async Task SwallowAsync_Action_NoException_LogsNothing()
     {
         // Arrange
@@ -65,7 +65,9 @@ public class LoggerSuppressingExtensionsTests
         await loggerMock.Object.SwallowAsync(async () => await Task.Run(() => actionExecuted = true));
 
         // Assert
-        actionExecuted.Should().BeTrue();
+        await Assert.That(actionExecuted)
+            .IsTrue();
+
         loggerMock.Verify(
             x => x.Log(
                 It.IsAny<LogLevel>(),
@@ -78,7 +80,7 @@ public class LoggerSuppressingExtensionsTests
         );
     }
 
-    [Fact]
+    [Test]
     public async Task SwallowAsync_Action_Exception_LogsError()
     {
         // Arrange
