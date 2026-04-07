@@ -26,6 +26,28 @@ public class StringExtensionsTests
     }
 
     [Test]
+    public async Task String_Parse_NullInput_ThrowsArgumentNullException()
+    {
+        string nullStr = null!;
+
+        await Assert.That(() => nullStr.Parse<int>())
+            .ThrowsExactly<ArgumentNullException>();
+    }
+
+    [Test]
+    public async Task String_Parse_EmptyString_ReturnsDefault()
+    {
+        await Assert.That(() => "".Parse<int>())
+            .IsEqualTo(0);
+        await Assert.That(() => "".Parse<bool>())
+            .IsFalse();
+        await Assert.That(() => "".Parse<double>())
+            .IsEqualTo(0.0);
+        await Assert.That(() => "".Parse<Guid>())
+            .IsEqualTo(Guid.Empty);
+    }
+
+    [Test]
     public async Task String_ParseByte()
     {
         await Assert.That(() => "aaa".Parse<byte>())
@@ -48,6 +70,156 @@ public class StringExtensionsTests
             .IsFalse();
         await Assert.That(val)
             .IsEqualTo((byte)0);
+    }
+
+    [Test]
+    public async Task String_ParseBool()
+    {
+        await Assert.That(() => "true".Parse<bool>())
+            .IsTrue();
+        await Assert.That(() => "True".Parse<bool>())
+            .IsTrue();
+        await Assert.That(() => "false".Parse<bool>())
+            .IsFalse();
+        await Assert.That(() => "notbool".Parse<bool>())
+            .ThrowsExactly<FormatException>();
+    }
+
+    [Test]
+    public async Task String_ParseSByte()
+    {
+        await Assert.That(() => "-128".Parse<sbyte>())
+            .IsEqualTo(sbyte.MinValue);
+        await Assert.That(() => "127".Parse<sbyte>())
+            .IsEqualTo(sbyte.MaxValue);
+        await Assert.That(() => "999".Parse<sbyte>())
+            .ThrowsExactly<OverflowException>();
+    }
+
+    [Test]
+    public async Task String_ParseChar()
+    {
+        await Assert.That(() => "A".Parse<char>())
+            .IsEqualTo('A');
+        await Assert.That(() => "hello".Parse<char>())
+            .IsEqualTo('h');
+    }
+
+    [Test]
+    public async Task String_ParseNumericTypes()
+    {
+        // short
+        await Assert.That(() => "-32768".Parse<short>())
+            .IsEqualTo(short.MinValue);
+        await Assert.That(() => "32767".Parse<short>())
+            .IsEqualTo(short.MaxValue);
+
+        // ushort
+        await Assert.That(() => "0".Parse<ushort>())
+            .IsEqualTo(ushort.MinValue);
+        await Assert.That(() => "65535".Parse<ushort>())
+            .IsEqualTo(ushort.MaxValue);
+
+        // int
+        await Assert.That(() => "42".Parse<int>())
+            .IsEqualTo(42);
+        await Assert.That(() => "-100".Parse<int>())
+            .IsEqualTo(-100);
+
+        // uint
+        await Assert.That(() => "42".Parse<uint>())
+            .IsEqualTo(42u);
+
+        // long
+        await Assert.That(() => "9999999999".Parse<long>())
+            .IsEqualTo(9999999999L);
+
+        // ulong
+        await Assert.That(() => "18446744073709551615".Parse<ulong>())
+            .IsEqualTo(ulong.MaxValue);
+
+        // double (invariant culture)
+        await Assert.That(() => "3.14".Parse<double>())
+            .IsEqualTo(3.14);
+        await Assert.That(() => "-2.5".Parse<double>())
+            .IsEqualTo(-2.5);
+    }
+
+    [Test]
+    public async Task String_ParseDateTime()
+    {
+        await Assert.That(() => "2024-01-15".Parse<DateTime>())
+            .IsEqualTo(new DateTime(2024, 1, 15));
+        await Assert.That(() => "01/15/2024".Parse<DateTime>())
+            .IsEqualTo(new DateTime(2024, 1, 15));
+    }
+
+    [Test]
+    public async Task String_ParseTimeSpan()
+    {
+        await Assert.That(() => "01:30:00".Parse<TimeSpan>())
+            .IsEqualTo(TimeSpan.FromMinutes(90));
+        await Assert.That(() => "00:00:30".Parse<TimeSpan>())
+            .IsEqualTo(TimeSpan.FromSeconds(30));
+    }
+
+    [Test]
+    public async Task String_ParseGuid()
+    {
+        var guid = new Guid("12345678-1234-1234-1234-123456789abc");
+
+        await Assert.That(() => "12345678-1234-1234-1234-123456789abc".Parse<Guid>())
+            .IsEqualTo(guid);
+    }
+
+    [Test]
+    public async Task String_ParseVersion()
+    {
+        await Assert.That(() => "1.2.3.4".Parse<Version>())
+            .IsEqualTo(new Version(1, 2, 3, 4));
+        await Assert.That(() => "2.0".Parse<Version>())
+            .IsEqualTo(new Version(2, 0));
+    }
+
+    [Test]
+    public async Task String_TryParse_NullInput_ThrowsArgumentNullException()
+    {
+        string nullStr = null!;
+
+        await Assert.That(() => nullStr.TryParse(out int _))
+            .ThrowsExactly<ArgumentNullException>();
+    }
+
+    [Test]
+    public async Task String_TryParse_UnsupportedType_ReturnsFalse()
+    {
+        var result = "test".TryParse(out object? val);
+        await Assert.That(result)
+            .IsFalse();
+        await Assert.That(val)
+            .IsNull();
+    }
+
+    [Test]
+    public async Task String_TryParse_ValidValue_ReturnsTrueWithParsedValue()
+    {
+        var intResult = "42".TryParse(out int intVal);
+        await Assert.That(intResult)
+            .IsTrue();
+        await Assert.That(intVal)
+            .IsEqualTo(42);
+
+        var boolResult = "true".TryParse(out bool boolVal);
+        await Assert.That(boolResult)
+            .IsTrue();
+        await Assert.That(boolVal)
+            .IsTrue();
+
+        var doubleResult = "3.14".TryParse(out double doubleVal);
+        await Assert.That(doubleResult)
+            .IsTrue();
+        await Assert.That(doubleVal)
+            .IsEqualTo(3.14);
     }
 
     enum TestEnum
@@ -216,6 +388,17 @@ public class StringExtensionsTests
     }
 
     [Test]
+    public async Task String_AllIndexesOf_OverlappingMatches()
+    {
+        await Assert.That(() => "aaa".AllIndexesOf("aa").ToArray())
+            .IsEquivalentTo([0, 1]);
+        await Assert.That(() => "abab".AllIndexesOf("ab").ToArray())
+            .IsEquivalentTo([0, 2]);
+        await Assert.That(() => "xxxx".AllIndexesOf("xx").ToArray())
+            .IsEquivalentTo([0, 1, 2]);
+    }
+
+    [Test]
     public async Task Char_Repeat_ZeroTimes_ReturnsEmptyString()
     {
         await Assert.That(() => 'a'.Repeat(0))
@@ -286,6 +469,13 @@ public class StringExtensionsTests
     }
 
     [Test]
+    public async Task String_PadRight_WithZeroTotalLength_ReturnsSameString()
+    {
+        await Assert.That(() => "test".PadRight(0))
+            .IsEqualTo("test");
+    }
+
+    [Test]
     public async Task String_PadLeft_WithDefaultSpaceCharacter()
     {
         await Assert.That(() => "test".PadLeft(10))
@@ -325,5 +515,12 @@ public class StringExtensionsTests
     {
         await Assert.That(() => "test".PadLeft(-1))
             .ThrowsExactly<ArgumentOutOfRangeException>();
+    }
+
+    [Test]
+    public async Task String_PadLeft_WithZeroTotalLength_ReturnsSameString()
+    {
+        await Assert.That(() => "test".PadLeft(0))
+            .IsEqualTo("test");
     }
 }
